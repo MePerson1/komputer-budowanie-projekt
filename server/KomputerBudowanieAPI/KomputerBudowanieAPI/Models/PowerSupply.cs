@@ -1,22 +1,25 @@
-﻿namespace KomputerBudowanieAPI.Models
-{
-    public enum Modulairty
-    {
-        Non,
-        Semi,
-        Full
-    }
+﻿using System.ComponentModel.DataAnnotations;
 
-    public enum PowerFactorCorrection
-    {
-        None,
-        Active,
-        Pasive
-    }
+namespace KomputerBudowanieAPI.Models
+{
+    //public enum Modulairty
+    //{
+    //    Non,
+    //    Semi,
+    //    Full
+    //}
+
+    //public enum PowerFactorCorrection
+    //{
+    //    None,
+    //    Active,
+    //    Pasive
+    //}
 
     public class PowerSupply
     {
-        public Guid Id { get; set; }
+        [Key]
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Producer { get; set; }
         public string Description { get; set; }
@@ -25,8 +28,14 @@
 
         // Details
         public int PowerOutput { get; set; }
-        public Modulairty Modularity { get; set; }
-        public PowerFactorCorrection PowerFactorCorrection { get; set; }
+
+        /*
+         * Dodanie Enum
+         */
+        public string Modularity { get; set; }
+        public string PowerFactorCorrection { get; set; }
+        //public Modulairty Modularity { get; set; }
+        //public PowerFactorCorrection PowerFactorCorrection { get; set; }
 
         public string Protection { get; set; }
 
