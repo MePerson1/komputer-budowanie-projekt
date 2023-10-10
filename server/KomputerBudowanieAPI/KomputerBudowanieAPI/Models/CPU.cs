@@ -2,7 +2,7 @@
 
 namespace KomputerBudowanieAPI.Models
 {
-    public class CPU
+    public class Cpu
     {
         [Key]
         public int Id { get; set; }
