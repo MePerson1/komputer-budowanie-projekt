@@ -28,5 +28,11 @@ namespace KomputerBudowanieAPI.Models
         public bool IntegratedGraphics { get; set; }
         public bool HyperThreading { get; set; }
         public bool OverclockingSupport { get; set; }
+
+        /*
+        *  RELACJE
+        */
+
+        public ICollection<PcConfiguration> Configurations { get; set; }
     }
 }

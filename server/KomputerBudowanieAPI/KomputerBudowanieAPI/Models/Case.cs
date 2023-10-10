@@ -38,5 +38,10 @@ namespace KomputerBudowanieAPI.Models
         public int ExpansionSlots { get; set; }
         public bool WaterCoolingSupport { get; set; }
 
+        /*
+         *  RELACJE
+         */
+
+        public ICollection<PcConfiguration> Configurations { get; set; }
     }
 }

@@ -18,5 +18,11 @@ namespace KomputerBudowanieAPI.Models
         private string Format { get; set; }
         private string Interface { get; set; }
         private float Height { get; set; }
+
+        /*
+        *  RELACJE
+        */
+
+        public ICollection<PcConfigurationMemory> PcConfigurationMemories { get; set; }
     }
 }

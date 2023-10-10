@@ -2,7 +2,7 @@
 
 namespace KomputerBudowanieAPI.Models
 {
-    public class CPU_Cooling
+    public class CpuCooling
     {
         [Key]
         public int Id { get; set; }
@@ -28,5 +28,11 @@ namespace KomputerBudowanieAPI.Models
 
         public double Height { get; set; }
         public double Width { get; set; }
+
+        /*
+        *  RELACJE
+        */
+
+        public ICollection<PcConfiguration> Configurations { get; set; }
     }
 }

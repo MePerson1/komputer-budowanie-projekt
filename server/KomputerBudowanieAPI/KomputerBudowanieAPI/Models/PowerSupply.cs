@@ -61,5 +61,11 @@ namespace KomputerBudowanieAPI.Models
         public int Height { get; set; }
         public int Width { get; set; }
         public int Depth { get; set; }
+
+        /*
+        *  RELACJE
+        */
+
+        public ICollection<PcConfiguration> Configurations { get; set; }
     }
 }

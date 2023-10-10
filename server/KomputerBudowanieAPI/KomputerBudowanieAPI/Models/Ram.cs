@@ -17,5 +17,11 @@ namespace KomputerBudowanieAPI.Models
         private int LatencyCL { get; set; }
         private int Speed { get; set; }
         private bool ECC { get; set; } //Error Checking and Correction
+
+        /*
+        *  RELACJE
+        */
+
+        public ICollection<PcConfigurationRam> PcConfigurationRams { get; set; }
     }
 }

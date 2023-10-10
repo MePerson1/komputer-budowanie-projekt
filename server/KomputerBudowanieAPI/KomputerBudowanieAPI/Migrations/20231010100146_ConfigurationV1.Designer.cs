@@ -3,6 +3,7 @@ using System;
 using KomputerBudowanieAPI.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KomputerBudowanieAPI.Migrations
 {
     [DbContext(typeof(KomBuildDbContext))]
-    partial class KomBuildDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231010100146_ConfigurationV1")]
+    partial class ConfigurationV1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,83 +96,7 @@ namespace KomputerBudowanieAPI.Migrations
                     b.ToTable("CPUs");
                 });
 
-            modelBuilder.Entity("KomputerBudowanieAPI.Models.Case", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("ExpansionSlots")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("External5_25Bays")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("FormFactor")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Internal2_5Bays")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Internal3_5Bays")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("Lightning")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("MaxGPUSize")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("MotherboardType")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("PowerSupply")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("PowerSupplyType")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("Producer")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ProducerCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("WaterCoolingSupport")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Cases");
-                });
-
-            modelBuilder.Entity("KomputerBudowanieAPI.Models.CpuCooling", b =>
+            modelBuilder.Entity("KomputerBudowanieAPI.Models.CPU_Cooling", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -245,6 +172,82 @@ namespace KomputerBudowanieAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CPU_Coolings");
+                });
+
+            modelBuilder.Entity("KomputerBudowanieAPI.Models.Case", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ExpansionSlots")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("External5_25Bays")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("FormFactor")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Internal2_5Bays")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Internal3_5Bays")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("Lightning")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("MaxGPUSize")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("MotherboardType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("PowerSupply")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("PowerSupplyType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("Producer")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ProducerCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("WaterCoolingSupport")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cases");
                 });
 
             modelBuilder.Entity("KomputerBudowanieAPI.Models.Fan", b =>
@@ -433,7 +436,7 @@ namespace KomputerBudowanieAPI.Migrations
                     b.ToTable("Motherboards");
                 });
 
-            modelBuilder.Entity("KomputerBudowanieAPI.Models.PcConfiguration", b =>
+            modelBuilder.Entity("KomputerBudowanieAPI.Models.PC_Configuration", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -458,6 +461,9 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Property<int>("GraphicCardId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("MemoryId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("MotherboardId")
                         .HasColumnType("integer");
 
@@ -466,6 +472,9 @@ namespace KomputerBudowanieAPI.Migrations
                         .HasColumnType("text");
 
                     b.Property<int>("PowerSupplyId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RamId")
                         .HasColumnType("integer");
 
                     b.Property<int>("UserId")
@@ -483,43 +492,17 @@ namespace KomputerBudowanieAPI.Migrations
 
                     b.HasIndex("GraphicCardId");
 
+                    b.HasIndex("MemoryId");
+
                     b.HasIndex("MotherboardId");
 
                     b.HasIndex("PowerSupplyId");
 
+                    b.HasIndex("RamId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("PC_Configurations");
-                });
-
-            modelBuilder.Entity("KomputerBudowanieAPI.Models.PcConfigurationMemory", b =>
-                {
-                    b.Property<Guid>("PcConfigurationId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("MemoryId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("PcConfigurationId", "MemoryId");
-
-                    b.HasIndex("MemoryId");
-
-                    b.ToTable("PcConfigurationMemories");
-                });
-
-            modelBuilder.Entity("KomputerBudowanieAPI.Models.PcConfigurationRam", b =>
-                {
-                    b.Property<Guid>("PcConfigurationId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("RamId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("PcConfigurationId", "RamId");
-
-                    b.HasIndex("RamId");
-
-                    b.ToTable("PcConfigurationRams");
                 });
 
             modelBuilder.Entity("KomputerBudowanieAPI.Models.PowerSupply", b =>
@@ -656,7 +639,7 @@ namespace KomputerBudowanieAPI.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("KomputerBudowanieAPI.Models.PcConfiguration", b =>
+            modelBuilder.Entity("KomputerBudowanieAPI.Models.PC_Configuration", b =>
                 {
                     b.HasOne("KomputerBudowanieAPI.Models.CPU", "CPU")
                         .WithMany("Configurations")
@@ -664,7 +647,7 @@ namespace KomputerBudowanieAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("KomputerBudowanieAPI.Models.CpuCooling", "CPU_Cooling")
+                    b.HasOne("KomputerBudowanieAPI.Models.CPU_Cooling", "CPU_Cooling")
                         .WithMany("Configurations")
                         .HasForeignKey("CPU_CoolingId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -688,6 +671,12 @@ namespace KomputerBudowanieAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("KomputerBudowanieAPI.Models.Memory", "Memory")
+                        .WithMany("Configurations")
+                        .HasForeignKey("MemoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("KomputerBudowanieAPI.Models.Motherboard", "Motherboard")
                         .WithMany("Configurations")
                         .HasForeignKey("MotherboardId")
@@ -697,6 +686,12 @@ namespace KomputerBudowanieAPI.Migrations
                     b.HasOne("KomputerBudowanieAPI.Models.PowerSupply", "PowerSupply")
                         .WithMany("Configurations")
                         .HasForeignKey("PowerSupplyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KomputerBudowanieAPI.Models.Ram", "Ram")
+                        .WithMany("Configurations")
+                        .HasForeignKey("RamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -716,49 +711,15 @@ namespace KomputerBudowanieAPI.Migrations
 
                     b.Navigation("GraphicCard");
 
+                    b.Navigation("Memory");
+
                     b.Navigation("Motherboard");
 
                     b.Navigation("PowerSupply");
 
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("KomputerBudowanieAPI.Models.PcConfigurationMemory", b =>
-                {
-                    b.HasOne("KomputerBudowanieAPI.Models.Memory", "Memory")
-                        .WithMany("PcConfigurationMemories")
-                        .HasForeignKey("MemoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KomputerBudowanieAPI.Models.PcConfiguration", "PcConfiguration")
-                        .WithMany("PcConfigurationMemories")
-                        .HasForeignKey("PcConfigurationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Memory");
-
-                    b.Navigation("PcConfiguration");
-                });
-
-            modelBuilder.Entity("KomputerBudowanieAPI.Models.PcConfigurationRam", b =>
-                {
-                    b.HasOne("KomputerBudowanieAPI.Models.PcConfiguration", "PcConfiguration")
-                        .WithMany("PcConfigurationRams")
-                        .HasForeignKey("PcConfigurationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KomputerBudowanieAPI.Models.Ram", "Ram")
-                        .WithMany("PcConfigurationRams")
-                        .HasForeignKey("RamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("PcConfiguration");
-
                     b.Navigation("Ram");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("KomputerBudowanieAPI.Models.CPU", b =>
@@ -766,12 +727,12 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Navigation("Configurations");
                 });
 
-            modelBuilder.Entity("KomputerBudowanieAPI.Models.Case", b =>
+            modelBuilder.Entity("KomputerBudowanieAPI.Models.CPU_Cooling", b =>
                 {
                     b.Navigation("Configurations");
                 });
 
-            modelBuilder.Entity("KomputerBudowanieAPI.Models.CpuCooling", b =>
+            modelBuilder.Entity("KomputerBudowanieAPI.Models.Case", b =>
                 {
                     b.Navigation("Configurations");
                 });
@@ -788,19 +749,12 @@ namespace KomputerBudowanieAPI.Migrations
 
             modelBuilder.Entity("KomputerBudowanieAPI.Models.Memory", b =>
                 {
-                    b.Navigation("PcConfigurationMemories");
+                    b.Navigation("Configurations");
                 });
 
             modelBuilder.Entity("KomputerBudowanieAPI.Models.Motherboard", b =>
                 {
                     b.Navigation("Configurations");
-                });
-
-            modelBuilder.Entity("KomputerBudowanieAPI.Models.PcConfiguration", b =>
-                {
-                    b.Navigation("PcConfigurationMemories");
-
-                    b.Navigation("PcConfigurationRams");
                 });
 
             modelBuilder.Entity("KomputerBudowanieAPI.Models.PowerSupply", b =>
@@ -810,7 +764,7 @@ namespace KomputerBudowanieAPI.Migrations
 
             modelBuilder.Entity("KomputerBudowanieAPI.Models.Ram", b =>
                 {
-                    b.Navigation("PcConfigurationRams");
+                    b.Navigation("Configurations");
                 });
 
             modelBuilder.Entity("KomputerBudowanieAPI.Models.User", b =>

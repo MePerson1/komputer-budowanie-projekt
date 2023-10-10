@@ -34,5 +34,11 @@ namespace KomputerBudowanieAPI.Models
         private float Height { get; set; }
         private float Length { get; set; }
         private int Slots { get; set; }
+
+        /*
+        *  RELACJE
+        */
+
+        public ICollection<PcConfiguration> Configurations { get; set; }
     }
 }
