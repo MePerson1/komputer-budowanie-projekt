@@ -2,14 +2,10 @@
 
 namespace KomputerBudowanieAPI.Interfaces
 {
-    public interface ICaseRepository
+    public interface ICaseRepository : IRepository<Case>
     {
-        ICollection<Case> GetAll();
-        Case? GetById(int id);
 
-        int Create(Case cpu);
+        Task<Case?> GetById(int id);
 
-        bool Update(int id, Case cpu);
-        bool Delete(int id);
     }
 }

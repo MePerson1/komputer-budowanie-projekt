@@ -1,33 +1,19 @@
-﻿using KomputerBudowanieAPI.Interfaces;
+﻿using KomputerBudowanieAPI.Database;
+using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace KomputerBudowanieAPI.Repository
 {
-    public class CaseRepository : ICaseRepository
+    public class CaseRepository : Repository<Case>, ICaseRepository
     {
-        public int Create(Case cpu)
+        public CaseRepository(KomBuildDbContext context) : base(context)
         {
-            throw new NotImplementedException();
         }
 
-        public bool Delete(int id)
+        public async Task<Case?> GetById(int id)
         {
-            throw new NotImplementedException();
-        }
-
-        public ICollection<Case> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Case? GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Update(int id, Case cpu)
-        {
-            throw new NotImplementedException();
+            return await _context.Cases.SingleOrDefaultAsync(c => c.Id == id);
         }
     }
 }

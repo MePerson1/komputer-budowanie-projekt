@@ -12,7 +12,7 @@ namespace KomputerBudowanieAPI.Models
         public double Price { get; set; }
         public string ProducerCode { get; set; }
         public string CoolingType { get; set; }
-        public string[] Sockets { get; set; }
+        public string Sockets { get; set; }
         public int TDP { get; set; }
         public int RPM { get; set; }
         public string Connectr { get; set; }
