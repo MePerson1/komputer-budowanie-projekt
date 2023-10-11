@@ -19,7 +19,7 @@ namespace KomputerBudowanieAPI.Models
         public Cpu Cpu { get; set; }
         public CpuCooling CPU_Cooling { get; set; }
         public ICollection<PcConfigurationMemory> PcConfigurationMemories { get; set; }
-        public ICollection<PcConfigurationRam> PcConfigurationRams { get; set; } //tutaj możlwe ze bedzie many to many bo mozna jednak miec wiecej kostek ramu niz jedna
+        public ICollection<PcConfigurationRam> PcConfigurationRams { get; set; }
         public Case Case { get; set; }
         public Fan Fan { get; set; } // tutaj tez many to many raczej
         public PowerSupply PowerSupply { get; set; }

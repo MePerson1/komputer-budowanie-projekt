@@ -30,7 +30,7 @@ namespace KomputerBudowanieAPI.Repository
         //    return await _context.Set<TEntity>().FindAsync(id);
         //}
 
-        public void Insert(TEntity entity)
+        public void Create(TEntity entity)
         {
             _context.Set<TEntity>().Add(entity);
             SaveChanges();

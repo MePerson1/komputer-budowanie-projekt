@@ -27,7 +27,19 @@ namespace KomputerBudowanieAPI.Controllers
             {
                 return NotFound();
             }
-            return Ok(cases);
+            return Ok(_mapper.Map<IEnumerable<CaseDto>>(cases));
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetCaseById(int id)
+        {
+            var pcCase = await _caseRepository.GetById(id);
+            if (pcCase is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<CaseDto>(pcCase));
         }
 
         [HttpPost]
@@ -36,13 +48,30 @@ namespace KomputerBudowanieAPI.Controllers
             try
             {
                 var newPcCase = _mapper.Map<Case>(pcCase);
-                _caseRepository.Insert(newPcCase);
+                _caseRepository.Create(newPcCase);
                 return Ok();
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteCase(int id)
+        {
+            var pcCase = await _caseRepository.GetById(id);
+            if (pcCase is null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                _caseRepository.Delete(pcCase);
+                return Ok();
+            }
+            catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
     }

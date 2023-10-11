@@ -8,7 +8,7 @@
          * Różne typy id sa
          */
         //Task<TEntity?> GetByIdAsync(int id);
-        void Insert(TEntity entity);
+        void Create(TEntity entity);
         void Update(TEntity entity);
         void Delete(TEntity entity);
         Task SaveChanges();
