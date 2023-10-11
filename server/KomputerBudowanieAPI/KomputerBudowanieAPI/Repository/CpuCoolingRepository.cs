@@ -1,33 +1,19 @@
-﻿using KomputerBudowanieAPI.Interfaces;
+﻿using KomputerBudowanieAPI.Database;
+using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace KomputerBudowanieAPI.Repository
 {
-    public class CpuCoolingRepository : ICpuCoolingRepository
+    public class CpuCoolingRepository : Repository<CpuCooling>, ICpuCoolingRepository
     {
-        public int Create(CpuCooling cpu)
+        public CpuCoolingRepository(KomBuildDbContext context) : base(context)
         {
-            throw new NotImplementedException();
         }
 
-        public bool Delete(int id)
+        public async Task<CpuCooling?> GetById(int id)
         {
-            throw new NotImplementedException();
-        }
-
-        public ICollection<CpuCooling> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public CpuCooling? GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Update(int id, CpuCooling cpu)
-        {
-            throw new NotImplementedException();
+            return await _context.CpuCoolings.SingleOrDefaultAsync(c => c.Id == id);
         }
     }
 }

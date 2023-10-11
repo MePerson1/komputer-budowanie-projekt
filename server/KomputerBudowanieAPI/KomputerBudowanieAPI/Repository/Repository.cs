@@ -11,10 +11,10 @@ namespace KomputerBudowanieAPI.Repository
             this._context = context;
         }
 
-        public void Delete(TEntity entity)
+        public async Task Delete(TEntity entity)
         {
             _context.Set<TEntity>().Remove(entity);
-            SaveChanges();
+            await SaveChanges();
         }
 
         public async Task<IEnumerable<TEntity>> GetAllAsync()
@@ -30,21 +30,21 @@ namespace KomputerBudowanieAPI.Repository
         //    return await _context.Set<TEntity>().FindAsync(id);
         //}
 
-        public void Create(TEntity entity)
+        public async Task Create(TEntity entity)
         {
-            _context.Set<TEntity>().Add(entity);
-            SaveChanges();
+            await _context.Set<TEntity>().AddAsync(entity);
+            await SaveChanges();
         }
 
-        public Task SaveChanges()
+        public async Task SaveChanges()
         {
-            return _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(TEntity entity)
+        public async Task Update(TEntity entity)
         {
-            _context.Set<TEntity>().Update(entity);
-            SaveChanges();
+            _context.Entry(entity).State = EntityState.Modified;
+            await SaveChanges();
         }
     }
 }

@@ -1,33 +1,21 @@
-﻿using KomputerBudowanieAPI.Interfaces;
+﻿using KomputerBudowanieAPI.Database;
+using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace KomputerBudowanieAPI.Repository
 {
-    public class CpuRepository : ICpuRepository
+    public class CpuRepository : Repository<Cpu>, ICpuRepository
     {
-        public int Create(Cpu cpu)
+        public CpuRepository(KomBuildDbContext context) : base(context)
         {
-            throw new NotImplementedException();
         }
 
-        public bool Delete(int id)
+        public async Task<Cpu?> GetById(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Cpus.SingleOrDefaultAsync(c => c.Id == id);
         }
 
-        public ICollection<Cpu> GetAll()
-        {
-            throw new NotImplementedException();
-        }
 
-        public Cpu? GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Update(int id, Cpu cpu)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

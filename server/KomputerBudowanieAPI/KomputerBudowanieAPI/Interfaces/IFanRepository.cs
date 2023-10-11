@@ -2,14 +2,8 @@
 
 namespace KomputerBudowanieAPI.Interfaces
 {
-    public interface IFanRepository
+    public interface IFanRepository : IRepository<Fan>
     {
-        ICollection<Fan> GetAll();
-        Fan? GetById(int id);
-
-        int Create(Fan cpu);
-
-        bool Update(int id, Fan cpu);
-        bool Delete(int id);
+        Task<Fan?> GetById(int id);
     }
 }

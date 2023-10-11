@@ -1,10 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace KomputerBudowanieAPI.Models
+﻿namespace KomputerBudowanieAPI.Dto
 {
-    public class Fan
+    public class FanDto
     {
-        [Key]
         public int Id { get; set; }
         public string Name { get; set; }
         public string Producer { get; set; }
@@ -16,11 +13,5 @@ namespace KomputerBudowanieAPI.Models
         public float Height { get; set; }
         public float Width { get; set; }
         public float Lenght { get; set; }
-
-        /*
-        *  RELACJE
-        */
-
-        public ICollection<PcConfiguration> Configurations { get; set; }
     }
 }

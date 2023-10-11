@@ -9,6 +9,15 @@ namespace KomputerBudowanieAPI.Dto
         {
             CreateMap<Case, CaseDto>();
             CreateMap<CaseDto, Case>();
+
+            CreateMap<CpuCooling, CpuCoolingDto>();
+            CreateMap<CpuCoolingDto, CpuCooling>();
+
+            CreateMap<Cpu, CpuDto>();
+            CreateMap<CpuDto, Cpu>();
+
+            CreateMap<Fan, FanDto>();
+            CreateMap<FanDto, Fan>();
         }
     }
 }

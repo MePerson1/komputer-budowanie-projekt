@@ -2,14 +2,8 @@
 
 namespace KomputerBudowanieAPI.Interfaces
 {
-    public interface ICpuRepository
+    public interface ICpuRepository : IRepository<Cpu>
     {
-        ICollection<Cpu> GetAll();
-        Cpu? GetById(int id);
-
-        int Create(Cpu cpu);
-
-        bool Update(int id, Cpu cpu);
-        bool Delete(int id);
+        Task<Cpu?> GetById(int id);
     }
 }

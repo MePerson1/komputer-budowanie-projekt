@@ -48,7 +48,7 @@ namespace KomputerBudowanieAPI.Controllers
             try
             {
                 var newPcCase = _mapper.Map<Case>(pcCase);
-                _caseRepository.Create(newPcCase);
+                await _caseRepository.Create(newPcCase);
                 return Ok();
             }
             catch (Exception ex)
@@ -68,10 +68,25 @@ namespace KomputerBudowanieAPI.Controllers
 
             try
             {
-                _caseRepository.Delete(pcCase);
+                await _caseRepository.Delete(pcCase);
                 return Ok();
             }
             catch (Exception ex) { return BadRequest(ex.Message); }
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateCase(int id, [FromBody] CaseDto pcCase)
+        {
+            try
+            {
+                var newPcCase = _mapper.Map<Case>(pcCase);
+                await _caseRepository.Update(newPcCase);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
     }

@@ -21,9 +21,9 @@
 
         public bool PowerSupply { get; set; }
 
-        private float Height { get; set; }
-        private float Width { get; set; }
-        private float Lenght { get; set; }
+        public float Height { get; set; }
+        public float Width { get; set; }
+        public float Lenght { get; set; }
 
         /*
          * DO EDYCJI!

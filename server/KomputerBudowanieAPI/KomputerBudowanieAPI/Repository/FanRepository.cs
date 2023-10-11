@@ -1,33 +1,19 @@
-﻿using KomputerBudowanieAPI.Interfaces;
+﻿using KomputerBudowanieAPI.Database;
+using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace KomputerBudowanieAPI.Repository
 {
-    public class FanRepository : IFanRepository
+    public class FanRepository : Repository<Fan>, IFanRepository
     {
-        public int Create(Fan cpu)
+        public FanRepository(KomBuildDbContext context) : base(context)
         {
-            throw new NotImplementedException();
         }
 
-        public bool Delete(int id)
+        public async Task<Fan?> GetById(int id)
         {
-            throw new NotImplementedException();
-        }
-
-        public ICollection<Fan> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Fan? GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Update(int id, Fan cpu)
-        {
-            throw new NotImplementedException();
+            return await _context.Fans.FirstOrDefaultAsync(f => f.Id == id);
         }
     }
 }
