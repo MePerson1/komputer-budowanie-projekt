@@ -21,7 +21,7 @@ builder.Services.AddScoped<IFanRepository, FanRepository>();
 builder.Services.AddScoped<IGraphicCardRepository, GraphicCardRepository>();
 builder.Services.AddScoped<IMemoryRepository, MemoryRepository>();
 builder.Services.AddScoped<IMotherboardRepository, MotherboardRepository>();
-builder.Services.AddScoped<PowerSupplyRepository, PowerSupplyRepository>();
+builder.Services.AddScoped<IPowerSupplyRepository, PowerSupplyRepository>();
 builder.Services.AddScoped<IRamRepository, RamRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
