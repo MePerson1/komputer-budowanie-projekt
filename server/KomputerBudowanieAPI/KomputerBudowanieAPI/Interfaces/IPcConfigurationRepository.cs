@@ -2,10 +2,11 @@
 
 namespace KomputerBudowanieAPI.Interfaces
 {
-    public interface IPcConfigurationRepository
+    public interface IPcConfigurationRepository //: IRepository<PcConfiguration>
     {
-        ICollection<PcConfiguration> GetAll();
-        PcConfiguration? GetById(Guid id);
+        Task<ICollection<PcConfiguration>> GetAll();
+        Task<ICollection<PcConfiguration>> GetAll(int userId);
+        Task<PcConfiguration?> GetById(Guid id);
 
         int Create(PcConfiguration cpu);
 
