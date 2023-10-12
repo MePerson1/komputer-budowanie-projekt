@@ -1,33 +1,19 @@
-﻿using KomputerBudowanieAPI.Interfaces;
+﻿using KomputerBudowanieAPI.Database;
+using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace KomputerBudowanieAPI.Repository
 {
-    public class PowerSupplyRepository : IPowerSupplyRepository
+    public class PowerSupplyRepository : Repository<PowerSupply>, IPowerSupplyRepository
     {
-        public int Create(PowerSupply cpu)
+        public PowerSupplyRepository(KomBuildDbContext context) : base(context)
         {
-            throw new NotImplementedException();
         }
 
-        public bool Delete(int id)
+        public async Task<PowerSupply?> GetById(int id)
         {
-            throw new NotImplementedException();
-        }
-
-        public ICollection<PowerSupply> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public PowerSupply? GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Update(int id, PowerSupply cpu)
-        {
-            throw new NotImplementedException();
+            return await _context.PowerSupplys.FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }

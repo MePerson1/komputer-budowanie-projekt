@@ -18,6 +18,22 @@ namespace KomputerBudowanieAPI.Dto
 
             CreateMap<Fan, FanDto>();
             CreateMap<FanDto, Fan>();
+
+            CreateMap<GraphicCard, GraphicCardDto>();
+            CreateMap<GraphicCardDto, GraphicCard>();
+
+            CreateMap<Memory, MemoryDto>();
+            CreateMap<MemoryDto, Memory>();
+
+            CreateMap<Motherboard, MotherboardDto>();
+            CreateMap<MotherboardDto, Motherboard>();
+
+            CreateMap<PowerSupply, PowerSupplyDto>();
+            CreateMap<PowerSupplyDto, PowerSupply>();
+
+            CreateMap<Ram, RamDto>();
+            CreateMap<RamDto, Ram>();
+
         }
     }
 }

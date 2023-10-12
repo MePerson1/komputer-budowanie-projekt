@@ -1,10 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace KomputerBudowanieAPI.Models
+﻿namespace KomputerBudowanieAPI.Dto
 {
-    public class GraphicCard
+    public class GraphicCardDto
     {
-        [Key]
         public int Id { get; set; }
         public string Name { get; set; }
         public string Producer { get; set; }
@@ -34,11 +31,5 @@ namespace KomputerBudowanieAPI.Models
         public float Height { get; set; }
         public float Length { get; set; }
         public int Slots { get; set; }
-
-        /*
-        *  RELACJE
-        */
-
-        public ICollection<PcConfiguration> Configurations { get; set; }
     }
 }

@@ -2,14 +2,10 @@
 
 namespace KomputerBudowanieAPI.Interfaces
 {
-    public interface IPowerSupplyRepository
+    public interface IPowerSupplyRepository : IRepository<PowerSupply>
     {
-        ICollection<PowerSupply> GetAll();
-        PowerSupply? GetById(int id);
 
-        int Create(PowerSupply cpu);
+        Task<PowerSupply?> GetById(int id);
 
-        bool Update(int id, PowerSupply cpu);
-        bool Delete(int id);
     }
 }

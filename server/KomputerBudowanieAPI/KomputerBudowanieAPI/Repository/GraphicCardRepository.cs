@@ -1,33 +1,19 @@
-﻿using KomputerBudowanieAPI.Interfaces;
+﻿using KomputerBudowanieAPI.Database;
+using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace KomputerBudowanieAPI.Repository
 {
-    public class GraphicCardRepository : IGraphicCardRepository
+    public class GraphicCardRepository : Repository<GraphicCard>, IGraphicCardRepository
     {
-        public int Create(GraphicCard cpu)
+        public GraphicCardRepository(KomBuildDbContext context) : base(context)
         {
-            throw new NotImplementedException();
         }
 
-        public bool Delete(int id)
+        public async Task<GraphicCard?> GetById(int id)
         {
-            throw new NotImplementedException();
-        }
-
-        public ICollection<GraphicCard> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public GraphicCard? GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Update(int id, GraphicCard cpu)
-        {
-            throw new NotImplementedException();
+            return await _context.GraphicCards.FirstOrDefaultAsync(g => g.Id == id);
         }
     }
 }

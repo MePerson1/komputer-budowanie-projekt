@@ -2,14 +2,10 @@
 
 namespace KomputerBudowanieAPI.Interfaces
 {
-    public interface IMotherboardRepository
+    public interface IMotherboardRepository : IRepository<Motherboard>
     {
-        ICollection<Motherboard> GetAll();
-        Motherboard? GetById(int id);
 
-        int Create(Motherboard cpu);
+        Task<Motherboard?> GetById(int id);
 
-        bool Update(int id, Motherboard cpu);
-        bool Delete(int id);
     }
 }

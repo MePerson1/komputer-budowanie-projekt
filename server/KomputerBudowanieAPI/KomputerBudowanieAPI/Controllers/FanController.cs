@@ -27,7 +27,7 @@ namespace KomputerBudowanieAPI.Controllers
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<IEnumerable<Fan>>(fans));
+            return Ok(_mapper.Map<IEnumerable<FanDto>>(fans));
         }
 
         [HttpGet("{id:int}")]
@@ -36,7 +36,7 @@ namespace KomputerBudowanieAPI.Controllers
             var fan = await _fanRepository.GetById(id);
             if (fan is null)
                 return NotFound();
-            return Ok(_mapper.Map<Fan>(fan));
+            return Ok(_mapper.Map<FanDto>(fan));
         }
 
         [HttpPost]

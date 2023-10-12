@@ -2,14 +2,9 @@
 
 namespace KomputerBudowanieAPI.Interfaces
 {
-    public interface IRamRepository
+    public interface IRamRepository : IRepository<Ram>
     {
-        ICollection<Ram> GetAll();
-        Ram? GetById(int id);
+        Task<Ram?> GetById(int id);
 
-        int Create(Ram cpu);
-
-        bool Update(int id, Ram cpu);
-        bool Delete(int id);
     }
 }

@@ -2,14 +2,9 @@
 
 namespace KomputerBudowanieAPI.Interfaces
 {
-    public interface IGraphicCardRepository
+    public interface IGraphicCardRepository : IRepository<GraphicCard>
     {
-        ICollection<GraphicCard> GetAll();
-        GraphicCard? GetById(int id);
+        Task<GraphicCard?> GetById(int id);
 
-        int Create(GraphicCard cpu);
-
-        bool Update(int id, GraphicCard cpu);
-        bool Delete(int id);
     }
 }

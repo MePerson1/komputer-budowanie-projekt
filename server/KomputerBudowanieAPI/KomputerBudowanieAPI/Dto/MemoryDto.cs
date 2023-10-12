@@ -1,10 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace KomputerBudowanieAPI.Models
+﻿namespace KomputerBudowanieAPI.Dto
 {
-    public class Memory
+    public class MemoryDto
     {
-        [Key]
         public int Id { get; set; }
         public string Name { get; set; }
         public string Producer { get; set; }
@@ -18,11 +15,5 @@ namespace KomputerBudowanieAPI.Models
         public string Format { get; set; }
         public string Interface { get; set; }
         public float Height { get; set; }
-
-        /*
-        *  RELACJE
-        */
-
-        public ICollection<PcConfigurationMemory> PcConfigurationMemories { get; set; }
     }
 }

@@ -1,10 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace KomputerBudowanieAPI.Models
+﻿namespace KomputerBudowanieAPI.Dto
 {
-    public class Ram
+    public class RamDto
     {
-        [Key]
         public int Id { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
@@ -17,11 +14,5 @@ namespace KomputerBudowanieAPI.Models
         public int LatencyCL { get; set; }
         public int Speed { get; set; }
         public bool ECC { get; set; } //Error Checking and Correction
-
-        /*
-        *  RELACJE
-        */
-
-        public ICollection<PcConfigurationRam> PcConfigurationRams { get; set; }
     }
 }

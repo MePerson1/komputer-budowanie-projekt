@@ -1,33 +1,19 @@
-﻿using KomputerBudowanieAPI.Interfaces;
+﻿using KomputerBudowanieAPI.Database;
+using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace KomputerBudowanieAPI.Repository
 {
-    public class MemoryRepository : IMemoryRepository
+    public class MemoryRepository : Repository<Memory>, IMemoryRepository
     {
-        public int Create(Memory cpu)
+        public MemoryRepository(KomBuildDbContext context) : base(context)
         {
-            throw new NotImplementedException();
         }
 
-        public bool Delete(int id)
+        public async Task<Memory?> GetById(int id)
         {
-            throw new NotImplementedException();
-        }
-
-        public ICollection<Memory> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Memory? GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Update(int id, Memory cpu)
-        {
-            throw new NotImplementedException();
+            return await _context.Memories.FirstOrDefaultAsync(m => m.Id == id);
         }
     }
 }

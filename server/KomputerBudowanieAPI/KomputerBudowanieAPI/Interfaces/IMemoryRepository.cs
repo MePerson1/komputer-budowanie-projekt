@@ -2,14 +2,11 @@
 
 namespace KomputerBudowanieAPI.Interfaces
 {
-    public interface IMemoryRepository
+    public interface IMemoryRepository : IRepository<Memory>
     {
-        ICollection<Memory> GetAll();
-        Memory? GetById(int id);
 
-        int Create(Memory cpu);
+        Task<Memory?> GetById(int id);
 
-        bool Update(int id, Memory cpu);
-        bool Delete(int id);
+
     }
 }

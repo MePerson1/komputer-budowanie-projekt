@@ -1,33 +1,19 @@
-﻿using KomputerBudowanieAPI.Interfaces;
+﻿using KomputerBudowanieAPI.Database;
+using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace KomputerBudowanieAPI.Repository
 {
-    public class RamRepository : IRamRepository
+    public class RamRepository : Repository<Ram>, IRamRepository
     {
-        public int Create(Ram cpu)
+        public RamRepository(KomBuildDbContext context) : base(context)
         {
-            throw new NotImplementedException();
         }
 
-        public bool Delete(int id)
+        public async Task<Ram?> GetById(int id)
         {
-            throw new NotImplementedException();
-        }
-
-        public ICollection<Ram> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Ram? GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Update(int id, Ram cpu)
-        {
-            throw new NotImplementedException();
+            return await _context.Rams.FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }
