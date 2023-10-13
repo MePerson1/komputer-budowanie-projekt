@@ -81,9 +81,6 @@ namespace KomputerBudowanieAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-
-
-
             return Created("", "");
         }
 
