@@ -10,10 +10,10 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/[controller]")]
     public class FanController : Controller
     {
-        public readonly IFanRepository _fanRepository;
+        public readonly IGenericRepository<Fan> _fanRepository;
         public readonly IMapper _mapper;
 
-        public FanController(IFanRepository fanRepository, IMapper mapper)
+        public FanController(IGenericRepository<Fan> fanRepository, IMapper mapper)
         {
             _fanRepository = fanRepository;
             _mapper = mapper;
@@ -33,7 +33,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetFanById(int id)
         {
-            var fan = await _fanRepository.GetById(id);
+            var fan = await _fanRepository.GetByIdAsync(id);
             if (fan is null)
                 return NotFound();
             return Ok(_mapper.Map<FanDto>(fan));
@@ -66,7 +66,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteFan(int id)
         {
-            var fan = await _fanRepository.GetById(id);
+            var fan = await _fanRepository.GetByIdAsync(id);
             if (fan is null)
                 return NotFound();
             try

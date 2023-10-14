@@ -10,10 +10,10 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/[controller]")]
     public class CpuCollingController : Controller
     {
-        public readonly ICpuCoolingRepository _cpuCoolingRepository;
+        public readonly IGenericRepository<CpuCooling> _cpuCoolingRepository;
         public readonly IMapper _mapper;
 
-        public CpuCollingController(ICpuCoolingRepository cpuCoolingRepository, IMapper mapper)
+        public CpuCollingController(IGenericRepository<CpuCooling> cpuCoolingRepository, IMapper mapper)
         {
             _cpuCoolingRepository = cpuCoolingRepository;
             _mapper = mapper;
@@ -33,7 +33,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetCpuCoolingById(int id)
         {
-            var cpuCooling = await _cpuCoolingRepository.GetById(id);
+            var cpuCooling = await _cpuCoolingRepository.GetByIdAsync(id);
             if (cpuCooling is null)
             {
                 return NotFound();
@@ -60,7 +60,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteCpuCooling(int id)
         {
-            var cpuCooling = await _cpuCoolingRepository.GetById(id);
+            var cpuCooling = await _cpuCoolingRepository.GetByIdAsync(id);
             if (cpuCooling is null)
             {
                 return NotFound();

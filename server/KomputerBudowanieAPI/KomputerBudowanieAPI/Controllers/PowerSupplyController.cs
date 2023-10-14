@@ -10,10 +10,10 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/[controller]")]
     public class PowerSupplyController : Controller
     {
-        public readonly IPowerSupplyRepository _powerSupplyRepository;
+        public readonly IGenericRepository<PowerSupply> _powerSupplyRepository;
         public readonly IMapper _mapper;
 
-        public PowerSupplyController(IPowerSupplyRepository powerSupplyRepository, IMapper mapper)
+        public PowerSupplyController(IGenericRepository<PowerSupply> powerSupplyRepository, IMapper mapper)
         {
             _powerSupplyRepository = powerSupplyRepository;
             _mapper = mapper;
@@ -32,7 +32,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetPowerSupplyById(int id)
         {
-            var powerSupply = await _powerSupplyRepository.GetById(id);
+            var powerSupply = await _powerSupplyRepository.GetByIdAsync(id);
             if (powerSupply is null)
                 return NotFound();
             return Ok(_mapper.Map<PowerSupplyDto>(powerSupply));
@@ -65,7 +65,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeletePowerSupply(int id)
         {
-            var powerSupply = await _powerSupplyRepository.GetById(id);
+            var powerSupply = await _powerSupplyRepository.GetByIdAsync(id);
             if (powerSupply is null)
                 return NotFound();
             try

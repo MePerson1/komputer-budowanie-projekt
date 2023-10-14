@@ -14,16 +14,18 @@ builder.Services.AddControllers();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddScoped<ICaseRepository, CaseRepository>();
-builder.Services.AddScoped<ICpuCoolingRepository, CpuCoolingRepository>();
-builder.Services.AddScoped<ICpuRepository, CpuRepository>();
-builder.Services.AddScoped<IFanRepository, FanRepository>();
-builder.Services.AddScoped<IGraphicCardRepository, GraphicCardRepository>();
-builder.Services.AddScoped<IMemoryRepository, MemoryRepository>();
-builder.Services.AddScoped<IMotherboardRepository, MotherboardRepository>();
-builder.Services.AddScoped<IPowerSupplyRepository, PowerSupplyRepository>();
-builder.Services.AddScoped<IRamRepository, RamRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+//builder.Services.AddScoped<ICaseRepository, CaseRepository>();
+//builder.Services.AddScoped<ICpuCoolingRepository, CpuCoolingRepository>();
+//builder.Services.AddScoped<ICpuRepository, CpuRepository>();
+//builder.Services.AddScoped<IFanRepository, FanRepository>();
+//builder.Services.AddScoped<IGraphicCardRepository, GraphicCardRepository>();
+//builder.Services.AddScoped<IMemoryRepository, MemoryRepository>();
+//builder.Services.AddScoped<IMotherboardRepository, MotherboardRepository>();
+//builder.Services.AddScoped<IPowerSupplyRepository, PowerSupplyRepository>();
+//builder.Services.AddScoped<IRamRepository, RamRepository>();
+//builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
