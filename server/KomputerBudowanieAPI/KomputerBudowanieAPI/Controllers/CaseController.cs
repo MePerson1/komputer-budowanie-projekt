@@ -10,10 +10,10 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/[controller]")]
     public class CaseController : Controller
     {
-        public readonly ICaseRepository _caseRepository;
+        public readonly IGenericRepository<Case> _caseRepository;
         public readonly IMapper _mapper;
 
-        public CaseController(ICaseRepository caseRepository, IMapper mapper)
+        public CaseController(IGenericRepository<Case> caseRepository, IMapper mapper)
         {
             _caseRepository = caseRepository;
             _mapper = mapper;
@@ -33,7 +33,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetCaseById(int id)
         {
-            var pcCase = await _caseRepository.GetById(id);
+            var pcCase = await _caseRepository.GetByIdAsync(id);
             if (pcCase is null)
             {
                 return NotFound();
@@ -60,7 +60,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteCase(int id)
         {
-            var pcCase = await _caseRepository.GetById(id);
+            var pcCase = await _caseRepository.GetByIdAsync(id);
             if (pcCase is null)
             {
                 return NotFound();

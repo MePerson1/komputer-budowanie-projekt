@@ -10,10 +10,10 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/[controller]")]
     public class MemoryController : Controller
     {
-        public readonly IMemoryRepository _memoryRepository;
+        public readonly IGenericRepository<Memory> _memoryRepository;
         public readonly IMapper _mapper;
 
-        public MemoryController(IMemoryRepository memoryRepository, IMapper mapper)
+        public MemoryController(IGenericRepository<Memory> memoryRepository, IMapper mapper)
         {
             _memoryRepository = memoryRepository;
             _mapper = mapper;
@@ -32,7 +32,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetMemoryById(int id)
         {
-            var memory = await _memoryRepository.GetById(id);
+            var memory = await _memoryRepository.GetByIdAsync(id);
             if (memory is null)
                 return NotFound();
             return Ok(_mapper.Map<MemoryDto>(memory));
@@ -65,7 +65,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteMemory(int id)
         {
-            var memory = await _memoryRepository.GetById(id);
+            var memory = await _memoryRepository.GetByIdAsync(id);
             if (memory is null)
                 return NotFound();
             try

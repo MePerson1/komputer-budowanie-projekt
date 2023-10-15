@@ -10,10 +10,10 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/[controller]")]
     public class MotherboardController : Controller
     {
-        public readonly IMotherboardRepository _motherboardRepository;
+        public readonly IGenericRepository<Motherboard> _motherboardRepository;
         public readonly IMapper _mapper;
 
-        public MotherboardController(IMotherboardRepository motherboardRepository, IMapper mapper)
+        public MotherboardController(IGenericRepository<Motherboard> motherboardRepository, IMapper mapper)
         {
             _motherboardRepository = motherboardRepository;
             _mapper = mapper;
@@ -32,7 +32,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetMotherboardById(int id)
         {
-            var motherboard = await _motherboardRepository.GetById(id);
+            var motherboard = await _motherboardRepository.GetByIdAsync(id);
             if (motherboard is null)
                 return NotFound();
             return Ok(_mapper.Map<MotherboardDto>(motherboard));
@@ -65,7 +65,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteMotherboard(int id)
         {
-            var motherboard = await _motherboardRepository.GetById(id);
+            var motherboard = await _motherboardRepository.GetByIdAsync(id);
             if (motherboard is null)
                 return NotFound();
             try

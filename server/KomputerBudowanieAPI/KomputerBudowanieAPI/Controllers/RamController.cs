@@ -10,10 +10,10 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/[controller]")]
     public class RamController : Controller
     {
-        public readonly IRamRepository _ramRepository;
+        public readonly IGenericRepository<Ram> _ramRepository;
         public readonly IMapper _mapper;
 
-        public RamController(IRamRepository ramRepository, IMapper mapper)
+        public RamController(IGenericRepository<Ram> ramRepository, IMapper mapper)
         {
             _ramRepository = ramRepository;
             _mapper = mapper;
@@ -32,7 +32,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetRamById(int id)
         {
-            var ram = await _ramRepository.GetById(id);
+            var ram = await _ramRepository.GetByIdAsync(id);
             if (ram is null)
                 return NotFound();
             return Ok(_mapper.Map<RamDto>(ram));
@@ -65,7 +65,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteRam(int id)
         {
-            var ram = await _ramRepository.GetById(id);
+            var ram = await _ramRepository.GetByIdAsync(id);
             if (ram is null)
                 return NotFound();
             try

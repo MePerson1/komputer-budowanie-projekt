@@ -10,10 +10,10 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/[controller]")]
     public class GraphicCardController : Controller
     {
-        public readonly IGraphicCardRepository _graphicCardRepository;
+        public readonly IGenericRepository<GraphicCard> _graphicCardRepository;
         public readonly IMapper _mapper;
 
-        public GraphicCardController(IGraphicCardRepository graphicCardRepository, IMapper mapper)
+        public GraphicCardController(IGenericRepository<GraphicCard> graphicCardRepository, IMapper mapper)
         {
             _graphicCardRepository = graphicCardRepository;
             _mapper = mapper;
@@ -32,7 +32,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetGraphicCardById(int id)
         {
-            var graphicCard = await _graphicCardRepository.GetById(id);
+            var graphicCard = await _graphicCardRepository.GetByIdAsync(id);
             if (graphicCard is null)
                 return NotFound();
             return Ok(_mapper.Map<GraphicCardDto>(graphicCard));
@@ -65,7 +65,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteGraphicCard(int id)
         {
-            var graphicCard = await _graphicCardRepository.GetById(id);
+            var graphicCard = await _graphicCardRepository.GetByIdAsync(id);
             if (graphicCard is null)
                 return NotFound();
             try
