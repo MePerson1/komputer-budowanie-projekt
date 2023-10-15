@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Interfaces;
+using KomputerBudowanieAPI.Migrations;
 using KomputerBudowanieAPI.Models;
 using KomputerBudowanieAPI.Repository;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +15,12 @@ namespace KomputerBudowanieAPI.Controllers
     public class ConfigurationController : ControllerBase
     {
         public readonly IPcConfigurationRepository _pcConfigurationRepository;
+        public readonly IUserRepository _userRepository;
 
-        public ConfigurationController(IPcConfigurationRepository pcConfigurationRepository)
+        public ConfigurationController(IPcConfigurationRepository pcConfigurationRepository, IUserRepository userRepository)
         {
             _pcConfigurationRepository = pcConfigurationRepository;
-            
+            _userRepository = userRepository;
         }
 
         // GET: api/<ConfigurationController>
@@ -26,7 +28,7 @@ namespace KomputerBudowanieAPI.Controllers
         public async Task<IActionResult> Get()
         {
             var configs = await _pcConfigurationRepository.GetAllAsync();
-            if (configs is null)
+            if (configs is null || !configs.Any())
             {
                 return NotFound();
             }
@@ -39,7 +41,7 @@ namespace KomputerBudowanieAPI.Controllers
         public async Task<IActionResult> Get(int userId)
         {
             var configs = await _pcConfigurationRepository.GetAllAsync(userId);
-            if (configs is null)
+            if (configs is null || !configs.Any())
             {
                 return NotFound();
             }
@@ -61,18 +63,26 @@ namespace KomputerBudowanieAPI.Controllers
 
         // POST api/<ConfigurationController>
         [HttpPost]
-        public IActionResult Post([FromBody] PcConfigurationDto newConfigurationDetails)
+        public async Task<IActionResult> Post([FromBody] PcConfigurationDto newConfigurationDetails)
         {
             if(newConfigurationDetails == null)
             {
                 return BadRequest();
             }
-            if(!ModelState.IsValid) 
-            {
-                return BadRequest(ModelState);
-            }
+            //if(!ModelState.IsValid) 
+            //{
+            //    return BadRequest(ModelState);
+            //}
 
-            return Created("", "");
+            PcConfiguration newPcConfiguration = new PcConfiguration();
+            newPcConfiguration.Id = Guid.NewGuid();
+            //newPcConfiguration.User = _userRepository.GetById(newConfigurationDetails.UserId);
+            newPcConfiguration.Name = newConfigurationDetails.Name;
+            newPcConfiguration.Description = newConfigurationDetails.Description;
+            
+            await _pcConfigurationRepository.Create(newPcConfiguration);
+
+            return Created(newPcConfiguration.Id.ToString(), newPcConfiguration);
         }
 
         // PUT api/<ConfigurationController>/5
