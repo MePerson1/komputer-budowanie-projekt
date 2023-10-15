@@ -10,7 +10,7 @@ namespace KomputerBudowanieAPI.Database
         public DbSet<User> Users { get; set; }
         public DbSet<PcConfiguration> PcConfigurations { get; set; }
         public DbSet<GraphicCard> GraphicCards { get; set; }
-        public DbSet<Cpu> Cpus { get; set; }
+        public DbSet<CPU> Cpus { get; set; }
         public DbSet<CpuCooling> CpuCoolings { get; set; }
         public DbSet<Fan> Fans { get; set; }
         public DbSet<Memory> Memories { get; set; }

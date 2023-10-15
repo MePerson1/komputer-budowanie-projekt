@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KomputerBudowanieAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class ConfigurationController : ControllerBase
     {
         public readonly IPcConfigurationRepository _pcConfigurationRepository;
@@ -25,7 +25,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var configs = await _pcConfigurationRepository.GetAll();
+            var configs = await _pcConfigurationRepository.GetAllAsync();
             if (configs is null)
             {
                 return NotFound();
@@ -38,7 +38,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> Get(int userId)
         {
-            var configs = await _pcConfigurationRepository.GetAll(userId);
+            var configs = await _pcConfigurationRepository.GetAllAsync(userId);
             if (configs is null)
             {
                 return NotFound();
@@ -47,26 +47,17 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         // GET api/<ConfigurationController>/5
-        //[Route("api/users/{userId}/configurations/{configurationId}")]
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(Guid id)
+        [Route("api/users/{userId}/configurations/{configurationId}")]
+        [HttpGet]
+        public async Task<IActionResult> Get(int userId, Guid configurationId)
         {
-            var config = await _pcConfigurationRepository.GetById(id);
+            var config = await _pcConfigurationRepository.GetByIdAsync(configurationId);
             if (config is null)
             {
                 return NotFound();
             }
             return Ok(config);
         }
-
-        // GET api/users/5/configurations/786
-        /*[Route("api/users/{userId}/configurations/{configurationId}")]
-        [HttpGet]
-        public IActionResult Get(int userId, Guid configurationId)
-        {
-
-            return Ok($"Get request for user with ID: {userId}");
-        }*/
 
         // POST api/<ConfigurationController>
         [HttpPost]
@@ -86,14 +77,14 @@ namespace KomputerBudowanieAPI.Controllers
 
         // PUT api/<ConfigurationController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] PcConfigurationDto editingConfigurationDetails)
+        public void Put(Guid id, [FromBody] PcConfigurationDto editingConfigurationDetails)
         {
 
         }
 
         // DELETE api/<ConfigurationController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(Guid id)
         {
 
         }
