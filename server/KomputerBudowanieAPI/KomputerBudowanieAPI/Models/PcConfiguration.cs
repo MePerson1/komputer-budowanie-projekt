@@ -14,16 +14,18 @@ namespace KomputerBudowanieAPI.Models
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public Motherboard Motherboard { get; set; }
-        public GraphicCard GraphicCard { get; set; }
-        public Cpu Cpu { get; set; }
-        public CpuCooling CPU_Cooling { get; set; }
+        public Motherboard? Motherboard { get; set; }
+        public GraphicCard? GraphicCard { get; set; }
+        public Cpu? Cpu { get; set; }
+        public CpuCooling? CPU_Cooling { get; set; }
+
+        public Case? Case { get; set; }
+        public Fan? Fan { get; set; } // tutaj tez many to many raczej
+        public PowerSupply? PowerSupply { get; set; }
+
+        public User? User { get; set; }
+
         public ICollection<PcConfigurationMemory> PcConfigurationMemories { get; set; }
         public ICollection<PcConfigurationRam> PcConfigurationRams { get; set; }
-        public Case Case { get; set; }
-        public Fan Fan { get; set; } // tutaj tez many to many raczej
-        public PowerSupply PowerSupply { get; set; }
-
-        public User User { get; set; }
     }
 }
