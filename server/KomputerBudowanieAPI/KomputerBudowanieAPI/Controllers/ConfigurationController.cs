@@ -17,10 +17,29 @@ namespace KomputerBudowanieAPI.Controllers
         public readonly IPcConfigurationRepository _pcConfigurationRepository;
         public readonly IUserRepository _userRepository;
 
-        public ConfigurationController(IPcConfigurationRepository pcConfigurationRepository, IUserRepository userRepository)
+        public readonly IGenericRepository<Case> _caseRepository;
+        public readonly IGenericRepository<CpuCooling> _cpuCoolingRepository;
+        public readonly IGenericRepository<Cpu> _cpuRepository;
+        public readonly IGenericRepository<Fan> _fanRepository;
+        public readonly IGenericRepository<GraphicCard> _graphicCardRepository;
+        public readonly IGenericRepository<Memory> _memoryRepository;
+        public readonly IGenericRepository<Motherboard> _motherboardRepository;
+        public readonly IGenericRepository<PowerSupply> _powerSupplyRepository;
+        public readonly IGenericRepository<Ram> _ramRepository;
+
+        public ConfigurationController(IPcConfigurationRepository pcConfigurationRepository, IUserRepository userRepository, IGenericRepository<Case> caseRepository, IGenericRepository<CpuCooling> cpuCoolingRepository, IGenericRepository<Cpu> cpuRepository, IGenericRepository<Fan> fanRepository, IGenericRepository<GraphicCard> graphicCardRepository, IGenericRepository<Memory> memoryRepository, IGenericRepository<Motherboard> motherboardRepository, IGenericRepository<PowerSupply> powerSupplyRepository, IGenericRepository<Ram> ramRepository)
         {
             _pcConfigurationRepository = pcConfigurationRepository;
             _userRepository = userRepository;
+            _caseRepository = caseRepository;
+            _cpuCoolingRepository = cpuCoolingRepository;
+            _cpuRepository = cpuRepository;
+            _fanRepository = fanRepository;
+            _graphicCardRepository = graphicCardRepository;
+            _memoryRepository = memoryRepository;
+            _motherboardRepository = motherboardRepository;
+            _powerSupplyRepository = powerSupplyRepository;
+            _ramRepository = ramRepository;
         }
 
         // GET: api/<ConfigurationController>
@@ -63,22 +82,27 @@ namespace KomputerBudowanieAPI.Controllers
 
         // POST api/<ConfigurationController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] PcConfigurationDto newConfigurationDetails)
+        public async Task<IActionResult> Post([FromBody] PcConfigurationCreateDTO newConfigurationDetails)
         {
             if(newConfigurationDetails == null)
             {
                 return BadRequest();
             }
-            //if(!ModelState.IsValid) 
-            //{
-            //    return BadRequest(ModelState);
-            //}
+            if(!ModelState.IsValid) 
+            {
+                return BadRequest(ModelState);
+            }
 
             PcConfiguration newPcConfiguration = new PcConfiguration();
-            newPcConfiguration.Id = Guid.NewGuid();
+            //newPcConfiguration.Id = Guid.NewGuid();
             //newPcConfiguration.User = _userRepository.GetById(newConfigurationDetails.UserId);
             newPcConfiguration.Name = newConfigurationDetails.Name;
-            newPcConfiguration.Description = newConfigurationDetails.Description;
+            newPcConfiguration.Description = newConfigurationDetails.Description ?? "";
+            newPcConfiguration.Motherboard = await _motherboardRepository.GetByIdAsync(newConfigurationDetails.MotherboadId);
+            newPcConfiguration.GraphicCard = await _graphicCardRepository.GetByIdAsync(newConfigurationDetails.GraphicCardId);
+            newPcConfiguration.Cpu = await _cpuRepository.GetByIdAsync(newConfigurationDetails.CpuId);
+            newPcConfiguration.CPU_Cooling = await _cpuCoolingRepository.GetByIdAsync(newConfigurationDetails.CpuCoolingId);
+            
             
             await _pcConfigurationRepository.Create(newPcConfiguration);
 

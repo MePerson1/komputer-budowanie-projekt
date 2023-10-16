@@ -18,9 +18,5 @@ namespace KomputerBudowanieAPI.Dto
 
         //[Required]
         public int UserId { get; set; }
-
-        public ICollection<PcConfigurationMemory>? PcConfigurationMemories { get; set; }
-        public ICollection<PcConfigurationRam>? PcConfigurationRams { get; set; }
-
     }
 }
