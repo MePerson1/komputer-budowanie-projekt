@@ -3,7 +3,6 @@ using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -95,35 +94,39 @@ namespace KomputerBudowanieAPI.Controllers
             //newPcConfiguration.Description = newConfigurationDetails.Description;
 
 
-
+            await _pcConfigurationRepository.Create(newPcConfiguration);
+            _dbContext.SaveChanges();
             newConfigurationDetails.RamIds.ForEach(ramId =>
             {
-                if (_dbContext.Rams.FirstOrDefaultAsync(x => x.Id == ramId) != null)
+                if (_dbContext.Rams.FirstOrDefault(x => x.Id == ramId) != null)
                 {
                     newPcConfiguration.PcConfigurationRams.Add(new PcConfigurationRam()
                     {
-                        PcConfiguration = newPcConfiguration,
-                        RamId = ramId
+                        RamId = ramId,
+                        PcConfigurationId = newPcConfiguration.Id,
+                        Ram = _dbContext.Rams.FirstOrDefault(x => x.Id == ramId)
                     });
                 }
             });
             newConfigurationDetails.MemoryIds.ForEach(memoryId =>
             {
-                if (_dbContext.Memories.FirstOrDefaultAsync(x => x.Id == memoryId) != null)
+                if (_dbContext.Memories.FirstOrDefault(x => x.Id == memoryId) != null)
                 {
                     newPcConfiguration.PcConfigurationMemories.Add(new PcConfigurationMemory()
                     {
                         PcConfiguration = newPcConfiguration,
-                        MemoryId = memoryId
+                        MemoryId = memoryId,
+                        PcConfigurationId = newPcConfiguration.Id,
+                        Memory = _dbContext.Memories.FirstOrDefault(x => x.Id == memoryId)
                     });
                 }
 
             });
 
 
+
+
             _dbContext.SaveChanges();
-            await _pcConfigurationRepository.Create(newPcConfiguration);
-            _dbContext.SaveChangesAsync();
             return Created(newPcConfiguration.Id.ToString(), newPcConfiguration);
         }
 
