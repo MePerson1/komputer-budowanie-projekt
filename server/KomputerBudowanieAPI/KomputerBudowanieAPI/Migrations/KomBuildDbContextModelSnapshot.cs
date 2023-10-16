@@ -539,36 +539,36 @@ namespace KomputerBudowanieAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int?>("CPU_CoolingId")
+                    b.Property<int>("CPU_CoolingId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("CaseId")
+                    b.Property<int>("CaseId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("CpuId")
+                    b.Property<int>("CpuId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("FanId")
+                    b.Property<int>("FanId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("GraphicCardId")
+                    b.Property<int>("GraphicCardId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("MotherboardId")
+                    b.Property<int>("MotherboardId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("PowerSupplyId")
+                    b.Property<int>("PowerSupplyId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -597,10 +597,7 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Property<Guid>("PcConfigurationId")
                         .HasColumnType("uuid");
 
-                    b.Property<int?>("MemoryId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Id")
+                    b.Property<int>("MemoryId")
                         .HasColumnType("integer");
 
                     b.HasKey("PcConfigurationId", "MemoryId");
@@ -612,13 +609,10 @@ namespace KomputerBudowanieAPI.Migrations
 
             modelBuilder.Entity("KomputerBudowanieAPI.Models.PcConfigurationRam", b =>
                 {
-                    b.Property<Guid?>("PcConfigurationId")
+                    b.Property<Guid>("PcConfigurationId")
                         .HasColumnType("uuid");
 
-                    b.Property<int?>("RamId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Id")
+                    b.Property<int>("RamId")
                         .HasColumnType("integer");
 
                     b.HasKey("PcConfigurationId", "RamId");
@@ -781,35 +775,51 @@ namespace KomputerBudowanieAPI.Migrations
                 {
                     b.HasOne("KomputerBudowanieAPI.Models.CpuCooling", "CPU_Cooling")
                         .WithMany("Configurations")
-                        .HasForeignKey("CPU_CoolingId");
+                        .HasForeignKey("CPU_CoolingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("KomputerBudowanieAPI.Models.Case", "Case")
                         .WithMany("Configurations")
-                        .HasForeignKey("CaseId");
+                        .HasForeignKey("CaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("KomputerBudowanieAPI.Models.Cpu", "Cpu")
                         .WithMany("Configurations")
-                        .HasForeignKey("CpuId");
+                        .HasForeignKey("CpuId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("KomputerBudowanieAPI.Models.Fan", "Fan")
                         .WithMany("Configurations")
-                        .HasForeignKey("FanId");
+                        .HasForeignKey("FanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("KomputerBudowanieAPI.Models.GraphicCard", "GraphicCard")
                         .WithMany("Configurations")
-                        .HasForeignKey("GraphicCardId");
+                        .HasForeignKey("GraphicCardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("KomputerBudowanieAPI.Models.Motherboard", "Motherboard")
                         .WithMany("Configurations")
-                        .HasForeignKey("MotherboardId");
+                        .HasForeignKey("MotherboardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("KomputerBudowanieAPI.Models.PowerSupply", "PowerSupply")
                         .WithMany("Configurations")
-                        .HasForeignKey("PowerSupplyId");
+                        .HasForeignKey("PowerSupplyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("KomputerBudowanieAPI.Models.User", "User")
                         .WithMany("Configurations")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("CPU_Cooling");
 

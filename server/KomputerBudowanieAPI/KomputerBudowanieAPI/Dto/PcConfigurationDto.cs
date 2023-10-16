@@ -1,4 +1,7 @@
-﻿namespace KomputerBudowanieAPI.Dto
+﻿using KomputerBudowanieAPI.Models;
+using System.ComponentModel.DataAnnotations;
+
+namespace KomputerBudowanieAPI.Dto
 {
     public class PcConfigurationDto
     {
@@ -6,20 +9,18 @@
         //[Required]
         public string Name { get; set; }
         public string? Description { get; set; }
-        public int? MotherboadId { get; set; }
-        public int? GraphicCardId { get; set; }
-        public int? CpuId { get; set; }
-        public int? CpuCoolingId { get; set; }
-        public int? CaseId { get; set; }
-        public int? PowerSupllyId { get; set; }
-
-        public int? FanId { get; set; }
-
-        public List<int> MemoryIds { get; set; }
-        public List<int> RamIds { get; set; }
+        public string? MotherboadId { get; set; }
+        public string? GraphicCardId { get; set; }
+        public string? CpuId { get; set; }
+        public string? CpuCoolingId { get; set; }
+        public string? CaseId { get; set; }
+        public string? PowerSuplyId { get; set; }
 
         //[Required]
         public int UserId { get; set; }
+
+        public ICollection<PcConfigurationMemory>? PcConfigurationMemories { get; set; }
+        public ICollection<PcConfigurationRam>? PcConfigurationRams { get; set; }
 
     }
 }

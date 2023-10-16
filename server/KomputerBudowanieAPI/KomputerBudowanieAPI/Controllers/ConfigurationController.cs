@@ -1,9 +1,10 @@
-﻿using KomputerBudowanieAPI.Database;
+﻿using AutoMapper;
 using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Interfaces;
+using KomputerBudowanieAPI.Migrations;
 using KomputerBudowanieAPI.Models;
+using KomputerBudowanieAPI.Repository;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,13 +16,11 @@ namespace KomputerBudowanieAPI.Controllers
     {
         public readonly IPcConfigurationRepository _pcConfigurationRepository;
         public readonly IUserRepository _userRepository;
-        public readonly KomBuildDbContext _dbContext;
 
-        public ConfigurationController(KomBuildDbContext dbContext, IPcConfigurationRepository pcConfigurationRepository, IUserRepository userRepository)
+        public ConfigurationController(IPcConfigurationRepository pcConfigurationRepository, IUserRepository userRepository)
         {
             _pcConfigurationRepository = pcConfigurationRepository;
             _userRepository = userRepository;
-            _dbContext = dbContext;
         }
 
         // GET: api/<ConfigurationController>
@@ -66,7 +65,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] PcConfigurationDto newConfigurationDetails)
         {
-            if (newConfigurationDetails == null)
+            if(newConfigurationDetails == null)
             {
                 return BadRequest();
             }
@@ -75,55 +74,14 @@ namespace KomputerBudowanieAPI.Controllers
             //    return BadRequest(ModelState);
             //}
 
-
-            PcConfiguration newPcConfiguration = new PcConfiguration
-            {
-                Name = newConfigurationDetails.Name,
-                Description = newConfigurationDetails.Description,
-                Case = _dbContext.Cases.FirstOrDefault(x => x.Id == newConfigurationDetails.CaseId),
-                Motherboard = _dbContext.Motherboards.FirstOrDefault(x => x.Id == newConfigurationDetails.MotherboadId),
-                GraphicCard = _dbContext.GraphicCards.FirstOrDefault(x => x.Id == newConfigurationDetails.GraphicCardId),
-                Cpu = _dbContext.Cpus.FirstOrDefault(x => x.Id == newConfigurationDetails.CpuId),
-                CPU_Cooling = _dbContext.CpuCoolings.FirstOrDefault(x => x.Id == newConfigurationDetails.CpuCoolingId),
-                PowerSupply = _dbContext.PowerSupplys.FirstOrDefault(x => x.Id == newConfigurationDetails.PowerSupllyId),
-                Fan = _dbContext.Fans.FirstOrDefault(x => x.Id == newConfigurationDetails.FanId),
-                User = null
-            };
-            //newPcConfiguration.Id = Guid.NewGuid();
-            ////newPcConfiguration.User = _userRepository.GetById(newConfigurationDetails.UserId);
-            //newPcConfiguration.Name = newConfigurationDetails.Name;
-            //newPcConfiguration.Description = newConfigurationDetails.Description;
-
-
-
-            newConfigurationDetails.RamIds.ForEach(ramId =>
-            {
-                if (_dbContext.Rams.FirstOrDefaultAsync(x => x.Id == ramId) != null)
-                {
-                    newPcConfiguration.PcConfigurationRams.Add(new PcConfigurationRam()
-                    {
-                        PcConfiguration = newPcConfiguration,
-                        RamId = ramId
-                    });
-                }
-            });
-            newConfigurationDetails.MemoryIds.ForEach(memoryId =>
-            {
-                if (_dbContext.Memories.FirstOrDefaultAsync(x => x.Id == memoryId) != null)
-                {
-                    newPcConfiguration.PcConfigurationMemories.Add(new PcConfigurationMemory()
-                    {
-                        PcConfiguration = newPcConfiguration,
-                        MemoryId = memoryId
-                    });
-                }
-
-            });
-
-
-            _dbContext.SaveChanges();
+            PcConfiguration newPcConfiguration = new PcConfiguration();
+            newPcConfiguration.Id = Guid.NewGuid();
+            //newPcConfiguration.User = _userRepository.GetById(newConfigurationDetails.UserId);
+            newPcConfiguration.Name = newConfigurationDetails.Name;
+            newPcConfiguration.Description = newConfigurationDetails.Description;
+            
             await _pcConfigurationRepository.Create(newPcConfiguration);
-            _dbContext.SaveChangesAsync();
+
             return Created(newPcConfiguration.Id.ToString(), newPcConfiguration);
         }
 
@@ -141,6 +99,6 @@ namespace KomputerBudowanieAPI.Controllers
 
         }
 
-
+        
     }
 }
