@@ -22,6 +22,6 @@ namespace KomputerBudowanieAPI.Models
         *  RELACJE
         */
 
-        public ICollection<PcConfigurationRam> PcConfigurationRams { get; set; }
+        public ICollection<PcConfiguration> PcConfigurations { get; set; }
     }
 }

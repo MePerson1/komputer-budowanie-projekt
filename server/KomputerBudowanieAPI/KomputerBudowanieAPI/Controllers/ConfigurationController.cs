@@ -1,9 +1,5 @@
-﻿using AutoMapper;
-using KomputerBudowanieAPI.Dto;
+﻿using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Interfaces;
-using KomputerBudowanieAPI.Migrations;
-using KomputerBudowanieAPI.Models;
-using KomputerBudowanieAPI.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -65,7 +61,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] PcConfigurationDto newConfigurationDetails)
         {
-            if(newConfigurationDetails == null)
+            if (newConfigurationDetails == null)
             {
                 return BadRequest();
             }
@@ -74,15 +70,15 @@ namespace KomputerBudowanieAPI.Controllers
             //    return BadRequest(ModelState);
             //}
 
-            PcConfiguration newPcConfiguration = new PcConfiguration();
-            newPcConfiguration.Id = Guid.NewGuid();
-            //newPcConfiguration.User = _userRepository.GetById(newConfigurationDetails.UserId);
-            newPcConfiguration.Name = newConfigurationDetails.Name;
-            newPcConfiguration.Description = newConfigurationDetails.Description;
-            
-            await _pcConfigurationRepository.Create(newPcConfiguration);
+            //PcConfiguration newPcConfiguration = new PcConfiguration();
+            //newPcConfiguration.Id = Guid.NewGuid();
+            ////newPcConfiguration.User = _userRepository.GetById(newConfigurationDetails.UserId);
+            //newPcConfiguration.Name = newConfigurationDetails.Name;
+            //newPcConfiguration.Description = newConfigurationDetails.Description;
 
-            return Created(newPcConfiguration.Id.ToString(), newPcConfiguration);
+            var done = await _pcConfigurationRepository.Create(newConfigurationDetails);
+
+            return Ok(done);
         }
 
         // PUT api/<ConfigurationController>/5
@@ -99,6 +95,6 @@ namespace KomputerBudowanieAPI.Controllers
 
         }
 
-        
+
     }
 }
