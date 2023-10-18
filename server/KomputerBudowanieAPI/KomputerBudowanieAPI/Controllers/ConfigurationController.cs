@@ -1,9 +1,5 @@
-﻿using AutoMapper;
-using KomputerBudowanieAPI.Dto;
+﻿using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Interfaces;
-using KomputerBudowanieAPI.Migrations;
-using KomputerBudowanieAPI.Models;
-using KomputerBudowanieAPI.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -84,7 +80,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] PcConfigurationCreateDTO newConfigurationDetails)
         {
-            if(newConfigurationDetails == null)
+            if (newConfigurationDetails == null)
             {
                 return BadRequest();
             }
@@ -106,7 +102,7 @@ namespace KomputerBudowanieAPI.Controllers
             
             await _pcConfigurationRepository.Create(newPcConfiguration);
 
-            return Created(newPcConfiguration.Id.ToString(), newPcConfiguration);
+            return Ok(done);
         }
 
         // PUT api/<ConfigurationController>/5
@@ -123,6 +119,6 @@ namespace KomputerBudowanieAPI.Controllers
 
         }
 
-        
+
     }
 }

@@ -23,6 +23,6 @@ namespace KomputerBudowanieAPI.Models
         *  RELACJE
         */
 
-        public ICollection<PcConfigurationMemory> PcConfigurationMemories { get; set; }
+        public ICollection<PcConfiguration> PcConfigurations { get; set; }
     }
 }

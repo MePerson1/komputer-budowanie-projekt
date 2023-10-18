@@ -1,4 +1,5 @@
-﻿using KomputerBudowanieAPI.Models;
+﻿using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Models;
 
 namespace KomputerBudowanieAPI.Interfaces
 {
@@ -11,7 +12,7 @@ namespace KomputerBudowanieAPI.Interfaces
          * Różne typy id sa
          */
         Task<PcConfiguration?> GetByIdAsync(Guid id);
-        Task Create(PcConfiguration entity);
+        Task<bool> Create(PcConfigurationDto newConfigurationDto);
         Task Update(PcConfiguration entity);
         Task Delete(PcConfiguration entity);
         Task SaveChanges();
