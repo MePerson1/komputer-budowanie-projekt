@@ -3,7 +3,6 @@ using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Xml.Linq;
 
 namespace KomputerBudowanieAPI.Repository
 {
@@ -17,17 +16,43 @@ namespace KomputerBudowanieAPI.Repository
 
         public async Task<IEnumerable<PcConfiguration>> GetAllAsync()
         {
-            return await _context.PcConfigurations.ToListAsync();
+            return await _context.PcConfigurations.Include(pc => pc.Motherboard)
+            .Include(pc => pc.GraphicCard)
+            .Include(pc => pc.Cpu)
+            .Include(pc => pc.CPU_Cooling)
+            .Include(pc => pc.Case)
+            .Include(pc => pc.Fan)
+            .Include(pc => pc.PowerSupply)
+            .Include(pc => pc.User)
+            .Include(pc => pc.Memories)
+            .Include(pc => pc.Rams).ToListAsync();
         }
 
         public async Task<IEnumerable<PcConfiguration>> GetAllAsync(int userId)
         {
-            return await _context.Set<PcConfiguration>().Where(config => config.User.Id == userId).ToListAsync();
+            return await _context.Set<PcConfiguration>().Where(config => config.User.Id == userId)
+                .Include(pc => pc.GraphicCard)
+            .Include(pc => pc.Cpu)
+            .Include(pc => pc.CPU_Cooling)
+            .Include(pc => pc.Case)
+            .Include(pc => pc.Fan)
+            .Include(pc => pc.PowerSupply)
+            .Include(pc => pc.User)
+            .Include(pc => pc.Memories)
+            .Include(pc => pc.Rams).ToListAsync();
         }
 
         public async Task<PcConfiguration?> GetByIdAsync(Guid id)
         {
-            return await _context.Set<PcConfiguration>().FindAsync(id);
+            return await _context.Set<PcConfiguration>().Include(pc => pc.GraphicCard)
+            .Include(pc => pc.Cpu)
+            .Include(pc => pc.CPU_Cooling)
+            .Include(pc => pc.Case)
+            .Include(pc => pc.Fan)
+            .Include(pc => pc.PowerSupply)
+            .Include(pc => pc.User)
+            .Include(pc => pc.Memories)
+            .Include(pc => pc.Rams).FirstOrDefaultAsync(pc => pc.Id == id);
         }
 
         public async Task<bool> Create(PcConfigurationDto newConfigurationDto)
@@ -79,9 +104,9 @@ namespace KomputerBudowanieAPI.Repository
                 return true;
 
             }
-            catch (Exception ex) 
-            { 
-                return false; 
+            catch (Exception ex)
+            {
+                return false;
             }
         }
 

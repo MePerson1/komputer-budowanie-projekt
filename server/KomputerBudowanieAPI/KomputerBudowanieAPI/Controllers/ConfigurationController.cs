@@ -1,6 +1,5 @@
 ﻿using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Interfaces;
-using KomputerBudowanieAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -97,9 +96,16 @@ namespace KomputerBudowanieAPI.Controllers
 
         // DELETE api/<ConfigurationController>/5
         [HttpDelete("{id}")]
-        public void Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
+            var pcConf = await _pcConfigurationRepository.GetByIdAsync(id);
+            if (pcConf is null)
+            {
+                return NotFound();
+            }
 
+            await _pcConfigurationRepository.Delete(pcConf);
+            return Accepted();
         }
 
 
