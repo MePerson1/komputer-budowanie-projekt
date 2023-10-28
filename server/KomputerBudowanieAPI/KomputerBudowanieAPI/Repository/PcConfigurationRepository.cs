@@ -3,6 +3,7 @@ using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
 
 namespace KomputerBudowanieAPI.Repository
 {
@@ -14,14 +15,9 @@ namespace KomputerBudowanieAPI.Repository
             this._context = context;
         }
 
-        public async Task<IEnumerable<PcConfigurationDto>> GetAllAsync()
+        public async Task<IEnumerable<PcConfiguration>> GetAllAsync()
         {
-
-            await _context.PcConfigurations.ToListAsync();
-
-
-
-
+            return await _context.PcConfigurations.ToListAsync();
         }
 
         public async Task<IEnumerable<PcConfiguration>> GetAllAsync(int userId)
@@ -38,7 +34,8 @@ namespace KomputerBudowanieAPI.Repository
         {
             try
             {
-                var pcCase = _context.Cases.FirstOrDefault(x => x.Id == newConfigurationDto.CaseId);
+                //var pcCase = _context.Cases.FirstOrDefault(x => x.Id == newConfigurationDto.CaseId);
+                var pcCase = await _context.Set<Case>().FindAsync(newConfigurationDto.CaseId);
                 var cpu = _context.Cpus.FirstOrDefault(x => x.Id == newConfigurationDto.CpuId);
                 var cpuCooling = _context.CpuCoolings.FirstOrDefault(x => x.Id == newConfigurationDto.CpuCoolingId);
                 var fan = _context.Fans.FirstOrDefault(x => x.Id == newConfigurationDto.FanId);
@@ -46,10 +43,23 @@ namespace KomputerBudowanieAPI.Repository
                 var graphicCard = _context.GraphicCards.FirstOrDefault(x => x.Id == newConfigurationDto.GraphicCardId);
                 var powerSupply = _context.PowerSupplys.FirstOrDefault(x => x.Id == newConfigurationDto.PowerSuplyId);
 
-                var memories = _context.Memories.Where(x => newConfigurationDto.MemoryIds.Contains(x.Id)).ToList();
-                var rams = _context.Rams.Where(x => newConfigurationDto.RamsIds.Contains(x.Id)).ToList();
+                //var memories = _context.Memories.Where(x => newConfigurationDto.MemoryIds.Contains(x.Id)).ToList();
+                //var rams = _context.Rams.Where(x => newConfigurationDto.RamsIds.Contains(x.Id)).ToList();
+                var memories = new List<Memory>();
+                if (newConfigurationDto.MemoryIds != null && newConfigurationDto.MemoryIds.Any())
+                {
+                    memories = _context.Memories.Where(x => newConfigurationDto.MemoryIds.Contains(x.Id)).ToList();
+                }
+
+                var rams = new List<Ram>();
+                if (newConfigurationDto.RamsIds != null && newConfigurationDto.RamsIds.Any())
+                {
+                    rams = _context.Rams.Where(x => newConfigurationDto.RamsIds.Contains(x.Id)).ToList();
+                }
+
                 PcConfiguration pcConfiguration = new PcConfiguration()
                 {
+                    //Id = newConfigurationDto.Id,
                     Name = newConfigurationDto.Name,
                     Description = newConfigurationDto.Description,
                     Case = pcCase,
@@ -63,22 +73,22 @@ namespace KomputerBudowanieAPI.Repository
                     Rams = rams
                 };
 
-
                 await _context.AddAsync(pcConfiguration);
                 //await _context.AddAsync();
                 await SaveChanges();
                 return true;
 
             }
-            catch (Exception ex) { return false; }
-
-
-
+            catch (Exception ex) 
+            { 
+                return false; 
+            }
         }
 
         public async Task Delete(PcConfiguration entity)
         {
-            throw new NotImplementedException();
+            _context.Remove(entity);
+            await SaveChanges();
         }
 
         public async Task SaveChanges()
