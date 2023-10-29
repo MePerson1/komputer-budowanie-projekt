@@ -9,6 +9,7 @@ namespace KomputerBudowanieAPI.Controllers
     public class AdminController : Controller
     {
         readonly KomBuildDbContext _context;
+
         private readonly string[] tables = { "Cases", "CpuCoolings", "Fans", "Cpus", "GraphicCards", "Memories", "Motherboards", "Rams", "PowerSupplys" };
 
         public AdminController(KomBuildDbContext context)
@@ -16,77 +17,77 @@ namespace KomputerBudowanieAPI.Controllers
             this._context = context;
         }
 
-        [HttpDelete]
+        [HttpDelete("DeleteAll")]
         public IActionResult DeleteAll()
         {
             foreach (var table in tables)
             {
-                var sql = "TRUNCATE TABLE " + table;
+                var sql = $"TRUNCATE TABLE {table}";
                 _context.Database.ExecuteSqlRaw(sql);
             }
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpDelete("DeleteAllCases")]
         public IActionResult DeleteAllCases()
         {
-            _context.Database.ExecuteSqlRaw("TRUNCATE TABLE " + tables[0]);
+            _context.Database.ExecuteSqlRaw($"TRUNCATE TABLE {tables[0]}");
             return Ok();
         }
-        
-        [HttpDelete]
+
+        [HttpDelete("DeleteAllCpuCoolings")]
         public IActionResult DeleteAllCpuCoolings()
         {
-            _context.Database.ExecuteSqlRaw("TRUNCATE TABLE " + tables[1]);
+            _context.Database.ExecuteSqlRaw($"TRUNCATE TABLE {tables[1]}");
             return Ok();
         }
         
-        [HttpDelete]
+        [HttpDelete("DeleteAllFans")]
         public IActionResult DeleteAllFans()
         {
-            _context.Database.ExecuteSqlRaw("TRUNCATE TABLE " + tables[2]);
+            _context.Database.ExecuteSqlRaw($"TRUNCATE TABLE {tables[2]}");
             return Ok();
         }
         
-        [HttpDelete]
+        [HttpDelete("DeleteAllCpus")]
         public IActionResult DeleteAllCpus()
         {
-            _context.Database.ExecuteSqlRaw("TRUNCATE TABLE " + tables[3]);
+            _context.Database.ExecuteSqlRaw($"TRUNCATE TABLE {tables[3]}");
             return Ok();
         }
         
-        [HttpDelete]
+        [HttpDelete("DeleteAllGraphicCard")]
         public IActionResult DeleteAllGraphicCards()
         {
-            _context.Database.ExecuteSqlRaw("TRUNCATE TABLE " + tables[4]);
+            _context.Database.ExecuteSqlRaw($"TRUNCATE TABLE {tables[4]}");
             return Ok();
         }
         
-        [HttpDelete]
+        [HttpDelete("DeleteAllMemorie")]
         public IActionResult DeleteAllMemories()
         {
-            _context.Database.ExecuteSqlRaw("TRUNCATE TABLE " + tables[5]);
+            _context.Database.ExecuteSqlRaw($"TRUNCATE TABLE {tables[5]}");
             return Ok();
         }
         
-        [HttpDelete]
+        [HttpDelete("DeleteAllMotherboard")]
         public IActionResult DeleteAllMotherboards()
         {
-            _context.Database.ExecuteSqlRaw("TRUNCATE TABLE " + tables[6]);
+            _context.Database.ExecuteSqlRaw($"TRUNCATE TABLE {tables[6]}");
             return Ok();
         }
-        
-        [HttpDelete]
+
+        [HttpDelete("DeleteAllRams")]
         public IActionResult DeleteAllRams()
         {
-            _context.Database.ExecuteSqlRaw("TRUNCATE TABLE " + tables[8]);
+            _context.Database.ExecuteSqlRaw($"TRUNCATE TABLE {tables[7]}");
             return Ok();
         }
-        
-        [HttpDelete]
+
+        [HttpDelete("DeleteAllPowerSupplys")]
         public IActionResult DeleteAllPowerSupplys()
         {
-            _context.Database.ExecuteSqlRaw("TRUNCATE TABLE " + tables[9]);
+            _context.Database.ExecuteSqlRaw($"TRUNCATE TABLE {tables[8]}");
             return Ok();
         }
         
