@@ -22,7 +22,7 @@ namespace KomputerBudowanieAPI.Controllers
         public async Task<IActionResult> GetAllRam()
         {
             var rams = await _ramRepository.GetAllAsync();
-            if (rams is null)
+            if (rams is null || !rams.Any())
             {
                 return NotFound();
             }

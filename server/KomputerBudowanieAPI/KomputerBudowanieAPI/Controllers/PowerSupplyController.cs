@@ -22,7 +22,7 @@ namespace KomputerBudowanieAPI.Controllers
         public async Task<IActionResult> GetAllPowerSupplies()
         {
             var powerSupplies = await _powerSupplyRepository.GetAllAsync();
-            if (powerSupplies is null)
+            if (powerSupplies is null || !powerSupplies.Any())
             {
                 return NotFound();
             }

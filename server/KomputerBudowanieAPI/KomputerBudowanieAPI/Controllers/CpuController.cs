@@ -23,8 +23,11 @@ namespace KomputerBudowanieAPI.Controllers
         public async Task<IActionResult> GetAllCpus()
         {
             var cpus = await _cpuRepository.GetAllAsync();
-            if (cpus is null)
+            if (cpus is null || !cpus.Any())
+            {
                 return NotFound();
+            }
+            
             return Ok(_mapper.Map<IEnumerable<CpuDto>>(cpus));
         }
 
@@ -33,7 +36,9 @@ namespace KomputerBudowanieAPI.Controllers
         {
             var cpu = await _cpuRepository.GetByIdAsync(id);
             if (cpu is null)
+            {
                 return NotFound();
+            }
             return Ok(_mapper.Map<CpuDto>(cpu));
         }
 
