@@ -5,7 +5,6 @@ from requests import exceptions
 import configparser
 
 link_base = "https://www.morele.net"
-main_routes = []
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -14,7 +13,8 @@ parts_route = int(config.get('Settings', 'parts_route'))
 
 
 def go_through_route():
-    # zloz main route
+    # zloz main routes
+    main_routes = []
     html_main = get("https://www.morele.net/podzespoly-komputerowe/").text
     soup = BeautifulSoup(html_main, "lxml")
     main_links = soup.find_all('a', class_='col-xs-12 col-md-6 col-lg-4 col-xl-3')
@@ -67,7 +67,6 @@ def get_product_specs(prod_links):
                 product_specs = {"Nazwa": name,
                                  "Dostepnosc": availability,
                                  "Cena": price}
-                # specs_expert_raw = soup.find('ul', class_='expert-table__features')
                 specs_raw = soup.find_all('div', class_='specification__row')
 
                 for row in specs_raw:
@@ -78,9 +77,9 @@ def get_product_specs(prod_links):
                 translated_product_specs = translate_and_parse_specs(product_specs)
 
                 # wyswietl przetlumaczone rzeczy
-                # print(f"\nProdukt {i}: {link}")
-                # for key, value in translated_product_specs.items():
-                #     print(key, ':', value)
+                print(f"\nProdukt {i}: {link}")
+                for key, value in translated_product_specs.items():
+                    print(key, ':', value)
 
                 # dodaj speki produktu do listy ze wszystkimi
                 all_products.append(translated_product_specs)
@@ -93,11 +92,10 @@ def get_product_specs(prod_links):
 
 
 def translate_and_parse_specs(specs):
-    translated = {}
     if parts_route == 6:
         translated = {
             "Name": specs["Nazwa"],
-            "Price": float(specs["Cena"].replace(" zł", "").replace(",", ".")),
+            "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
             "Producer": specs["Producent"],
             "ProducerCode": specs["Kod producenta"],
             "Color": specs["Kolor"],
@@ -135,13 +133,47 @@ def translate_and_parse_specs(specs):
             "PowerSupplyPower": specs["Moc zasilacza"] if specs["Moc zasilacza"] != "Brak zasilacza" else -1,
             "Description": None
         }
+    elif parts_route == 11:
+        translated = {
+            "Name": specs["Nazwa"],
+            "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
+            "Producer": specs["Producent"],
+            "ProducerCode": specs["Kod producenta"],
+            "Line": specs["Linia"],
+            "PackagingVersion": specs["Wersja opakowania"],
+            "HasIncludedCooling": True if specs["Załączone chłodzenie"] == "Tak" else False,
+            "SocketType": specs["Typ gniazda"],
+            "NumberOfCores": int(specs["Liczba rdzeni"]),
+            "NumberOfThreads": int(specs["Liczba wątków"]),
+            "ProcessorBaseFrequencyGHz": float(specs["Częstotliwość taktowania procesora"].replace(" GHz", "")),
+            "MaxTurboFrequencyGHz": float(specs["Częstotliwość maksymalna Turbo"].replace(" GHz", "")),
+            "IntegratedGraphics": specs["Zintegrowany układ graficzny"],
+            "HasUnlockedMultiplier": True if specs["Odblokowany mnożnik"] == "Tak" else False,
+            "Architecture": specs["Architektura"],
+            "ManufacturingProcess": specs["Proces technologiczny"],
+            "ProcessorMicroarchitecture": specs["Mikroarchitektura procesora"],
+            "TDPinW": int(specs["TDP"].replace(" W", "")),
+            "MaxOperatingTempC": int(specs.get("Maksymalna temperatura pracy").replace(" st. C", "")) if specs.get("Maksymalna temperatura pracy") is not None else -1,
+            "SupportedMemoryTypes": specs["Rodzaje obsługiwanej pamięci"],
+            "L1Cache": specs["Pamięć podręczna L1"].replace("\n", ""),
+            "L2Cache": specs["Pamięć podręczna L2"],
+            "L3Cache": specs["Pamięć podręczna L3"],
+            "AddedEquipment": specs.get("Załączone wyposażenie")
+        }
+    else:
+        translated = specs
     return translated
 
 
 def add_products_to_database(prods):
     if parts_route == 6:
         url = 'http://localhost:5198/api/Case'
+    elif parts_route == 11:
+        url = 'http://localhost:5198/api/Cpu'
+    else:
+        url = ""
 
+    if url != "":
         i = 1
         for product in prods:
             response = requests.post(url, json=product)

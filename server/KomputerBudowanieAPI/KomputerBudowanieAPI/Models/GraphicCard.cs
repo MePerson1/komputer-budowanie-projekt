@@ -7,33 +7,33 @@ namespace KomputerBudowanieAPI.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
+        public decimal Price { get; set; }
         public string Producer { get; set; }
-        public string Description { get; set; }
-        public double Price { get; set; }
-        public string ProducerCode { get; set; }
-        public string Series { get; set; }
-        public string Model { get; set; }
+        public string ManufacturerCode { get; set; }
+        public string ChipsetManufacturer { get; set; }
+        public string ChipsetType { get; set; }
+        public int CoreClockMHz { get; set; }
+        public int BoostClockMHz { get; set; }
+        public int StreamProcessors { get; set; }
+        public int ROPUnits { get; set; }
+        public int TextureUnits { get; set; }
+        public int RTUnits { get; set; }
+        public int TensorCores { get; set; }
+        public bool DLSS3Supported { get; set; }
+        public string ConnectorType { get; set; }
+        public int CardLengthMM { get; set; }
+        public string Resolution { get; set; }
+        public int RecommendedPSUCapacityW { get; set; }
+        public bool LEDLighting { get; set; }
+        public int MemorySizeGB { get; set; }
         public string MemoryType { get; set; }
-        public int MemorySize { get; set; }
-        public int MemoryBus { get; set; }
-        public int MemoryBandwith { get; set; }
-        public int MemoryClockspeed { get; set; }
-        public int CoreClockspeed { get; set; }
-        public bool RayTraycing { get; set; }
-        public int FanCount { get; set; }
-        public int PsuPower { get; set; }
+        public int MemoryBusWidthBits { get; set; }
+        public int MemoryClockMHz { get; set; }
         public string CoolingType { get; set; }
-
-
-        /*
-         * DO EDYCJI!
-         */
-        //private Dictionary<string, int> OuterConnectors { get; set; }
-        //private Dictionary<string, int> InnerConnectors { get; set; }
-        public float Width { get; set; }
-        public float Height { get; set; }
-        public float Length { get; set; }
-        public int Slots { get; set; }
+        public int FanCount { get; set; }
+        public int DisplayPortCount { get; set; }
+        public int HDMI { get; set; }
+        public string PowerConnectors { get; set; }
 
         /*
         *  RELACJE

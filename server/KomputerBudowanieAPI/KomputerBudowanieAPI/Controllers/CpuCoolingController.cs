@@ -8,12 +8,12 @@ namespace KomputerBudowanieAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CpuCollingController : Controller
+    public class CpuCoolingController : Controller
     {
         public readonly IGenericRepository<CpuCooling> _cpuCoolingRepository;
         public readonly IMapper _mapper;
 
-        public CpuCollingController(IGenericRepository<CpuCooling> cpuCoolingRepository, IMapper mapper)
+        public CpuCoolingController(IGenericRepository<CpuCooling> cpuCoolingRepository, IMapper mapper)
         {
             _cpuCoolingRepository = cpuCoolingRepository;
             _mapper = mapper;

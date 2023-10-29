@@ -3,6 +3,7 @@ using System;
 using KomputerBudowanieAPI.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KomputerBudowanieAPI.Migrations
 {
     [DbContext(typeof(KomBuildDbContext))]
-    partial class KomBuildDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231029191757_CpuModelFixed")]
+    partial class CpuModelFixed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -169,9 +172,6 @@ namespace KomputerBudowanieAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AddedEquipment")
-                        .HasColumnType("text");
-
                     b.Property<string>("Architecture")
                         .IsRequired()
                         .HasColumnType("text");
@@ -209,8 +209,8 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Property<int?>("MaxOperatingTempC")
                         .HasColumnType("integer");
 
-                    b.Property<float>("MaxTurboFrequencyGHz")
-                        .HasColumnType("real");
+                    b.Property<int>("MaxTurboFrequencyGHz")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -229,8 +229,8 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
-                    b.Property<float>("ProcessorBaseFrequencyGHz")
-                        .HasColumnType("real");
+                    b.Property<int>("ProcessorBaseFrequencyGHz")
+                        .HasColumnType("integer");
 
                     b.Property<string>("ProcessorMicroarchitecture")
                         .IsRequired()
