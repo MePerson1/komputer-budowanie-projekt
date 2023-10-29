@@ -14,11 +14,10 @@ namespace KomputerBudowanieAPI.Repository
             this._context = context;
         }
 
-        public async Task<IEnumerable<PcConfigurationDto>> GetAllAsync()
+        public async Task<IEnumerable<PcConfiguration>> GetAllAsync()
         {
 
-            await _context.PcConfigurations.ToListAsync();
-
+            return await _context.PcConfigurations.ToListAsync();
 
 
 
