@@ -65,23 +65,7 @@ namespace KomputerBudowanieAPI.Controllers
             {
                 return BadRequest();
             }
-            /*if(!ModelState.IsValid) 
-            {
-                return BadRequest(ModelState);
-            }*/
 
-            //PcConfiguration newPcConfiguration = new PcConfiguration();
-            //newPcConfiguration.Id = Guid.NewGuid();
-            //newPcConfiguration.User = _userRepository.GetById(newConfigurationDetails.UserId);
-            //newPcConfiguration.Name = newConfigurationDetails.Name;
-            //newPcConfiguration.Description = newConfigurationDetails.Description ?? "";
-            //newPcConfiguration.Motherboard = await _motherboardRepository.GetByIdAsync(newConfigurationDetails.MotherboadId);
-            //newPcConfiguration.GraphicCard = await _graphicCardRepository.GetByIdAsync(newConfigurationDetails.GraphicCardId);
-            //newPcConfiguration.Cpu = await _cpuRepository.GetByIdAsync(newConfigurationDetails.CpuId);
-            //newPcConfiguration.CPU_Cooling = await _cpuCoolingRepository.GetByIdAsync(newConfigurationDetails.CpuCoolingId);
-
-
-            //await _pcConfigurationRepository.Create(newPcConfiguration);
             var done = await _pcConfigurationRepository.Create(newConfigurationDetails);
 
             return done == false ? BadRequest(done) : Ok(done);
@@ -89,9 +73,10 @@ namespace KomputerBudowanieAPI.Controllers
 
         // PUT api/<ConfigurationController>/5
         [HttpPut("{id}")]
-        public void Put(Guid id, [FromBody] PcConfigurationDto editingConfigurationDetails)
+        public async Task<IActionResult> Put(Guid id, [FromBody] PcConfigurationDto editingConfigurationDetails)
         {
-
+            var done = await _pcConfigurationRepository.Update(id, editingConfigurationDetails);
+            return done == false ? BadRequest() : Ok();
         }
 
         // DELETE api/<ConfigurationController>/5

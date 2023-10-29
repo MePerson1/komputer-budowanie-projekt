@@ -121,10 +121,64 @@ namespace KomputerBudowanieAPI.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task Update(PcConfiguration entity)
+        public async Task<bool> Update(Guid id, PcConfigurationDto dto)
         {
-            _context.Entry(entity).State = EntityState.Modified;
-            await SaveChanges();
+
+            var configuration = GetByIdAsync(id);
+            if (configuration == null)
+            {
+                return false;
+            }
+            try
+            {
+                var pcCase = await _context.Set<Case>().FindAsync(dto.CaseId);
+                var cpu = _context.Cpus.FirstOrDefault(x => x.Id == dto.CpuId);
+                var cpuCooling = _context.CpuCoolings.FirstOrDefault(x => x.Id == dto.CpuCoolingId);
+                var fan = _context.Fans.FirstOrDefault(x => x.Id == dto.FanId);
+                var motherboard = _context.Motherboards.FirstOrDefault(x => x.Id == dto.MotherboadId);
+                var graphicCard = _context.GraphicCards.FirstOrDefault(x => x.Id == dto.GraphicCardId);
+                var powerSupply = _context.PowerSupplys.FirstOrDefault(x => x.Id == dto.PowerSuplyId);
+
+                //var memories = _context.Memories.Where(x => newConfigurationDto.MemoryIds.Contains(x.Id)).ToList();
+                //var rams = _context.Rams.Where(x => newConfigurationDto.RamsIds.Contains(x.Id)).ToList();
+                var memories = new List<Memory>();
+                if (dto.MemoryIds != null && dto.MemoryIds.Any())
+                {
+                    memories = _context.Memories.Where(x => dto.MemoryIds.Contains(x.Id)).ToList();
+                }
+
+                var rams = new List<Ram>();
+                if (dto.RamsIds != null && dto.RamsIds.Any())
+                {
+                    rams = _context.Rams.Where(x => dto.RamsIds.Contains(x.Id)).ToList();
+                }
+
+                PcConfiguration pcConfiguration = new PcConfiguration()
+                {
+                    Id = dto.Id,
+                    Name = dto.Name,
+                    Description = dto.Description,
+                    Case = pcCase,
+                    Cpu = cpu,
+                    CPU_Cooling = cpuCooling,
+                    Fan = fan,
+                    Motherboard = motherboard,
+                    GraphicCard = graphicCard,
+                    PowerSupply = powerSupply,
+                    Memories = memories,
+                    Rams = rams
+                };
+
+                _context.Update(configuration);
+                await SaveChanges();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
         }
     }
 }
