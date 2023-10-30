@@ -78,8 +78,8 @@ def get_product_specs(prod_links):
 
                 # wyswietl przetlumaczone rzeczy
                 print(f"\nProdukt {i}: {link}")
-                for key, value in translated_product_specs.items():
-                    print(key, ':', value)
+                # for key, value in translated_product_specs.items():
+                #     print(key, ':', value)
 
                 # dodaj speki produktu do listy ze wszystkimi
                 all_products.append(translated_product_specs)
@@ -92,7 +92,44 @@ def get_product_specs(prod_links):
 
 
 def translate_and_parse_specs(specs):
-    if parts_route == 6:
+    if parts_route == 3:
+        translated = {
+            "Name": specs["Nazwa"],
+            "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
+            "Producer": specs["Producent"],
+            "ProducerCode": specs["Kod producenta"],
+            "ChipsetProducer": specs["Producent chipsetu"],
+            "ChipsetType": specs["Rodzaj chipsetu"],
+            "CoreClockMHz": int(specs["Taktowanie rdzenia"].split()[0]),
+            "BoostClockMHz": int(specs["Taktowanie rdzenia w trybie boost"].split()[0]),
+            "StreamProcessors": int(specs["Procesory strumieniowe"]),
+            "ROPUnits": int(specs["Jednostki ROP"]),
+            "TextureUnits": int(specs["Jednostki teksturujące"]),
+            "RTCores": int(specs["Rdzenie RT"]) if specs["Rdzenie RT"] != "Brak" else 0,
+            "TensorCores": int(specs["Rdzenie Tensor"]) if specs["Rdzenie Tensor"] != "Brak" else 0,
+            "DLSS3Supported": True if specs["DLSS 3.0"] == "Tak" else False,
+            "ConnectorType": specs["Typ złącza"],
+            "CardLengthMM": int(specs["Długość karty"].split()[0]),
+            "CardLinking": False if specs["Łączenie kart"] == "Nie" else True,
+            "Resolution": specs["Rozdzielczość"],
+            "RecommendedPSUCapacityW": int(specs["Rekomendowana moc zasilacza"].split()[0]),
+            "LEDLighting": True if specs["Podświetlenie LED"] == "Tak" else False,
+            "MemorySizeGB": int(specs["Ilość pamięci RAM"].split()[0]),
+            "MemoryType": specs["Rodzaj pamięci RAM"],
+            "MemoryBusWidthBits": int(specs["Szyna danych"].split()[0]),
+            "MemoryClockMHz": int(specs["Taktowanie pamięci"].split()[0]),
+            "CoolingType": specs["Typ chłodzenia"],
+            "FanCount": int(specs["Ilość wentylatorów"]),
+            "HasDSub": False if specs["D-Sub"] == "Brak" else True,
+            "DisplayPortCount": int(specs["DisplayPort"]) if "DisplayPort" in specs else 0,
+            "HasMiniDisplayPort": False if specs["MiniDisplayPort"] == "Brak" else True,
+            "HasDVI": False if specs["DVI"] == "Brak" else True,
+            "HDMICount": int(specs["HDMI"]),
+            "HasUSBC": False if specs["USB-C"] == "Brak" else True,
+            "PowerConnectors": specs["Złącza zasilania"],
+            "Description": None
+        }
+    elif parts_route == 6:
         translated = {
             "Name": specs["Nazwa"],
             "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
@@ -166,7 +203,9 @@ def translate_and_parse_specs(specs):
 
 
 def add_products_to_database(prods):
-    if parts_route == 6:
+    if parts_route == 3:
+        url = "http://localhost:5198/api/GraphicCard"
+    elif parts_route == 6:
         url = 'http://localhost:5198/api/Case'
     elif parts_route == 11:
         url = 'http://localhost:5198/api/Cpu'
