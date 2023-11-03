@@ -118,14 +118,14 @@ def translate_and_parse_specs(specs):
         }
     elif parts_route == 1:  # dyski SSD
         translated = {
-            "Name": specs["Nazwa"],
+            "Name": specs["Nazwa"].replace('"', " cala"),
             "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
             "Producer": specs["Producent"],
             "ProducerCode": specs["Kod producenta"],
             "Description": None,
             "Type": "SSD",
             "Model": specs["Model"],
-            "FormFactor": specs["Format dysku"],
+            "FormFactor": specs["Format dysku"].replace('"', ' cala'),
             "Capacity": specs["Pojemność dysku"],
             "Interface": specs["Interfejs"],
             "ThiccnessMM": float(specs["Grubość"].split()[0]),
@@ -363,6 +363,7 @@ def add_products_to_database(prods):
                 print(f"Request {i} was successful.")
             else:
                 print(f"Request failed with status code: {response.status_code}")
+                print(response.text)
                 print(f"Request failed for product: {product}")
                 break
             i += 1

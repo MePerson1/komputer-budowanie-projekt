@@ -10,14 +10,14 @@ namespace KomputerBudowanieAPI.Models
         public double Price { get; set; }
         public string Producer { get; set; }
         public string ProducerCode { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public string Type { get; set; } //ssd czy hdd
         public string Model { get; set; } // linia przy hdd wydaje mi się no a model dla ssd
         public string FormFactor { get; set; }
         public string Capacity { get; set; }
         public string Interface { get; set; }
         public float ThiccnessMM { get; set; } // grubosc
-        public string CacheMemory { get; set; }
+        public string? CacheMemory { get; set; }
 
         //hdd only
         public float? NoiseLevelDB { get; set; } = null;
