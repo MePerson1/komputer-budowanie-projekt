@@ -87,7 +87,8 @@ def get_product_specs(prod_links):
                     print(key, ':', value)
 
                 # dodaj speki produktu do listy ze wszystkimi
-                all_products.append(translated_product_specs)
+                if translated_product_specs != {}:
+                    all_products.append(translated_product_specs)
                 i += 1
         except exceptions.RequestException as req_error:
             print(f"\n\nRequest error for link {link}: {req_error}\n\n")
@@ -97,7 +98,51 @@ def get_product_specs(prod_links):
 
 
 def translate_and_parse_specs(specs):
-    if parts_route == 3:  # karty graficzne
+    if parts_route == 0:  # dyski HDD
+        translated = {
+            "Name": specs["Nazwa"],
+            "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
+            "Producer": specs["Producent"],
+            "ProducerCode": specs["Kod producenta"],
+            "Description": None,
+            "Type": "HDD",
+            "Model": specs["Linia"],
+            "FormFactor": specs["Format dysku"],
+            "Capacity": specs["Pojemność dysku"],
+            "Interface": specs["Interfejs"],
+            "ThiccnessMM": float(specs["Grubość [mm]"]),
+            "CacheMemory": specs["Pamięć podręczna"],
+            "NoiseLevelDB": float(specs["Poziom hałasu"].replace(" dB", "")) if specs["Poziom hałasu"] != "Brak danych" else None,
+            "RotatingSpeedRPM": int(specs["Prędkość obrotowa"].split()[0]),
+            "WeightG": float(specs["Waga [g]"])
+        }
+    elif parts_route == 1:  # dyski SSD
+        translated = {
+            "Name": specs["Nazwa"],
+            "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
+            "Producer": specs["Producent"],
+            "ProducerCode": specs["Kod producenta"],
+            "Description": None,
+            "Type": "SSD",
+            "Model": specs["Model"],
+            "FormFactor": specs["Format dysku"],
+            "Capacity": specs["Pojemność dysku"],
+            "Interface": specs["Interfejs"],
+            "ThiccnessMM": float(specs["Grubość"].split()[0]),
+            "CacheMemory": None if specs["Pamięć podręczna"] == "Brak danych" else specs["Pamięć podręczna"],
+            "Radiator": True if specs["Radiator"] == "Tak" else False,
+            "MemoryChipType": None if specs["Rodzaj kości pamięci"] == "Brak danych" else specs["Rodzaj kości pamięci"],
+            "ReadSpeedMBs": int(specs["Szybkość odczytu"].split()[0]),
+            "WriteSpeedMBs": int(specs["Szybkość zapisu"].split()[0]),
+            "ReadRandomIOPS": int(specs["Odczyt losowy"].split()[0]) if specs["Odczyt losowy"] != "Brak danych" else None,
+            "WriteRandomIOPS": int(specs["Zapis losowy"].split()[0]) if specs["Zapis losowy"] != "Brak danych" else None,
+            "Longevity": specs["Nominalny czas pracy"] if specs["Nominalny czas pracy"] != "Brak danych" else None,
+            "TBW": None if specs["TBW (Total Bytes Written)"] == "Brak danych" else specs["TBW (Total Bytes Written)"],
+            "Key": specs["Klucz"],
+            "Controler": specs["Kontroler"] if specs["Kontroler"] != "Brak danych" else None,
+            "HardwareEncryption": True if specs["Szyfrowanie sprzętowe"] == "Tak" else False
+        }
+    elif parts_route == 3:  # karty graficzne
         translated = {
             "Name": specs["Nazwa"],
             "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
@@ -174,6 +219,26 @@ def translate_and_parse_specs(specs):
             "PowerSupply": specs["Zasilacz"] if specs["Zasilacz"] != "Nie" else None,
             "PowerSupplyPower": specs["Moc zasilacza"] if specs["Moc zasilacza"] != "Brak zasilacza" else None,
             "Description": None
+        }
+    elif parts_route == 8:  # pamięci RAM
+        translated = {
+            "Name": specs["Nazwa"],
+            "Price": float(specs["Cena"].replace(" zł", "").replace(",", ".")),
+            "Producer": specs["Producent"],
+            "ProducerCode": specs["Kod producenta"],
+            "Description": None,
+            "PinType": specs["Typ złącza"],
+            "MemoryType": specs["Typ pamięci"],
+            "LowProfile": True if specs["Niskoprofilowe"] == "Tak" else False,
+            "Cooling": specs["Chłodzenie"],
+            "CapacityGB": int(specs["Pojemność łączna"].split()[0]),
+            "ModuleCount": int(specs["Liczba modułów"]),
+            "FrequencyMHz": int(specs["Częstotliwość pracy [MHz]"]),
+            "LatencyCL": int(specs["Opóźnienie"].replace("CL", "")),
+            "VoltageV": float(specs["Napięcie [V]"]),
+            "OverclockingProfile": specs["Technologia podkręcania"].replace("\n", ""),
+            "Color": specs["Kolor"],
+            "HasLighting": True if specs["Podświetlenie"] == "Tak" else False
         }
     elif parts_route == 9:  # płyty główne
         translated = {
@@ -270,10 +335,16 @@ def translate_and_parse_specs(specs):
 
 
 def add_products_to_database(prods):
-    if parts_route == 3:
+    if parts_route == 0:
+        url = 'http://localhost:5198/api/Memory'
+    elif parts_route == 1:
+        url = 'http://localhost:5198/api/Memory'
+    elif parts_route == 3:
         url = "http://localhost:5198/api/GraphicCard"
     elif parts_route == 6:
         url = 'http://localhost:5198/api/Case'
+    elif parts_route == 8:
+        url = 'http://localhost:5198/api/Ram'
     elif parts_route == 9:
         url = 'http://localhost:5198/api/Motherboard'
     elif parts_route == 11:
@@ -299,4 +370,4 @@ def add_products_to_database(prods):
 
 product_links = go_through_route()
 products = get_product_specs(product_links)
-# add_products_to_database(products)
+add_products_to_database(products)
