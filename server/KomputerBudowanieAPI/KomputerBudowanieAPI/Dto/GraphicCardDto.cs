@@ -16,24 +16,25 @@
         public int TextureUnits { get; set; }
         public int RTCores { get; set; }
         public int TensorCores { get; set; }
-        public bool DLSS3Supported { get; set; }
+        public bool HasDLSS3Support { get; set; }
         public string ConnectorType { get; set; }
         public int CardLengthMM { get; set; }
+        public string? CardLinking { get; set; }
         public string Resolution { get; set; }
         public int RecommendedPSUCapacityW { get; set; }
-        public bool LEDLighting { get; set; }
+        public bool HasLEDLighting { get; set; }
         public int MemorySizeGB { get; set; }
         public string MemoryType { get; set; }
         public int MemoryBusWidthBits { get; set; }
         public int MemoryClockMHz { get; set; }
         public string CoolingType { get; set; }
         public int FanCount { get; set; }
-        public bool HasDSub { get; set; }
+        public int DSub { get; set; }
         public int DisplayPortCount { get; set; }
-        public bool HasMiniDisplayPort { get; set; }
-        public bool HasDVI { get; set; }
-        public int HDMICount { get; set; }
-        public bool HasUSBC { get; set; }
+        public int MiniDisplayPort { get; set; }
+        public int DVI { get; set; }
+        public int HDMI { get; set; }
+        public int USBC { get; set; }
         public string PowerConnectors { get; set; }
         public string? Description { get; set; }
     }

@@ -3,6 +3,7 @@ using System;
 using KomputerBudowanieAPI.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KomputerBudowanieAPI.Migrations
 {
     [DbContext(typeof(KomBuildDbContext))]
-    partial class KomBuildDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231103000733_Fixed_Motherboard_model_plus_some_small_fixes_to_others")]
+    partial class Fixed_Motherboard_model_plus_some_small_fixes_to_others
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,24 +98,30 @@ namespace KomputerBudowanieAPI.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PanelBottom")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PanelFront")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PanelRear")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PanelSide")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PanelTop")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PowerSupply")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<float?>("PowerSupplyPower")
+                    b.Property<float>("PowerSupplyPower")
                         .HasColumnType("real");
 
                     b.Property<float>("Price")
@@ -177,6 +186,7 @@ namespace KomputerBudowanieAPI.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("IntegratedGraphics")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("L1Cache")
@@ -238,6 +248,7 @@ namespace KomputerBudowanieAPI.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("SupportedMemoryTypes")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("TDPinW")
@@ -409,11 +420,8 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Property<int>("CoreClockMHz")
                         .HasColumnType("integer");
 
-                    b.Property<int>("DSub")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("DVI")
-                        .HasColumnType("integer");
+                    b.Property<bool>("DLSS3Supported")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
@@ -424,13 +432,22 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Property<int>("FanCount")
                         .HasColumnType("integer");
 
-                    b.Property<int>("HDMI")
+                    b.Property<int>("HDMICount")
                         .HasColumnType("integer");
 
-                    b.Property<bool>("HasDLSS3Support")
+                    b.Property<bool>("HasDSub")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("HasLEDLighting")
+                    b.Property<bool>("HasDVI")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("HasMiniDisplayPort")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("HasUSBC")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("LEDLighting")
                         .HasColumnType("boolean");
 
                     b.Property<int>("MemoryBusWidthBits")
@@ -445,9 +462,6 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Property<string>("MemoryType")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int>("MiniDisplayPort")
-                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -488,9 +502,6 @@ namespace KomputerBudowanieAPI.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int>("TextureUnits")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("USBC")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");

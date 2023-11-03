@@ -7,7 +7,7 @@ namespace KomputerBudowanieAPI.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
-        public double Price { get; set; }
+        public float Price { get; set; }
         public string Producer { get; set; }
         public string ProducerCode { get; set; }
         public string Color { get; set; }
@@ -41,14 +41,14 @@ namespace KomputerBudowanieAPI.Models
 
         public int ExpansionSlots { get; set; }
 
-        public string PanelFront { get; set; }
-        public string PanelRear { get; set; }
-        public string PanelSide { get; set; }
-        public string PanelBottom { get; set; }
-        public string PanelTop { get; set; }
+        public string? PanelFront { get; set; }
+        public string? PanelRear { get; set; }
+        public string? PanelSide { get; set; }
+        public string? PanelBottom { get; set; }
+        public string? PanelTop { get; set; }
 
-        public string PowerSupply { get; set; }
-        public float PowerSupplyPower { get; set; }
+        public string? PowerSupply { get; set; }
+        public float? PowerSupplyPower { get; set; }
         public string? Description { get; set; }
 
         /*

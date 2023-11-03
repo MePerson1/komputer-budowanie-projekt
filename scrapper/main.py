@@ -74,12 +74,17 @@ def get_product_specs(prod_links):
                     spec_value = row.find('span', class_='specification__value').text.strip()
                     product_specs[spec_name] = spec_value
 
+                # wyswietl rzeczy przed tlumaczeniem
+                # print(f"\nProdukt {i}: {link}")
+                # for key, value in product_specs.items():
+                #     print(key, ':', value)
+
                 translated_product_specs = translate_and_parse_specs(product_specs)
 
-                # wyswietl przetlumaczone rzeczy
-                print(f"\nProdukt {i}: {link}")
-                # for key, value in translated_product_specs.items():
-                #     print(key, ':', value)
+                # wyswietl rzeczy po tlumaczeniu
+                print(f"\n(PRZETLUMACZONE) Produkt {i}: {link}")
+                for key, value in translated_product_specs.items():
+                    print(key, ':', value)
 
                 # dodaj speki produktu do listy ze wszystkimi
                 all_products.append(translated_product_specs)
@@ -92,7 +97,7 @@ def get_product_specs(prod_links):
 
 
 def translate_and_parse_specs(specs):
-    if parts_route == 3:
+    if parts_route == 3:  # karty graficzne
         translated = {
             "Name": specs["Nazwa"],
             "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
@@ -107,29 +112,29 @@ def translate_and_parse_specs(specs):
             "TextureUnits": int(specs["Jednostki teksturujące"]),
             "RTCores": int(specs["Rdzenie RT"]) if specs["Rdzenie RT"] != "Brak" else 0,
             "TensorCores": int(specs["Rdzenie Tensor"]) if specs["Rdzenie Tensor"] != "Brak" else 0,
-            "DLSS3Supported": True if specs["DLSS 3.0"] == "Tak" else False,
+            "HasDLSS3Support": True if specs["DLSS 3.0"] == "Tak" else False,
             "ConnectorType": specs["Typ złącza"],
             "CardLengthMM": int(specs["Długość karty"].split()[0]),
-            "CardLinking": False if specs["Łączenie kart"] == "Nie" else True,
+            "CardLinking": specs["Łączenie kart"] if specs["Łączenie kart"] != "Nie" else None,
             "Resolution": specs["Rozdzielczość"],
             "RecommendedPSUCapacityW": int(specs["Rekomendowana moc zasilacza"].split()[0]),
-            "LEDLighting": True if specs["Podświetlenie LED"] == "Tak" else False,
+            "HasLEDLighting": True if specs["Podświetlenie LED"] == "Tak" else False,
             "MemorySizeGB": int(specs["Ilość pamięci RAM"].split()[0]),
             "MemoryType": specs["Rodzaj pamięci RAM"],
             "MemoryBusWidthBits": int(specs["Szyna danych"].split()[0]),
             "MemoryClockMHz": int(specs["Taktowanie pamięci"].split()[0]),
             "CoolingType": specs["Typ chłodzenia"],
             "FanCount": int(specs["Ilość wentylatorów"]),
-            "HasDSub": False if specs["D-Sub"] == "Brak" else True,
+            "DSub": int(specs["D-Sub"]) if specs["D-Sub"] != "Brak" else 0,
             "DisplayPortCount": int(specs["DisplayPort"]) if "DisplayPort" in specs else 0,
-            "HasMiniDisplayPort": False if specs["MiniDisplayPort"] == "Brak" else True,
-            "HasDVI": False if specs["DVI"] == "Brak" else True,
-            "HDMICount": int(specs["HDMI"]),
-            "HasUSBC": False if specs["USB-C"] == "Brak" else True,
+            "MiniDisplayPort": int(specs["MiniDisplayPort"]) if specs["MiniDisplayPort"] != "Brak" else 0,
+            "DVI": int(specs["DVI"]) if specs["DVI"] != "Brak" else 0,
+            "HDMI": int(specs["HDMI"]),
+            "USBC": int(specs["USB-C"]) if specs["USB-C"] != "Brak" else 0,
             "PowerConnectors": specs["Złącza zasilania"],
             "Description": None
         }
-    elif parts_route == 6:
+    elif parts_route == 6:  # obudowy
         translated = {
             "Name": specs["Nazwa"],
             "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
@@ -161,41 +166,103 @@ def translate_and_parse_specs(specs):
             "ExternalBaysThreePointFiveInch": int(specs["Wnęki zewnętrzne 3.5 cala"]) if specs["Wnęki zewnętrzne 3.5 cala"] != "Nie" else 0,
             "ExternalBaysFivePointTwoFiveInch": int(specs["Wnęki zewnętrzne 5.25 cala"]) if specs["Wnęki zewnętrzne 5.25 cala"] != "Nie" else 0,
             "ExpansionSlots": int(specs["Sloty rozszerzeń"]),
-            "PanelFront": specs["Panel przedni"],
-            "PanelRear": specs["Panel tylny"],
-            "PanelSide": specs["Panel boczny"],
-            "PanelBottom": specs["Panel dolny"],
-            "PanelTop": specs["Panel górny"],
-            "PowerSupply": specs["Zasilacz"],
-            "PowerSupplyPower": specs["Moc zasilacza"] if specs["Moc zasilacza"] != "Brak zasilacza" else -1,
+            "PanelFront": specs["Panel przedni"] if specs["Panel przedni"] != "Nie" else None,
+            "PanelRear": specs["Panel tylny"] if specs["Panel tylny"] != "Nie" else None,
+            "PanelSide": specs["Panel boczny"] if specs["Panel boczny"] != "Nie" else None,
+            "PanelBottom": specs["Panel dolny"] if specs["Panel dolny"] != "Nie" else None,
+            "PanelTop": specs["Panel górny"] if specs["Panel górny"] != "Nie" else None,
+            "PowerSupply": specs["Zasilacz"] if specs["Zasilacz"] != "Nie" else None,
+            "PowerSupplyPower": specs["Moc zasilacza"] if specs["Moc zasilacza"] != "Brak zasilacza" else None,
             "Description": None
         }
-    elif parts_route == 11:
+    elif parts_route == 9:  # płyty główne
+        translated = {
+            "Name": specs["Nazwa"],
+            "Price": float(specs["Cena"].replace(" zł", "").replace(",", ".")),
+            "Producer": specs["Producent"],
+            "ProducerCode": specs["Kod producenta"],
+            "BoardStandard": specs["Standard płyty"],
+            "WidthMM": float(specs["Szerokość [mm]"]),
+            "DepthMM": float(specs["Głębokość [mm]"]),
+            "Chipset": specs["Chipset płyty"],
+            "CPUSocket": specs["Gniazdo procesora"],
+            "SupportedProcessors": specs["Obsługiwane procesory"].replace("\n", ""),
+            "RAIDController": specs["Kontroler RAID"].replace("\n", "") if specs["Kontroler RAID"] != "Nie" else None,
+            "MemoryStandard": specs["Standard pamięci"],
+            "MemoryConnectorType": specs["Rodzaj złącza"],
+            "MemorySlotsCount": int(specs["Liczba slotów pamięci"]),
+            "SupportedMemoryFreq": specs["Częstotliwości pracy pamięci"].replace("\n", ""),
+            "MaxMemoryGB": int(specs["Maksymalna ilość pamięci"].replace(" GB", "")),
+            "ChannelArchitecture": specs["Architektura wielokanałowa"],
+            "HasIntegratedGraphicsSupport": True if specs["Obsługa zintegrowanych układów graficznych"] == "Tak" else False,
+            "GraphicsChipset": specs["Chipset graficzny"],
+            "CardLinking": specs["Łączenie kart graficznych"] if specs["Łączenie kart graficznych"] != "Nie" else None,
+            "SoundChipset": specs["Chipset dźwiękowy"].replace("\n", ""),
+            "AudioChannels": specs["Kanały audio"].replace("\n", ""),
+            "IntegratedNetworkCard": specs["Zintegrowana karta sieciowa"].replace("\n", ""),
+            "NetworkChipset": specs["Chipset karty sieciowej"].replace("\n", ""),
+            "WirelessSupport": specs["Praca bezprzewodowa"].replace("\n", "") if specs["Praca bezprzewodowa"] != "Nie" else None,
+            "ExpansionSlots": specs["Gniazda rozszerzeń"].replace("\n", ""),
+            "DriveConnectors": specs["Złącza napędów"].replace("\n", ""),
+            "InternalConnectors": specs["Złącza wewnętrzne"].replace("\n", ""),
+            "RearPanelConnectors": specs["Panel tylny"].replace("\n", ""),
+            "IncludedAccessories": specs["Załączone wyposażenie"].replace("\n", "") if specs.get("Załączone wyposażenie") is not None else None,
+        }
+    elif parts_route == 11:  # procesory
         translated = {
             "Name": specs["Nazwa"],
             "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
             "Producer": specs["Producent"],
             "ProducerCode": specs["Kod producenta"],
             "Line": specs["Linia"],
-            "PackagingVersion": specs["Wersja opakowania"],
             "HasIncludedCooling": True if specs["Załączone chłodzenie"] == "Tak" else False,
             "SocketType": specs["Typ gniazda"],
             "NumberOfCores": int(specs["Liczba rdzeni"]),
             "NumberOfThreads": int(specs["Liczba wątków"]),
             "ProcessorBaseFrequencyGHz": float(specs["Częstotliwość taktowania procesora"].replace(" GHz", "")),
             "MaxTurboFrequencyGHz": float(specs["Częstotliwość maksymalna Turbo"].replace(" GHz", "")),
-            "IntegratedGraphics": specs["Zintegrowany układ graficzny"],
+            "IntegratedGraphics": None if specs["Zintegrowany układ graficzny"] == "Nie posiada" else specs["Zintegrowany układ graficzny"],
             "HasUnlockedMultiplier": True if specs["Odblokowany mnożnik"] == "Tak" else False,
             "Architecture": specs["Architektura"],
             "ManufacturingProcess": specs["Proces technologiczny"],
             "ProcessorMicroarchitecture": specs["Mikroarchitektura procesora"],
             "TDPinW": int(specs["TDP"].replace(" W", "")),
-            "MaxOperatingTempC": int(specs.get("Maksymalna temperatura pracy").replace(" st. C", "")) if specs.get("Maksymalna temperatura pracy") is not None else -1,
-            "SupportedMemoryTypes": specs["Rodzaje obsługiwanej pamięci"],
+            "MaxOperatingTempC": int(specs.get("Maksymalna temperatura pracy").replace(" st. C", "")) if specs.get("Maksymalna temperatura pracy") is not None else None,
+            "SupportedMemoryTypes": specs["Rodzaje obsługiwanej pamięci"] if specs["Rodzaje obsługiwanej pamięci"] != "Brak danych" else None,
             "L1Cache": specs["Pamięć podręczna L1"].replace("\n", ""),
             "L2Cache": specs["Pamięć podręczna L2"],
             "L3Cache": specs["Pamięć podręczna L3"],
             "AddedEquipment": specs.get("Załączone wyposażenie")
+        }
+    elif parts_route == 12:  # zasilacze
+        translated = {
+            "Name": specs["Nazwa"],
+            "Price": float(specs["Cena"].replace("zł", "").replace(" ", "").replace(",", ".")),
+            "Producer": specs["Producent"],
+            "ProducerCode": specs["Kod producenta"],
+            "FormFactor": specs["Standard/Format"],
+            "PowerW": int(specs["Moc"].split('W')[0].strip()),
+            "Certificate": specs["Certyfikat sprawności"],
+            "PowerFactorCorrection": specs["Układ PFC"],
+            "EfficiencyRating": specs["Sprawność"],
+            "Cooling": specs["Typ chłodzenia"],
+            "FanDiameterMM": int(specs["Średnica wentylatora"].split(' ')[0]),
+            "Security": specs["Zabezpieczenia"].replace("\n", ""),
+            "ModularCabling": specs["Modularne okablowanie"] if specs["Modularne okablowanie"] != "Nie" else None,
+            "ATX24Pin_20Plus4": 0 if specs["ATX 24-pin (20+4)"] == "Nie" else int(specs["ATX 24-pin (20+4)"]),
+            "PCIE8Pin_6Plus4": 0 if specs["PCI-E 8-pin (6+2)"] == "Nie" else int(specs["PCI-E 8-pin (6+2)"]),
+            "PCIE16Pin": 0 if specs["12VHPWR PCI-E 5.0 16-pin (12+4)"] == "Nie" else int(specs["12VHPWR PCI-E 5.0 16-pin (12+4)"]),
+            "PCIE8Pin": 0 if specs["PCI-E 8-pin"] == "Nie" else int(specs["PCI-E 8-pin"]),
+            "PCIE6Pin": 0 if specs["PCI-E 6-pin"] == "Nie" else int(specs["PCI-E 6-pin"]),
+            "CPU8Pin_4Plus4": 0 if specs["CPU 8-pin (4+4)"] == "Nie" else int(specs["CPU 8-pin (4+4)"]),
+            "CPU8Pin": 0 if specs["CPU 8-pin"] == "Nie" else int(specs["CPU 8-pin"]),
+            "CPU4Pin": 0 if specs["CPU 4-pin"] == "Nie" else int(specs["CPU 4-pin"]),
+            "Sata": 0 if specs["SATA"] == "Nie" else int(specs["SATA"]),
+            "Molex": 0 if specs["Molex"] == "Nie" else int(specs["Molex"]),
+            "HeightMM": int(specs["Wysokość [mm]"]),
+            "WidthMM": int(specs["Szerokość [mm]"]),
+            "DepthMM": int(specs["Głębokość [mm]"]),
+            "HasLighting": True if specs["Podświetlenie"] == "Tak" else False
         }
     else:
         translated = specs
@@ -207,8 +274,12 @@ def add_products_to_database(prods):
         url = "http://localhost:5198/api/GraphicCard"
     elif parts_route == 6:
         url = 'http://localhost:5198/api/Case'
+    elif parts_route == 9:
+        url = 'http://localhost:5198/api/Motherboard'
     elif parts_route == 11:
         url = 'http://localhost:5198/api/Cpu'
+    elif parts_route == 12:
+        url = 'http://localhost:5198/api/PowerSupply'
     else:
         url = ""
 
@@ -228,4 +299,4 @@ def add_products_to_database(prods):
 
 product_links = go_through_route()
 products = get_product_specs(product_links)
-add_products_to_database(products)
+# add_products_to_database(products)
