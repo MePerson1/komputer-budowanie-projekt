@@ -22,5 +22,6 @@ namespace KomputerBudowanieAPI.Dto
 
         public ICollection<MemoryDto> Memories { get; set; }
         public ICollection<RamDto> Rams { get; set; }
+
     }
 }

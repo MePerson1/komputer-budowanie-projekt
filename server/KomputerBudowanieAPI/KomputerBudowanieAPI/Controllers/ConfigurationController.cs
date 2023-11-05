@@ -1,5 +1,6 @@
 ﻿using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Interfaces;
+using KomputerBudowanieAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -93,6 +94,13 @@ namespace KomputerBudowanieAPI.Controllers
             return Accepted();
         }
 
+
+        [HttpPost("Comatibility/Cpu")]
+        public async Task<IActionResult> CpuCompatibilityCheck(PcConfiguration pcConfiguration)
+        {
+
+            return Ok();
+        }
 
     }
 }
