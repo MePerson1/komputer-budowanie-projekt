@@ -22,7 +22,7 @@ namespace KomputerBudowanieAPI.Controllers
         public async Task<IActionResult> GetAllMotherboards()
         {
             var motherboards = await _motherboardRepository.GetAllAsync();
-            if (motherboards is null)
+            if (motherboards is null || !motherboards.Any())
             {
                 return NotFound();
             }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace KomputerBudowanieAPI.Models
 {
@@ -13,7 +14,7 @@ namespace KomputerBudowanieAPI.Models
         /*
         *  RELACJE
         */
-
+        [JsonIgnore]
         public ICollection<PcConfiguration> Configurations { get; set; }
     }
 }

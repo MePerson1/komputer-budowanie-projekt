@@ -23,7 +23,7 @@ namespace KomputerBudowanieAPI.Controllers
         public async Task<IActionResult> GetAllFans()
         {
             var fans = await _fanRepository.GetAllAsync();
-            if (fans is null)
+            if (fans is null || !fans.Any())
             {
                 return NotFound();
             }

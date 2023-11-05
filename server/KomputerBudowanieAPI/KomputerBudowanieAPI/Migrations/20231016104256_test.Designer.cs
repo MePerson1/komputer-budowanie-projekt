@@ -3,6 +3,7 @@ using System;
 using KomputerBudowanieAPI.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KomputerBudowanieAPI.Migrations
 {
     [DbContext(typeof(KomBuildDbContext))]
-    partial class KomBuildDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231016104256_test")]
+    partial class test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -549,6 +552,7 @@ namespace KomputerBudowanieAPI.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("FanId")
@@ -567,7 +571,7 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Property<int>("PowerSupplyId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -589,6 +593,36 @@ namespace KomputerBudowanieAPI.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("PcConfigurations");
+                });
+
+            modelBuilder.Entity("KomputerBudowanieAPI.Models.PcConfigurationMemory", b =>
+                {
+                    b.Property<Guid>("PcConfigurationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("MemoryId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("PcConfigurationId", "MemoryId");
+
+                    b.HasIndex("MemoryId");
+
+                    b.ToTable("PcConfigurationMemories");
+                });
+
+            modelBuilder.Entity("KomputerBudowanieAPI.Models.PcConfigurationRam", b =>
+                {
+                    b.Property<Guid>("PcConfigurationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("RamId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("PcConfigurationId", "RamId");
+
+                    b.HasIndex("RamId");
+
+                    b.ToTable("PcConfigurationRams");
                 });
 
             modelBuilder.Entity("KomputerBudowanieAPI.Models.PowerSupply", b =>
@@ -740,36 +774,6 @@ namespace KomputerBudowanieAPI.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("MemoryPcConfiguration", b =>
-                {
-                    b.Property<int>("MemoriesId")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("PcConfigurationsId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("MemoriesId", "PcConfigurationsId");
-
-                    b.HasIndex("PcConfigurationsId");
-
-                    b.ToTable("MemoryPcConfiguration");
-                });
-
-            modelBuilder.Entity("PcConfigurationRam", b =>
-                {
-                    b.Property<Guid>("PcConfigurationsId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("RamsId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("PcConfigurationsId", "RamsId");
-
-                    b.HasIndex("RamsId");
-
-                    b.ToTable("PcConfigurationRam");
-                });
-
             modelBuilder.Entity("KomputerBudowanieAPI.Models.PcConfiguration", b =>
                 {
                     b.HasOne("KomputerBudowanieAPI.Models.CpuCooling", "CPU_Cooling")
@@ -816,7 +820,9 @@ namespace KomputerBudowanieAPI.Migrations
 
                     b.HasOne("KomputerBudowanieAPI.Models.User", "User")
                         .WithMany("Configurations")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("CPU_Cooling");
 
@@ -835,34 +841,42 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MemoryPcConfiguration", b =>
+            modelBuilder.Entity("KomputerBudowanieAPI.Models.PcConfigurationMemory", b =>
                 {
-                    b.HasOne("KomputerBudowanieAPI.Models.Memory", null)
-                        .WithMany()
-                        .HasForeignKey("MemoriesId")
+                    b.HasOne("KomputerBudowanieAPI.Models.Memory", "Memory")
+                        .WithMany("PcConfigurationMemories")
+                        .HasForeignKey("MemoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("KomputerBudowanieAPI.Models.PcConfiguration", null)
-                        .WithMany()
-                        .HasForeignKey("PcConfigurationsId")
+                    b.HasOne("KomputerBudowanieAPI.Models.PcConfiguration", "PcConfiguration")
+                        .WithMany("PcConfigurationMemories")
+                        .HasForeignKey("PcConfigurationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Memory");
+
+                    b.Navigation("PcConfiguration");
                 });
 
-            modelBuilder.Entity("PcConfigurationRam", b =>
+            modelBuilder.Entity("KomputerBudowanieAPI.Models.PcConfigurationRam", b =>
                 {
-                    b.HasOne("KomputerBudowanieAPI.Models.PcConfiguration", null)
-                        .WithMany()
-                        .HasForeignKey("PcConfigurationsId")
+                    b.HasOne("KomputerBudowanieAPI.Models.PcConfiguration", "PcConfiguration")
+                        .WithMany("PcConfigurationRams")
+                        .HasForeignKey("PcConfigurationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("KomputerBudowanieAPI.Models.Ram", null)
-                        .WithMany()
-                        .HasForeignKey("RamsId")
+                    b.HasOne("KomputerBudowanieAPI.Models.Ram", "Ram")
+                        .WithMany("PcConfigurationRams")
+                        .HasForeignKey("RamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("PcConfiguration");
+
+                    b.Navigation("Ram");
                 });
 
             modelBuilder.Entity("KomputerBudowanieAPI.Models.Case", b =>
@@ -890,14 +904,31 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Navigation("Configurations");
                 });
 
+            modelBuilder.Entity("KomputerBudowanieAPI.Models.Memory", b =>
+                {
+                    b.Navigation("PcConfigurationMemories");
+                });
+
             modelBuilder.Entity("KomputerBudowanieAPI.Models.Motherboard", b =>
                 {
                     b.Navigation("Configurations");
                 });
 
+            modelBuilder.Entity("KomputerBudowanieAPI.Models.PcConfiguration", b =>
+                {
+                    b.Navigation("PcConfigurationMemories");
+
+                    b.Navigation("PcConfigurationRams");
+                });
+
             modelBuilder.Entity("KomputerBudowanieAPI.Models.PowerSupply", b =>
                 {
                     b.Navigation("Configurations");
+                });
+
+            modelBuilder.Entity("KomputerBudowanieAPI.Models.Ram", b =>
+                {
+                    b.Navigation("PcConfigurationRams");
                 });
 
             modelBuilder.Entity("KomputerBudowanieAPI.Models.User", b =>
