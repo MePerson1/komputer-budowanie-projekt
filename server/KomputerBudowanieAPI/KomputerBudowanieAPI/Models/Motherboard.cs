@@ -8,47 +8,37 @@ namespace KomputerBudowanieAPI.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
+        public float Price { get; set; }
         public string Producer { get; set; }
-        public string Description { get; set; }
-        public double Price { get; set; }
         public string ProducerCode { get; set; }
-        public string Socket { get; set; }
-        public string Chipset { get; set; }
-        public string FormFactor { get; set; }
 
-        public int MaxRam { get; set; }
-        public string[] RamType { get; set; }
-        public int RamSlotsCount { get; set; }
-
-        public int PCIe_x16Slots { get; set; }
-        public int PCIe_x4Slots { get; set; }
-        public int PCIe_x1Slots { get; set; }
-
-
-        /*
-         * DO EDYCJI!
-         */
-        //public Dictionary<string, int> USBPorts { get; set; }
-
-        //public Dictionary<string, int> VideoPorts { get; set; }
-
-        public int SATAPorts { get; set; }
-        public int M2Slots { get; set; }
-        public int EthernetPorts { get; set; }
-        public int AudioChannels { get; set; }
-
-        public bool BluetoothSupport { get; set; }  // Bluetooth support (true/false)
-        public bool WiFiSupport { get; set; }
-
-
-        /*
-         * DO EDYCJI!
-         */
-        //public Dictionary<string, int> AudioPorts { get; set; }
-        //public Dictionary<string, int> RGBPorts { get; set; }
-        public int Height { get; set; }
-        public int Width { get; set; }
-        public int Depth { get; set; }
+        // Board Details
+        public string BoardStandard { get; set; } // Standard płyty
+        public float WidthMM { get; set; } // Szerokość [mm]
+        public float DepthMM { get; set; } // Głębokość [mm]
+        public string Chipset { get; set; } // Chipset płyty
+        public string CPUSocket { get; set; } // Gniazdo procesora
+        public string SupportedProcessors { get; set; } // Obsługiwane procesory (Intel Celeron, Intel Core i3, etc.)
+        public string? RAIDController { get; set; } // Kontroler RAID
+        public string MemoryStandard { get; set; } // Standard pamięci
+        public string MemoryConnectorType { get; set; } // Rodzaj złącza
+        public int MemorySlotsCount { get; set; } // Liczba slotów pamięci
+        public string SupportedMemoryFreq { get; set; } // Częstotliwości pracy pamięci
+        public int MaxMemoryGB { get; set; } // Maksymalna ilość pamięci
+        public string ChannelArchitecture { get; set; } // Architektura wielokanałowa
+        public bool HasIntegratedGraphicsSupport { get; set; } // Obsługa zintegrowanych układów graficznych
+        public string GraphicsChipset { get; set; } // Chipset graficzny
+        public string? CardLinking { get; set; } // Łączenie kart graficznych
+        public string SoundChipset { get; set; } // Chipset dźwiękowy
+        public string AudioChannels { get; set; } // Kanały audio
+        public string IntegratedNetworkCard { get; set; } // Zintegrowana karta sieciowa
+        public string NetworkChipset { get; set; } // Chipset karty sieciowej
+        public string? WirelessSupport { get; set; } // Praca bezprzewodowa
+        public string ExpansionSlots { get; set; } // Gniazda rozszerzeń
+        public string DriveConnectors { get; set; } // Złącza napędów
+        public string InternalConnectors { get; set; } // Złącza wewnętrzne
+        public string RearPanelConnectors { get; set; } // Panel tylny
+        public string? IncludedAccessories { get; set; } // Załączone wyposażenie
 
         /*
         *  RELACJE

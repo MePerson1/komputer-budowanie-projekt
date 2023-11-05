@@ -3,6 +3,7 @@ using System;
 using KomputerBudowanieAPI.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KomputerBudowanieAPI.Migrations
 {
     [DbContext(typeof(KomBuildDbContext))]
-    partial class KomBuildDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231102215830_PowerSupplyModelFixed")]
+    partial class PowerSupplyModelFixed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,28 +98,34 @@ namespace KomputerBudowanieAPI.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PanelBottom")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PanelFront")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PanelRear")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PanelSide")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PanelTop")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PowerSupply")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<float?>("PowerSupplyPower")
+                    b.Property<float>("PowerSupplyPower")
                         .HasColumnType("real");
 
-                    b.Property<float>("Price")
-                        .HasColumnType("real");
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
 
                     b.Property<string>("Producer")
                         .IsRequired()
@@ -177,6 +186,7 @@ namespace KomputerBudowanieAPI.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("IntegratedGraphics")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("L1Cache")
@@ -215,8 +225,8 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Property<int>("NumberOfThreads")
                         .HasColumnType("integer");
 
-                    b.Property<float>("Price")
-                        .HasColumnType("real");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
 
                     b.Property<float>("ProcessorBaseFrequencyGHz")
                         .HasColumnType("real");
@@ -238,6 +248,7 @@ namespace KomputerBudowanieAPI.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("SupportedMemoryTypes")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("TDPinW")
@@ -387,9 +398,6 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Property<int>("CardLengthMM")
                         .HasColumnType("integer");
 
-                    b.Property<string>("CardLinking")
-                        .HasColumnType("text");
-
                     b.Property<string>("ChipsetProducer")
                         .IsRequired()
                         .HasColumnType("text");
@@ -409,11 +417,8 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Property<int>("CoreClockMHz")
                         .HasColumnType("integer");
 
-                    b.Property<int>("DSub")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("DVI")
-                        .HasColumnType("integer");
+                    b.Property<bool>("DLSS3Supported")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
@@ -424,13 +429,22 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Property<int>("FanCount")
                         .HasColumnType("integer");
 
-                    b.Property<int>("HDMI")
+                    b.Property<int>("HDMICount")
                         .HasColumnType("integer");
 
-                    b.Property<bool>("HasDLSS3Support")
+                    b.Property<bool>("HasDSub")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("HasLEDLighting")
+                    b.Property<bool>("HasDVI")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("HasMiniDisplayPort")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("HasUSBC")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("LEDLighting")
                         .HasColumnType("boolean");
 
                     b.Property<int>("MemoryBusWidthBits")
@@ -445,9 +459,6 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Property<string>("MemoryType")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int>("MiniDisplayPort")
-                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -490,9 +501,6 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Property<int>("TextureUnits")
                         .HasColumnType("integer");
 
-                    b.Property<int>("USBC")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.ToTable("GraphicCards");
@@ -506,49 +514,27 @@ namespace KomputerBudowanieAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CacheMemory")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Capacity")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Controler")
-                        .HasColumnType("text");
+                    b.Property<int>("Capacity")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<string>("FormFactor")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool?>("HardwareEncryption")
-                        .HasColumnType("boolean");
+                    b.Property<string>("Format")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<float>("Height")
+                        .HasColumnType("real");
 
                     b.Property<string>("Interface")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Key")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Longevity")
-                        .HasColumnType("text");
-
-                    b.Property<string>("MemoryChipType")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Model")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<float?>("NoiseLevelDB")
-                        .HasColumnType("real");
 
                     b.Property<double>("Price")
                         .HasColumnType("double precision");
@@ -561,35 +547,14 @@ namespace KomputerBudowanieAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool?>("Radiator")
-                        .HasColumnType("boolean");
-
-                    b.Property<int?>("ReadRandomIOPS")
+                    b.Property<int>("ReadSpeed")
                         .HasColumnType("integer");
-
-                    b.Property<int?>("ReadSpeedMBs")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("RotatingSpeedRPM")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("TBW")
-                        .HasColumnType("text");
-
-                    b.Property<float>("ThiccnessMM")
-                        .HasColumnType("real");
 
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<float?>("WeightG")
-                        .HasColumnType("real");
-
-                    b.Property<int?>("WriteRandomIOPS")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("WriteSpeedMBs")
+                    b.Property<int>("WriteSpeed")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -605,82 +570,54 @@ namespace KomputerBudowanieAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AudioChannels")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("AudioChannels")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("BoardStandard")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("CPUSocket")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("CardLinking")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ChannelArchitecture")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<bool>("BluetoothSupport")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Chipset")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<float>("DepthMM")
-                        .HasColumnType("real");
-
-                    b.Property<string>("DriveConnectors")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ExpansionSlots")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("GraphicsChipset")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("HasIntegratedGraphicsSupport")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("IncludedAccessories")
-                        .HasColumnType("text");
-
-                    b.Property<string>("IntegratedNetworkCard")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("InternalConnectors")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("MaxMemoryGB")
+                    b.Property<int>("Depth")
                         .HasColumnType("integer");
 
-                    b.Property<string>("MemoryConnectorType")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("MemorySlotsCount")
+                    b.Property<int>("EthernetPorts")
                         .HasColumnType("integer");
 
-                    b.Property<string>("MemoryStandard")
+                    b.Property<string>("FormFactor")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("M2Slots")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MaxRam")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("NetworkChipset")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("PCIe_x16Slots")
+                        .HasColumnType("integer");
 
-                    b.Property<float>("Price")
-                        .HasColumnType("real");
+                    b.Property<int>("PCIe_x1Slots")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PCIe_x4Slots")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
 
                     b.Property<string>("Producer")
                         .IsRequired()
@@ -690,30 +627,25 @@ namespace KomputerBudowanieAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("RAIDController")
-                        .HasColumnType("text");
+                    b.Property<int>("RamSlotsCount")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("RearPanelConnectors")
+                    b.Property<string[]>("RamType")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.Property<int>("SATAPorts")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Socket")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("SoundChipset")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<bool>("WiFiSupport")
+                        .HasColumnType("boolean");
 
-                    b.Property<string>("SupportedMemoryFreq")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("SupportedProcessors")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<float>("WidthMM")
-                        .HasColumnType("real");
-
-                    b.Property<string>("WirelessSupport")
-                        .HasColumnType("text");
+                    b.Property<int>("Width")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -830,6 +762,7 @@ namespace KomputerBudowanieAPI.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("ModularCabling")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("Molex")
@@ -858,8 +791,8 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Property<int>("PowerW")
                         .HasColumnType("integer");
 
-                    b.Property<float>("Price")
-                        .HasColumnType("real");
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
 
                     b.Property<string>("Producer")
                         .IsRequired()
@@ -892,48 +825,20 @@ namespace KomputerBudowanieAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CapacityGB")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Cooling")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("FrequencyMHz")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("HasLighting")
+                    b.Property<bool>("ECC")
                         .HasColumnType("boolean");
+
+                    b.Property<float>("Height")
+                        .HasColumnType("real");
 
                     b.Property<int>("LatencyCL")
                         .HasColumnType("integer");
 
-                    b.Property<bool>("LowProfile")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("MemoryType")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("ModuleCount")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("OverclockingProfile")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("PinType")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -948,7 +853,14 @@ namespace KomputerBudowanieAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<float>("VoltageV")
+                    b.Property<int>("Speed")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<float>("Voltage")
                         .HasColumnType("real");
 
                     b.HasKey("Id");

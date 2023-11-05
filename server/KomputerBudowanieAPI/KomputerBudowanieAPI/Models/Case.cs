@@ -8,36 +8,49 @@ namespace KomputerBudowanieAPI.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
+        public float Price { get; set; }
         public string Producer { get; set; }
-        public string Description { get; set; }
-        public double Price { get; set; }
         public string ProducerCode { get; set; }
-        public string Type { get; set; }
         public string Color { get; set; }
-        public bool Lightning { get; set; }
+        public bool HasLightning { get; set; }
+        public float HeightCM { get; set; }
+        public float LengthCM { get; set; }
+        public float WidthCM { get; set; }
+        public float WeightKG { get; set; }
+        public string CaseType { get; set; }
+        public string Compatibility { get; set; }
+        public bool HasWindow { get; set; }
+        public bool IsMuted { get; set; }
+        public float MaxGPULengthCM { get; set; }
+        public float MaxCoolingSystemHeightCM { get; set; }
 
-        public string FormFactor { get; set; }
+        public int USBTwoCount { get; set; }
+        public int USBThreeCount { get; set; }
+        public int USBThreePointOneCount { get; set; }
+        public int USBThreePointTwoCount { get; set; }
+        public int USBTypeCCount { get; set; }
+        public int USBTurboChargingCount { get; set; }
 
-        public string MotherboardType { get; set; }
-        public string PowerSupplyType { get; set; }
-        public int MaxGPUSize { get; set; }
+        public bool HasMemoryCardReader { get; set; }
+        public bool HasAudioPort { get; set; }
+        public bool HasMicrophonePort { get; set; }
 
+        public int InternalBaysTwoPointFiveInch { get; set; }
+        public int InternalBaysThreePointFiveInch { get; set; }
+        public int ExternalBaysThreePointFiveInch { get; set; }
+        public int ExternalBaysFivePointTwoFiveInch { get; set; }
 
-        public bool PowerSupply { get; set; }
-
-        public float Height { get; set; }
-        public float Width { get; set; }
-        public float Lenght { get; set; }
-
-        /*
-         * DO EDYCJI!
-         */
-        //public Dictionary<string, int> FrontPanelInputs { get; set; }
-        public int External5_25Bays { get; set; }
-        public int Internal3_5Bays { get; set; }
-        public int Internal2_5Bays { get; set; }
         public int ExpansionSlots { get; set; }
-        public bool WaterCoolingSupport { get; set; }
+
+        public string? PanelFront { get; set; }
+        public string? PanelRear { get; set; }
+        public string? PanelSide { get; set; }
+        public string? PanelBottom { get; set; }
+        public string? PanelTop { get; set; }
+
+        public string? PowerSupply { get; set; }
+        public float? PowerSupplyPower { get; set; }
+        public string? Description { get; set; }
 
         /*
          *  RELACJE

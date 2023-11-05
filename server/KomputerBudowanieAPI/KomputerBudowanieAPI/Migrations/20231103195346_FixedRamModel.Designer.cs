@@ -3,6 +3,7 @@ using System;
 using KomputerBudowanieAPI.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KomputerBudowanieAPI.Migrations
 {
     [DbContext(typeof(KomBuildDbContext))]
-    partial class KomBuildDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231103195346_FixedRamModel")]
+    partial class FixedRamModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -506,49 +509,27 @@ namespace KomputerBudowanieAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CacheMemory")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Capacity")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Controler")
-                        .HasColumnType("text");
+                    b.Property<int>("Capacity")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<string>("FormFactor")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool?>("HardwareEncryption")
-                        .HasColumnType("boolean");
+                    b.Property<string>("Format")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<float>("Height")
+                        .HasColumnType("real");
 
                     b.Property<string>("Interface")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Key")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Longevity")
-                        .HasColumnType("text");
-
-                    b.Property<string>("MemoryChipType")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Model")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<float?>("NoiseLevelDB")
-                        .HasColumnType("real");
 
                     b.Property<double>("Price")
                         .HasColumnType("double precision");
@@ -561,35 +542,14 @@ namespace KomputerBudowanieAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool?>("Radiator")
-                        .HasColumnType("boolean");
-
-                    b.Property<int?>("ReadRandomIOPS")
+                    b.Property<int>("ReadSpeed")
                         .HasColumnType("integer");
-
-                    b.Property<int?>("ReadSpeedMBs")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("RotatingSpeedRPM")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("TBW")
-                        .HasColumnType("text");
-
-                    b.Property<float>("ThiccnessMM")
-                        .HasColumnType("real");
 
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<float?>("WeightG")
-                        .HasColumnType("real");
-
-                    b.Property<int?>("WriteRandomIOPS")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("WriteSpeedMBs")
+                    b.Property<int>("WriteSpeed")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
