@@ -22,7 +22,7 @@ namespace KomputerBudowanieAPI.Controllers
         public async Task<IActionResult> GetAllGraphicCards()
         {
             var graphicCards = await _graphicCardRepository.GetAllAsync();
-            if (graphicCards is null)
+            if (graphicCards is null || !graphicCards.Any())
             {
                 return NotFound();
             }

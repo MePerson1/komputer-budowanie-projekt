@@ -23,7 +23,7 @@ namespace KomputerBudowanieAPI.Controllers
         public async Task<IActionResult> GetAllCpusCollings()
         {
             var cpuCoolings = await _cpuCoolingRepository.GetAllAsync();
-            if (cpuCoolings is null)
+            if (cpuCoolings is null || !cpuCoolings.Any())
             {
                 return NotFound();
             }

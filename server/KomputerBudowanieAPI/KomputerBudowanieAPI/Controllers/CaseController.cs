@@ -23,7 +23,7 @@ namespace KomputerBudowanieAPI.Controllers
         public async Task<IActionResult> GetAllCases()
         {
             var cases = await _caseRepository.GetAllAsync();
-            if (cases is null)
+            if (cases is null || !cases.Any())
             {
                 return NotFound();
             }

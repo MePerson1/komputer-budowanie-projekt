@@ -1,8 +1,7 @@
 ﻿namespace KomputerBudowanieAPI.Dto
 {
-    public class PcConfigurationDto
+    public class PcConfigurationCreateDto
     {
-        public Guid Id { get; set; }
         //[Required]
         public string Name { get; set; }
         public string? Description { get; set; }
@@ -19,6 +18,5 @@
 
         public ICollection<int>? MemoryIds { get; set; }
         public ICollection<int>? RamsIds { get; set; }
-
     }
 }

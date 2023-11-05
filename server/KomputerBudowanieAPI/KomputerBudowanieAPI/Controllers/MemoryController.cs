@@ -22,7 +22,7 @@ namespace KomputerBudowanieAPI.Controllers
         public async Task<IActionResult> GetAllMemories()
         {
             var memories = await _memoryRepository.GetAllAsync();
-            if (memories is null)
+            if (memories is null || !memories.Any())
             {
                 return NotFound();
             }

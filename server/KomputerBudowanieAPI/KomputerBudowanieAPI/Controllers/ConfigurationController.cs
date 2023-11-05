@@ -65,34 +65,32 @@ namespace KomputerBudowanieAPI.Controllers
             {
                 return BadRequest();
             }
-            //if(!ModelState.IsValid) 
-            //{
-            //    return BadRequest(ModelState);
-            //}
-
-            //PcConfiguration newPcConfiguration = new PcConfiguration();
-            //newPcConfiguration.Id = Guid.NewGuid();
-            ////newPcConfiguration.User = _userRepository.GetById(newConfigurationDetails.UserId);
-            //newPcConfiguration.Name = newConfigurationDetails.Name;
-            //newPcConfiguration.Description = newConfigurationDetails.Description;
 
             var done = await _pcConfigurationRepository.Create(newConfigurationDetails);
 
-            return Ok(done);
+            return done == false ? BadRequest(done) : Ok(done);
         }
 
         // PUT api/<ConfigurationController>/5
         [HttpPut("{id}")]
-        public void Put(Guid id, [FromBody] PcConfigurationDto editingConfigurationDetails)
+        public async Task<IActionResult> Put(Guid id, [FromBody] PcConfigurationDto editingConfigurationDetails)
         {
-
+            var done = await _pcConfigurationRepository.Update(id, editingConfigurationDetails);
+            return done == false ? BadRequest() : Ok();
         }
 
         // DELETE api/<ConfigurationController>/5
         [HttpDelete("{id}")]
-        public void Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
+            var pcConf = await _pcConfigurationRepository.GetByIdAsync(id);
+            if (pcConf is null)
+            {
+                return NotFound();
+            }
 
+            await _pcConfigurationRepository.Delete(pcConf);
+            return Accepted();
         }
 
 
