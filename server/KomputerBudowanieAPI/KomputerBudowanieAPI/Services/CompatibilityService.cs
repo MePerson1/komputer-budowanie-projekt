@@ -24,10 +24,17 @@ namespace KomputerBudowanieAPI.Services
             if (configuration is null)
             {
                 toast.Problems.Add("Something went wrong");
+                return toast;
             }
 
             if (configuration.Motherboard != null)
             {
+                //CheckSupportedProcessor
+                if (!configuration.Motherboard.SupportedProcessors.Contains(configuration.Cpu.Line))
+                {
+                    toast.Problems.Add("Motherboard doesn't support this Cpu line!");
+                }
+                //CheckCPUSocket
                 if (configuration.Motherboard.CPUSocket != configuration.Cpu.SocketType)
                 {
                     toast.Problems.Add("Wrong motherboard socket!");
@@ -37,7 +44,24 @@ namespace KomputerBudowanieAPI.Services
             return toast;
         }
 
+        public async Task<Toast?> MemoryCompatibilityCheck(PcConfiguration configuration)
+        {
 
+            Toast toast = new Toast();
+
+            if (configuration is null)
+            {
+                toast.Problems.Add("Something went wrong");
+                return toast;
+            }
+
+            if (configuration.Motherboard != null)
+            {
+
+            }
+
+            return toast;
+        }
     }
 }
 
