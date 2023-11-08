@@ -16,11 +16,6 @@ code {
     monospace;
 }
 
-body {
-  background: linear-gradient(
-    129deg,
-    rgba(23, 18, 27, 0.96) 17.02%,
-    #0d0017 106.45%
-  );
+main {
   color: white;
 }
