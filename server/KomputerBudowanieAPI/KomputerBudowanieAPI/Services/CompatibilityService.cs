@@ -57,7 +57,7 @@ namespace KomputerBudowanieAPI.Services
                 return toast;
             }
 
-            if (configuration.Motherboard != null)
+            if (configuration.Motherboard is not null)
             {
 
             }
@@ -80,7 +80,7 @@ namespace KomputerBudowanieAPI.Services
 
             if (configuration is null)
             {
-                toast.Problems.Add("Something went wrong");
+                toast.Problems.Add("Something went wrong!");
                 return toast;
             }
             if(configuration.GraphicCard is null)
@@ -92,94 +92,81 @@ namespace KomputerBudowanieAPI.Services
             {
                 toast.Problems.Add("Grahic Card is too big for that case!");
             }
-            if(!configuration.Motherboard.ExpansionSlots.Contains(configuration.GraphicCard.ConnectorType)) //TO TRZEBA ROZBUDOWAĆ Z TYMI GŁUPIMI STRINGAMI
+            if(configuration.Motherboard is not null)
             {
-                toast.Problems.Add("Graphic card and motherboard don't share the same connector!");
+                if (!configuration.Motherboard.ExpansionSlots.Contains(configuration.GraphicCard.ConnectorType)) //TO TRZEBA ROZBUDOWAĆ Z TYMI GŁUPIMI STRINGAMI
+                {
+                    toast.Problems.Add("Graphic card and motherboard don't share the same connector!");
+                }
             }
             if(configuration.PowerSupply is not null)
             {
-                int connectorCount;
-                string connectorType1;
-                string connectorType2;
-                (connectorCount, connectorType1, connectorType2) =ExtractConnectorInfo(configuration.GraphicCard.PowerConnectors);
+                List<string> graphicCardConnectors = ExtractConnectorInfo(configuration.GraphicCard.PowerConnectors);
 
-                if (connectorType1 == "8-pin" || connectorType2 == "8-pin")
+                int powerSupply6_plus2pin = configuration.PowerSupply.PCIE8Pin_6Plus4;
+                int powerSupply6pin = configuration.PowerSupply.PCIE6Pin;
+                int powerSupply8pin = configuration.PowerSupply.PCIE8Pin;
+                int powerSupply16pin = configuration.PowerSupply.PCIE16Pin;
+                foreach (var connector in graphicCardConnectors)
                 {
-                    if (configuration.PowerSupply.PCIE8Pin_6Plus4 < connectorCount || configuration.PowerSupply.PCIE8Pin < connectorCount)
+                    if(connector == "16-pin")
                     {
-                        toast.Problems.Add("Insufficient 8-pin connectors on the power supply");
+                        if(powerSupply16pin > 0) { powerSupply16pin--; }
+                        else { toast.Problems.Add("Insufficient 16-pin connectors on the power supply!"); }
+                    }
+                    else if(connector == "8-pin")
+                    {
+                        if (powerSupply8pin > 0){ powerSupply8pin--; }
+                        else if(powerSupply6_plus2pin > 0) { powerSupply6_plus2pin--; }
+                        else { toast.Problems.Add("Insufficient 8-pin connectors on the power supply!"); }
+                    }
+                    else if(connector == "6-pin")
+                    {
+                        if (powerSupply6pin > 0) { powerSupply6pin--; }
+                        else if (powerSupply6_plus2pin > 0) { powerSupply6_plus2pin--; }
+                        else { toast.Problems.Add("Insufficient 6-pin connectors on the power supply!"); }
+                    }
+                    else
+                    {
+                        Toast error = new Toast();
+                        error.Problems.Add("Something went wrong!");
+                        return error;
                     }
                 }
-
-                if (connectorType1 == "16-pin" || connectorType2 == "16-pin")
-                {
-                    if (configuration.PowerSupply.PCIE16Pin < connectorCount)
-                    {
-                        toast.Problems.Add("Insufficient 16-pin connectors on the power supply");
-                    }
-                }
-
-                if (connectorType1 == "6-pin" || connectorType2 == "6-pin")
-                {
-                    if (configuration.PowerSupply.PCIE8Pin_6Plus4 < connectorCount || configuration.PowerSupply.PCIE6Pin < connectorCount)
-                    {
-                        toast.Problems.Add("Insufficient 6-pin connectors on the power supply");
-                    }
-                }
-
 
             }
-
-
-
             return toast;
         }
 
-        static private (int, string, string) ExtractConnectorInfo(string input)
+        static private List<string> ExtractConnectorInfo(string input)
         {
-            string pattern;
-            bool dual = false;
-            if (input.Contains("x")) //"3x 8-pin"
-            {
-                pattern = @"(\d+)x? (\d+-pin)";
-            }
-            else if (input.Contains("+")) //"6-pin + 8-pin"
-            {
-                pattern = @"(\d+-pin \+ \d+-pin)";
-                dual = true;
-            }
-            else //"6-pin"
-            {
-                pattern = @"()(\d+-pin)";
-            }
+            List<string> connectors = new List<string>();
 
-            Match match = Regex.Match(input, pattern);
+            string[] parts = input.Split('+'); // Dzielimy string na części po znaku '+'
 
-            if (match.Success)
+            foreach (var part in parts)
             {
-                if (dual)
+                if (part.Contains('x'))
                 {
-                    string connectorType1 = match.Groups[1].Value;
-                    string connectorType2 = match.Groups[2].Value;
-                    return (2, connectorType1, connectorType2);
+                    // Jeśli w danej części występuje "x", to oczekujemy, że jest to w formie "Nx 8-pin"
+                    string[] subparts = part.Trim().Split('x');
+                    if (subparts.Length == 2 && int.TryParse(subparts[0], out int count))
+                    {
+                        string connector = subparts[1].Trim();
+                        for (int i = 0; i < count; i++)
+                        {
+                            connectors.Add(connector);
+                        }
+                    }
                 }
                 else
                 {
-                    string connectorCount = match.Groups[1].Value;
-                    string connectorType = match.Groups[2].Value;
-
-                    if (!string.IsNullOrEmpty(connectorCount))
-                    {
-                        return (int.Parse(connectorCount), connectorType, "");
-                    }
-                    else if (!string.IsNullOrEmpty(connectorType))
-                    {
-                        return (1, connectorType, "");
-                    }
+                    // W przeciwnym przypadku, traktujemy całą część jako jedno złącze
+                    connectors.Add(part.Trim());
                 }
             }
 
-            return (0, "unknown", "unknown");
+            return connectors;
         }
     }
 }
