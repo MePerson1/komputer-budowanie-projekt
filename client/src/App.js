@@ -1,7 +1,6 @@
 import NavBar from "./components/shared/NavBar";
 import { Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
+import { Home, Build, NotFound } from "./pages";
 function App() {
   return (
     <div className="App">
@@ -11,6 +10,7 @@ function App() {
       <main className="pt-5">
         <Routes>
           <Route path="/" exect element={<Home />} />
+          <Route path="build" exect element={<Build />} />
           <Route path="*" exect element={<NotFound />} />
         </Routes>
       </main>
