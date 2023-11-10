@@ -66,14 +66,14 @@ namespace KomputerBudowanieAPI.Repository
                 var fan = _context.Fans.FirstOrDefault(x => x.Id == newConfigurationDto.FanId);
                 var motherboard = _context.Motherboards.FirstOrDefault(x => x.Id == newConfigurationDto.MotherboadId);
                 var graphicCard = _context.GraphicCards.FirstOrDefault(x => x.Id == newConfigurationDto.GraphicCardId);
-                var powerSupply = _context.PowerSupplys.FirstOrDefault(x => x.Id == newConfigurationDto.PowerSuplyId);
+                var powerSupply = _context.PowerSupplies.FirstOrDefault(x => x.Id == newConfigurationDto.PowerSuplyId);
 
                 //var memories = _context.Memories.Where(x => newConfigurationDto.MemoryIds.Contains(x.Id)).ToList();
                 //var rams = _context.Rams.Where(x => newConfigurationDto.RamsIds.Contains(x.Id)).ToList();
-                var memories = new List<Memory>();
+                var memories = new List<Storage>();
                 if (newConfigurationDto.MemoryIds != null && newConfigurationDto.MemoryIds.Any())
                 {
-                    memories = _context.Memories.Where(x => newConfigurationDto.MemoryIds.Contains(x.Id)).ToList();
+                    memories = _context.Storages.Where(x => newConfigurationDto.MemoryIds.Contains(x.Id)).ToList();
                 }
 
                 var rams = new List<Ram>();
@@ -137,14 +137,14 @@ namespace KomputerBudowanieAPI.Repository
                 var fan = _context.Fans.FirstOrDefault(x => x.Id == dto.FanId);
                 var motherboard = _context.Motherboards.FirstOrDefault(x => x.Id == dto.MotherboadId);
                 var graphicCard = _context.GraphicCards.FirstOrDefault(x => x.Id == dto.GraphicCardId);
-                var powerSupply = _context.PowerSupplys.FirstOrDefault(x => x.Id == dto.PowerSuplyId);
+                var powerSupply = _context.PowerSupplies.FirstOrDefault(x => x.Id == dto.PowerSuplyId);
 
                 //var memories = _context.Memories.Where(x => newConfigurationDto.MemoryIds.Contains(x.Id)).ToList();
                 //var rams = _context.Rams.Where(x => newConfigurationDto.RamsIds.Contains(x.Id)).ToList();
-                var memories = new List<Memory>();
+                var memories = new List<Storage>();
                 if (dto.MemoryIds != null && dto.MemoryIds.Any())
                 {
-                    memories = _context.Memories.Where(x => dto.MemoryIds.Contains(x.Id)).ToList();
+                    memories = _context.Storages.Where(x => dto.MemoryIds.Contains(x.Id)).ToList();
                 }
 
                 var rams = new List<Ram>();

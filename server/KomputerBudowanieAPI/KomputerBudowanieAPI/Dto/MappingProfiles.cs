@@ -22,8 +22,8 @@ namespace KomputerBudowanieAPI.Dto
             CreateMap<GraphicCard, GraphicCardDto>();
             CreateMap<GraphicCardDto, GraphicCard>();
 
-            CreateMap<Memory, MemoryDto>();
-            CreateMap<MemoryDto, Memory>();
+            CreateMap<Storage, StorageDto>();
+            CreateMap<StorageDto, Storage>();
 
             CreateMap<Motherboard, MotherboardDto>();
             CreateMap<MotherboardDto, Motherboard>();

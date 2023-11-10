@@ -3,6 +3,7 @@ using System;
 using KomputerBudowanieAPI.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KomputerBudowanieAPI.Migrations
 {
     [DbContext(typeof(KomBuildDbContext))]
-    partial class KomBuildDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231110001006_minorModelAdjustments2")]
+    partial class minorModelAdjustments2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -256,51 +259,28 @@ namespace KomputerBudowanieAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<float?>("AirflowCFM")
-                        .HasColumnType("real");
-
-                    b.Property<string>("BaseMaterial")
+                    b.Property<string>("Connectr")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ColorElement")
+                    b.Property<string>("CoolingType")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<float>("DepthMM")
-                        .HasColumnType("real");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("FanCount")
                         .HasColumnType("integer");
 
-                    b.Property<int>("FanDiameterMM")
-                        .HasColumnType("integer");
+                    b.Property<double>("Height")
+                        .HasColumnType("double precision");
 
-                    b.Property<bool>("HasLighting")
+                    b.Property<bool>("LiuquidCooling")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("HeatPipeDiameterMM")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("HeatPipesCount")
-                        .HasColumnType("integer");
-
-                    b.Property<float>("HeightMM")
-                        .HasColumnType("real");
-
-                    b.Property<int?>("LifespanHours")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("MaxFanSpeedPerMin")
-                        .HasColumnType("integer");
-
-                    b.Property<float?>("MaxNoiseLevelinDBA")
-                        .HasColumnType("real");
-
-                    b.Property<int?>("MaxTDPinW")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("MountingType")
+                    b.Property<string>("Material")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -308,12 +288,11 @@ namespace KomputerBudowanieAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<float>("Price")
-                        .HasColumnType("real");
+                    b.Property<double>("NoiseLevel")
+                        .HasColumnType("double precision");
 
-                    b.Property<string>("ProcessorSocket")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
 
                     b.Property<string>("Producer")
                         .IsRequired()
@@ -323,11 +302,27 @@ namespace KomputerBudowanieAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("WeightGrams")
+                    b.Property<bool>("RGBSupport")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("RPM")
                         .HasColumnType("integer");
 
-                    b.Property<float>("WidthMM")
-                        .HasColumnType("real");
+                    b.Property<string>("Sockets")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("TDP")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TowerCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Voltage")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("Width")
+                        .HasColumnType("double precision");
 
                     b.HasKey("Id");
 

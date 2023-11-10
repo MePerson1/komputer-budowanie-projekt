@@ -25,7 +25,7 @@ namespace KomputerBudowanieAPI.Models
 
         public User? User { get; set; } = null;
 
-        public ICollection<Memory> Memories { get; set; }
+        public ICollection<Storage> Memories { get; set; }
         public ICollection<Ram> Rams { get; set; }
     }
 }

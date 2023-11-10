@@ -20,7 +20,7 @@ namespace KomputerBudowanieAPI.Dto
 
         public User? User { get; set; } = null;
 
-        public ICollection<MemoryDto> Memories { get; set; }
+        public ICollection<StorageDto> Memories { get; set; }
         public ICollection<RamDto> Rams { get; set; }
     }
 }
