@@ -11,8 +11,9 @@ config.read('config.ini')
 main_route = int(config.get('Settings', 'main_route'))
 parts_route = int(config.get('Settings', 'parts_route'))
 cooling_route = int(config.get('Settings', 'cooling_route'))
-show_raw_data_in_console = bool(config.get('Settings', 'show_raw_data_in_console'))
-show_translated_data_in_console = bool(config.get('Settings', 'show_translated_data_in_console'))
+show_raw_data_in_console = bool(int(config.get('Settings', 'show_raw_data_in_console')))
+show_translated_data_in_console = bool(int(config.get('Settings', 'show_translated_data_in_console')))
+add_to_database = bool(int(config.get('Settings', 'add_to_database')))
 
 if main_route not in [0, 2]:
     main_route = None
@@ -434,4 +435,5 @@ def add_products_to_database(prods):
 if main_route is not None:
     product_links = go_through_route()
     products = get_product_specs(product_links)
-    add_products_to_database(products)
+    if add_to_database:
+        add_products_to_database(products)
