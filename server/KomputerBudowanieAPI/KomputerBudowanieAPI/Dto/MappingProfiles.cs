@@ -16,8 +16,8 @@ namespace KomputerBudowanieAPI.Dto
             CreateMap<Cpu, CpuDto>();
             CreateMap<CpuDto, Cpu>();
 
-            CreateMap<Fan, FanDto>();
-            CreateMap<FanDto, Fan>();
+            CreateMap<WaterCooling, WaterCoolingDto>();
+            CreateMap<WaterCoolingDto, WaterCooling>();
 
             CreateMap<GraphicCard, GraphicCardDto>();
             CreateMap<GraphicCardDto, GraphicCard>();

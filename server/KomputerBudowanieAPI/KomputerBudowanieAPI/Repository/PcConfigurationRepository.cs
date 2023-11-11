@@ -63,7 +63,7 @@ namespace KomputerBudowanieAPI.Repository
                 var pcCase = await _context.Set<Case>().FindAsync(newConfigurationDto.CaseId);
                 var cpu = _context.Cpus.FirstOrDefault(x => x.Id == newConfigurationDto.CpuId);
                 var cpuCooling = _context.CpuCoolings.FirstOrDefault(x => x.Id == newConfigurationDto.CpuCoolingId);
-                var fan = _context.Fans.FirstOrDefault(x => x.Id == newConfigurationDto.FanId);
+                var fan = _context.WaterCoolings.FirstOrDefault(x => x.Id == newConfigurationDto.FanId);
                 var motherboard = _context.Motherboards.FirstOrDefault(x => x.Id == newConfigurationDto.MotherboadId);
                 var graphicCard = _context.GraphicCards.FirstOrDefault(x => x.Id == newConfigurationDto.GraphicCardId);
                 var powerSupply = _context.PowerSupplies.FirstOrDefault(x => x.Id == newConfigurationDto.PowerSuplyId);
@@ -134,7 +134,7 @@ namespace KomputerBudowanieAPI.Repository
                 var pcCase = await _context.Set<Case>().FindAsync(dto.CaseId);
                 var cpu = _context.Cpus.FirstOrDefault(x => x.Id == dto.CpuId);
                 var cpuCooling = _context.CpuCoolings.FirstOrDefault(x => x.Id == dto.CpuCoolingId);
-                var fan = _context.Fans.FirstOrDefault(x => x.Id == dto.FanId);
+                var fan = _context.WaterCoolings.FirstOrDefault(x => x.Id == dto.FanId);
                 var motherboard = _context.Motherboards.FirstOrDefault(x => x.Id == dto.MotherboadId);
                 var graphicCard = _context.GraphicCards.FirstOrDefault(x => x.Id == dto.GraphicCardId);
                 var powerSupply = _context.PowerSupplies.FirstOrDefault(x => x.Id == dto.PowerSuplyId);

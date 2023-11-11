@@ -11,9 +11,9 @@ config.read('config.ini')
 main_route = int(config.get('Settings', 'main_route'))
 parts_route = int(config.get('Settings', 'parts_route'))
 cooling_route = int(config.get('Settings', 'cooling_route'))
-show_raw_data_in_console = bool(int(config.get('Settings', 'show_raw_data_in_console')))
-show_translated_data_in_console = bool(int(config.get('Settings', 'show_translated_data_in_console')))
-add_to_database = bool(int(config.get('Settings', 'add_to_database')))
+show_raw_data_in_console = True if config.get('Settings', 'show_raw_data_in_console') == "1" else False
+show_translated_data_in_console = True if config.get('Settings', 'show_translated_data_in_console') == "1" else False
+add_to_database = True if config.get('Settings', 'add_to_database') == "1" else False
 
 if main_route not in [0, 2]:
     main_route = None
@@ -146,6 +146,30 @@ def translate_and_parse_cooling(specs):
             "MaxNoiseLevelinDBA": float(specs["Maksymalny poziom hałasu"].split()[0]) if specs["Maksymalny poziom hałasu"] != "Brak danych" else None,
             "AirflowCFM": float(specs["Przepływ powietrza [CFM]"]) if specs["Przepływ powietrza [CFM]"] != "Brak danych" else None,
             "LifespanHours": int(specs["Żywotność"].split()[0]) if specs["Żywotność"] != "Brak danych" else None,
+        }
+    elif cooling_route == 1:
+        translated = {
+            "Name": specs["Nazwa"],
+            "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
+            "Producer": specs["Producent"],
+            "ProducerCode": specs["Kod producenta"],
+            "IntelCompatibility": specs["Kompatybilność z procesorami Intel"].replace("\n", ""),
+            "AMDCompatibility": specs["Kompatybilność z procesorami AMD"].replace("\n", ""),
+            "Lighting": specs["Podświetlenie"] if specs["Podświetlenie"] != "Brak" else None,
+            "WeightG": int(specs["Waga [g]"]) if specs["Waga [g]"] != "Brak danych" else None,
+            "RadiatorSizeMM": float(specs["Rozmiar chłodnicy"].split()[0]),
+            "RadiatorLengthMM": float(specs["Długość chłodnicy [mm]"]),
+            "RadiatorWidthMM": float(specs["Szerokość chłodnicy [mm]"]),
+            "RadiatorHeightMM": float(specs["Wysokość chłodnicy [mm]"]),
+            "FanCount": int(specs["Liczba wentylatorów"]),
+            "FanDiameterMM": int(specs["Średnica wentylatora"].split()[0]),
+            "MaxFanSpeedRPM": int(specs["Maksymalna prędkość obrotowa"].split()[0]),
+            "HasPWMControl": True if specs["Regulacja obrotów PWM"] == "Tak" else False,
+            "MaxAirflowCFM": float(specs["Maksymalny przepływ powietrza"].split()[0]) if specs["Maksymalny przepływ powietrza"] != "Brak danych" else None,
+            "MaxNoiseLevelDBa": float(specs["Maksymalny poziom hałasu"].split()[0]) if specs["Maksymalny poziom hałasu"] != "Brak danych" else None,
+            "FanConnector": specs["Złącze wentylatora"],
+            "PumpConnector": specs["Złącze pompy"] if specs["Złącze pompy"] != "Brak danych" else None,
+            "LEDConnector": specs["Złącze podświetlenia LED"] if specs["Złącze podświetlenia LED"] not in ["Brak danych", "Nie dotyczy"] else None
         }
     else:
         translated = specs
@@ -412,6 +436,8 @@ def add_products_to_database(prods):
     elif main_route == 0:  # chlodzenie
         if cooling_route == 0:
             url = "http://localhost:5198/api/CpuCooling"
+        elif cooling_route == 1:
+            url = "http://localhost:5198/api/WaterCooling"
         else:
             url = ""
     else:

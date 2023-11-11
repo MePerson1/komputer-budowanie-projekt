@@ -3,6 +3,7 @@ using System;
 using KomputerBudowanieAPI.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KomputerBudowanieAPI.Migrations
 {
     [DbContext(typeof(KomBuildDbContext))]
-    partial class KomBuildDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231111234312_FixedWaterCoolingModel")]
+    partial class FixedWaterCoolingModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -975,15 +978,16 @@ namespace KomputerBudowanieAPI.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Lighting")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<float?>("MaxAirflowCFM")
+                    b.Property<float>("MaxAirflowCFM")
                         .HasColumnType("real");
 
                     b.Property<int>("MaxFanSpeedRPM")
                         .HasColumnType("integer");
 
-                    b.Property<float?>("MaxNoiseLevelDBa")
+                    b.Property<float>("MaxNoiseLevelDBa")
                         .HasColumnType("real");
 
                     b.Property<string>("Name")
@@ -1002,6 +1006,7 @@ namespace KomputerBudowanieAPI.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PumpConnector")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<float>("RadiatorHeightMM")
@@ -1021,7 +1026,7 @@ namespace KomputerBudowanieAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("WaterCoolings");
+                    b.ToTable("Fans");
                 });
 
             modelBuilder.Entity("PcConfigurationRam", b =>
