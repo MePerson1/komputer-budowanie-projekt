@@ -29,7 +29,7 @@ namespace KomputerBudowanieAPI.Services
             }
 
             Cpu_Motherboard(ref toast, configuration); //1 i 2
-            Cpu_GraphicCard(ref toast, configuration); //3
+            //Cpu_GraphicCard //3
 
             return toast;
         }
@@ -150,11 +150,11 @@ namespace KomputerBudowanieAPI.Services
                 return toast;
             }
 
-            Case_Motherboard(ref toast, configuration); //1
-            Case_PowerSupply(ref toast, configuration); //2 i 3
-            Case_GraphicCard(ref toast, configuration); //4
-            Case_CpuCooling(ref toast, configuration); //5
-            Case_Memories(ref toast, configuration); //7
+            Case_Motherboard(ref toast, configuration);
+            Case_PowerSupply(ref toast, configuration);
+            Case_CpuCooling(ref toast, configuration);
+            Case_Memories(ref toast, configuration);
+            Case_GraphicCard(ref toast, configuration);
 
             return toast;
         }
@@ -234,15 +234,17 @@ namespace KomputerBudowanieAPI.Services
         {
             if (configuration.Case is not null && configuration.PowerSupply is not null)
             {
-                if (configuration.Case.PowerSupply is null) //tego z danych które mamy to zrobić się nie da xd
+                if (configuration.Case.PowerSupply is null)
                 {
-                    //W przypadku obudowy (ale dotyczy to rozmiaru płyty głównej:
-                    //"compatibility": "ATX, Micro ATX (uATX), Mini ITX",
+                    //nie tak chyba xd
+                    //if(configuration.PowerSupply.FormFactor != configuration.Case.PowerSupply)
+                    //{
 
                     //W przypadku zasilacza:
                     //"formFactor": "ATX",
                     //"formFactor": "ATX 3.0",
 
+                    //}
                 }
                 else
                 {
@@ -251,7 +253,7 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
-        private static void Ram_CpuCooling(ref Toast toast, PcConfiguration configuration) //------------------------------------------------------------------------------
+        private static void Ram_CpuCooling(ref Toast toast, PcConfiguration configuration)
         {
             if (configuration.Rams is not null && configuration.CPU_Cooling is not null)
             {
@@ -307,21 +309,21 @@ namespace KomputerBudowanieAPI.Services
                     // "formFactor": "M.2 2280", 
 
                     //W dyskach SATA
-                    //"interface": "SATA 3",
+                    //"interface": "SATA III",
                     //"formFactor": "2.5 cala",
                     if (connectors.ContainsKey(disc.Interface))
                     {
-                        if (connectors[disc.Interface] > 0) connectors[disc.Interface] = connectors[disc.Interface]--;
-                        else toast.Problems.Add($"Lack of {disc.Interface} connectors!");
+                        if (connectors["SATA 3"] > 0) connectors["SATA 3"] = connectors["SATA 3"]--;
+                        else toast.Problems.Add("Lack of SATA 3 slots!");
                     }
                     else if (disc.FormFactor.Contains("M.2"))
                     {
                         if (connectors["M.2 slot"] > 0) connectors["M.2 slot"] = connectors["M.2 slot"]--;
-                        else toast.Problems.Add($"Lack of M.2 connectors!");
+                        else toast.Problems.Add("Lack of M.2 slots!");
                     }
                     else
                     {
-                        toast.Problems.Add($"{configuration.Motherboard.Name} does not have a {disc.Interface} connector for {disc.Name} disc!");
+                        toast.Problems.Add($"{disc.Name} disc has not recognized connector!");
                     }
                 }
             }
@@ -331,19 +333,11 @@ namespace KomputerBudowanieAPI.Services
         {
             if (configuration.Cpu is not null && configuration.Motherboard is not null)
             {
-                //Motherboard:
-                //"supportedProcessors": "Intel Celeron, Intel Core i3, Intel Core i5, Intel Core i7, Intel Core i9, Intel Pentium Gold",
-                //CPU:
-                //"line": "Core i9",
                 //CheckSupportedProcessor
                 if (!configuration.Motherboard.SupportedProcessors.Contains(configuration.Cpu.Line))
                 {
                     toast.Problems.Add("Motherboard doesn't support this Cpu line!");
                 }
-                //Motherboard:
-                //"cpuSocket": "Socket 1700",
-                //CPU:
-                //"socketType": "Socket 1700",
                 //CheckCPUSocket
                 if (configuration.Motherboard.CPUSocket != configuration.Cpu.SocketType)
                 {
@@ -367,20 +361,7 @@ namespace KomputerBudowanieAPI.Services
         {
             if (configuration.GraphicCard is not null && configuration.Motherboard is not null)
             {
-                // GraphicCard:
-                // "connectorType": "PCI Express 4.0 x16",
-                // "connectorType": "PCI Express 3.0 x16",
-                // "connectorType": "PCI Express 4.0 x8",
-
-                // Motherboard:
-                // "expansionSlots": "PCI Express x1 (1 szt.), PCI Express x16 (3 szt.)",
-                // "expansionSlots": "PCI Express x1 (3 szt.), PCI Express x16 (2 szt.)",
-                string GraphicCardConnector = configuration.GraphicCard.ConnectorType;
-
-                // Usunięcie wszystkich wersji " N.N " ze środka stringa GraphicCardConnector
-                GraphicCardConnector = Regex.Replace(GraphicCardConnector, @"( \d+\.\d+ )", " ", RegexOptions.IgnoreCase).Trim();
-
-                if (!configuration.Motherboard.ExpansionSlots.Contains(GraphicCardConnector))
+                if (!configuration.Motherboard.ExpansionSlots.Contains(configuration.GraphicCard.ConnectorType)) //TO TRZEBA ROZBUDOWAĆ Z TYMI GŁUPIMI STRINGAMI
                 {
                     toast.Problems.Add("Graphic card and motherboard don't share the same connector!");
                 }
