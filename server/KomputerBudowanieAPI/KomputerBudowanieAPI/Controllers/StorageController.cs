@@ -8,12 +8,12 @@ namespace KomputerBudowanieAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class MemoryController : Controller
+    public class StorageController : Controller
     {
         public readonly IGenericRepository<Storage> _memoryRepository;
         public readonly IMapper _mapper;
 
-        public MemoryController(IGenericRepository<Storage> memoryRepository, IMapper mapper)
+        public StorageController(IGenericRepository<Storage> memoryRepository, IMapper mapper)
         {
             _memoryRepository = memoryRepository;
             _mapper = mapper;
@@ -26,7 +26,7 @@ namespace KomputerBudowanieAPI.Controllers
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<IEnumerable<MemoryDto>>(memories));
+            return Ok(_mapper.Map<IEnumerable<StorageDto>>(memories));
         }
 
         [HttpGet("{id:int}")]
@@ -35,11 +35,11 @@ namespace KomputerBudowanieAPI.Controllers
             var memory = await _memoryRepository.GetByIdAsync(id);
             if (memory is null)
                 return NotFound();
-            return Ok(_mapper.Map<MemoryDto>(memory));
+            return Ok(_mapper.Map<StorageDto>(memory));
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateMemory([FromBody] MemoryDto memory)
+        public async Task<IActionResult> CreateMemory([FromBody] StorageDto memory)
         {
             var newMemory = _mapper.Map<Storage>(memory);
             try
@@ -51,7 +51,7 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateMemory([FromBody] MemoryDto memory)
+        public async Task<IActionResult> UpdateMemory([FromBody] StorageDto memory)
         {
             var newMemory = _mapper.Map<Storage>(memory);
             try

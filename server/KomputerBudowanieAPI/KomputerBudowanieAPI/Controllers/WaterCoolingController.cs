@@ -8,12 +8,12 @@ namespace KomputerBudowanieAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class FanController : Controller
+    public class WaterCoolingController : Controller
     {
-        public readonly IGenericRepository<Fan> _fanRepository;
+        public readonly IGenericRepository<WaterCooling> _fanRepository;
         public readonly IMapper _mapper;
 
-        public FanController(IGenericRepository<Fan> fanRepository, IMapper mapper)
+        public WaterCoolingController(IGenericRepository<WaterCooling> fanRepository, IMapper mapper)
         {
             _fanRepository = fanRepository;
             _mapper = mapper;
@@ -27,7 +27,7 @@ namespace KomputerBudowanieAPI.Controllers
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<IEnumerable<FanDto>>(fans));
+            return Ok(_mapper.Map<IEnumerable<WaterCoolingDto>>(fans));
         }
 
         [HttpGet("{id:int}")]
@@ -36,13 +36,13 @@ namespace KomputerBudowanieAPI.Controllers
             var fan = await _fanRepository.GetByIdAsync(id);
             if (fan is null)
                 return NotFound();
-            return Ok(_mapper.Map<FanDto>(fan));
+            return Ok(_mapper.Map<WaterCoolingDto>(fan));
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateFan([FromBody] FanDto fan)
+        public async Task<IActionResult> CreateFan([FromBody] WaterCoolingDto fan)
         {
-            var newFan = _mapper.Map<Fan>(fan);
+            var newFan = _mapper.Map<WaterCooling>(fan);
             try
             {
                 await _fanRepository.Create(newFan);
@@ -52,9 +52,9 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateFan([FromBody] FanDto fan)
+        public async Task<IActionResult> UpdateFan([FromBody] WaterCoolingDto fan)
         {
-            var newFan = _mapper.Map<Fan>(fan);
+            var newFan = _mapper.Map<WaterCooling>(fan);
             try
             {
                 await _fanRepository.Update(newFan);

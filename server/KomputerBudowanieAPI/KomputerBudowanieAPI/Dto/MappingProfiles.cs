@@ -16,14 +16,14 @@ namespace KomputerBudowanieAPI.Dto
             CreateMap<Cpu, CpuDto>();
             CreateMap<CpuDto, Cpu>();
 
-            CreateMap<Fan, FanDto>();
-            CreateMap<FanDto, Fan>();
+            CreateMap<WaterCooling, WaterCoolingDto>();
+            CreateMap<WaterCoolingDto, WaterCooling>();
 
             CreateMap<GraphicCard, GraphicCardDto>();
             CreateMap<GraphicCardDto, GraphicCard>();
 
-            CreateMap<Storage, MemoryDto>();
-            CreateMap<MemoryDto, Storage>();
+            CreateMap<Storage, StorageDto>();
+            CreateMap<StorageDto, Storage>();
 
             CreateMap<Motherboard, MotherboardDto>();
             CreateMap<MotherboardDto, Motherboard>();

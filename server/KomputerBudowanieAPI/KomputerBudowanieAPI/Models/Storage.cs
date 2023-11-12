@@ -17,7 +17,7 @@ namespace KomputerBudowanieAPI.Models
         public string FormFactor { get; set; }
         public string Capacity { get; set; }
         public string Interface { get; set; }
-        public float ThiccnessMM { get; set; } // grubosc
+        public float? ThiccnessMM { get; set; } // grubosc
         public string? CacheMemory { get; set; }
 
         //hdd only

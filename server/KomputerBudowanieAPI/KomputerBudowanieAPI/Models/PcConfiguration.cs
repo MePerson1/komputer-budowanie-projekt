@@ -21,7 +21,7 @@ namespace KomputerBudowanieAPI.Models
 
         public Case? Case { get; set; }
         public PowerSupply? PowerSupply { get; set; } = null;
-
+        public WaterCooling? WaterCooling { get; set; }
         public User? User { get; set; } = null;
 
         public ICollection<Fan>? Fans { get; set; }
