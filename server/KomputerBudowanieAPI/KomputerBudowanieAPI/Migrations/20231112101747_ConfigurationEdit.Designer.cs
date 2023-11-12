@@ -3,6 +3,7 @@ using System;
 using KomputerBudowanieAPI.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KomputerBudowanieAPI.Migrations
 {
     [DbContext(typeof(KomBuildDbContext))]
-    partial class KomBuildDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231112101747_ConfigurationEdit")]
+    partial class ConfigurationEdit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1007,15 +1010,15 @@ namespace KomputerBudowanieAPI.Migrations
 
             modelBuilder.Entity("PcConfigurationStorage", b =>
                 {
+                    b.Property<int>("MemoriesId")
+                        .HasColumnType("integer");
+
                     b.Property<Guid>("PcConfigurationsId")
                         .HasColumnType("uuid");
 
-                    b.Property<int>("StoragesId")
-                        .HasColumnType("integer");
+                    b.HasKey("MemoriesId", "PcConfigurationsId");
 
-                    b.HasKey("PcConfigurationsId", "StoragesId");
-
-                    b.HasIndex("StoragesId");
+                    b.HasIndex("PcConfigurationsId");
 
                     b.ToTable("PcConfigurationStorage");
                 });
@@ -1097,15 +1100,15 @@ namespace KomputerBudowanieAPI.Migrations
 
             modelBuilder.Entity("PcConfigurationStorage", b =>
                 {
-                    b.HasOne("KomputerBudowanieAPI.Models.PcConfiguration", null)
+                    b.HasOne("KomputerBudowanieAPI.Models.Storage", null)
                         .WithMany()
-                        .HasForeignKey("PcConfigurationsId")
+                        .HasForeignKey("MemoriesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("KomputerBudowanieAPI.Models.Storage", null)
+                    b.HasOne("KomputerBudowanieAPI.Models.PcConfiguration", null)
                         .WithMany()
-                        .HasForeignKey("StoragesId")
+                        .HasForeignKey("PcConfigurationsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

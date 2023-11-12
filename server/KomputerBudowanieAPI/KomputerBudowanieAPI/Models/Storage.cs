@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace KomputerBudowanieAPI.Models
 {
-    public class Memory
+    public class Storage
     {
         [Key]
         public int Id { get; set; }

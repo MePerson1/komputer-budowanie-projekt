@@ -21,10 +21,10 @@ namespace KomputerBudowanieAPI.Repository
             .Include(pc => pc.Cpu)
             .Include(pc => pc.CPU_Cooling)
             .Include(pc => pc.Case)
-            .Include(pc => pc.Fan)
+            .Include(pc => pc.Fans)
             .Include(pc => pc.PowerSupply)
             .Include(pc => pc.User)
-            .Include(pc => pc.Memories)
+            .Include(pc => pc.Storages)
             .Include(pc => pc.Rams).ToListAsync();
         }
 
@@ -35,10 +35,10 @@ namespace KomputerBudowanieAPI.Repository
             .Include(pc => pc.Cpu)
             .Include(pc => pc.CPU_Cooling)
             .Include(pc => pc.Case)
-            .Include(pc => pc.Fan)
+            .Include(pc => pc.Fans)
             .Include(pc => pc.PowerSupply)
             .Include(pc => pc.User)
-            .Include(pc => pc.Memories)
+            .Include(pc => pc.Storages)
             .Include(pc => pc.Rams).ToListAsync();
         }
 
@@ -48,10 +48,10 @@ namespace KomputerBudowanieAPI.Repository
             .Include(pc => pc.Cpu)
             .Include(pc => pc.CPU_Cooling)
             .Include(pc => pc.Case)
-            .Include(pc => pc.Fan)
+            .Include(pc => pc.Fans)
             .Include(pc => pc.PowerSupply)
             .Include(pc => pc.User)
-            .Include(pc => pc.Memories)
+            .Include(pc => pc.Storages)
             .Include(pc => pc.Rams).FirstOrDefaultAsync(pc => pc.Id == id);
         }
 
@@ -63,23 +63,28 @@ namespace KomputerBudowanieAPI.Repository
                 var pcCase = await _context.Set<Case>().FindAsync(newConfigurationDto.CaseId);
                 var cpu = _context.Cpus.FirstOrDefault(x => x.Id == newConfigurationDto.CpuId);
                 var cpuCooling = _context.CpuCoolings.FirstOrDefault(x => x.Id == newConfigurationDto.CpuCoolingId);
-                var fan = _context.Fans.FirstOrDefault(x => x.Id == newConfigurationDto.FanId);
                 var motherboard = _context.Motherboards.FirstOrDefault(x => x.Id == newConfigurationDto.MotherboadId);
                 var graphicCard = _context.GraphicCards.FirstOrDefault(x => x.Id == newConfigurationDto.GraphicCardId);
                 var powerSupply = _context.PowerSupplys.FirstOrDefault(x => x.Id == newConfigurationDto.PowerSuplyId);
 
                 //var memories = _context.Memories.Where(x => newConfigurationDto.MemoryIds.Contains(x.Id)).ToList();
                 //var rams = _context.Rams.Where(x => newConfigurationDto.RamsIds.Contains(x.Id)).ToList();
-                var memories = new List<Memory>();
-                if (newConfigurationDto.MemoryIds != null && newConfigurationDto.MemoryIds.Any())
+                var memories = new List<Storage>();
+                if (newConfigurationDto.StorageIds != null && newConfigurationDto.StorageIds.Any())
                 {
-                    memories = _context.Memories.Where(x => newConfigurationDto.MemoryIds.Contains(x.Id)).ToList();
+                    memories = _context.Memories.Where(x => newConfigurationDto.StorageIds.Contains(x.Id)).ToList();
                 }
 
                 var rams = new List<Ram>();
                 if (newConfigurationDto.RamsIds != null && newConfigurationDto.RamsIds.Any())
                 {
                     rams = _context.Rams.Where(x => newConfigurationDto.RamsIds.Contains(x.Id)).ToList();
+                }
+
+                var fans = new List<Fan>();
+                if (newConfigurationDto.FanIds != null && newConfigurationDto.FanIds.Any())
+                {
+                    fans = _context.Fans.Where(x => newConfigurationDto.FanIds.Contains(x.Id)).ToList();
                 }
 
                 PcConfiguration pcConfiguration = new PcConfiguration()
@@ -90,11 +95,11 @@ namespace KomputerBudowanieAPI.Repository
                     Case = pcCase,
                     Cpu = cpu,
                     CPU_Cooling = cpuCooling,
-                    Fan = fan,
+                    Fans = fans,
                     Motherboard = motherboard,
                     GraphicCard = graphicCard,
                     PowerSupply = powerSupply,
-                    Memories = memories,
+                    Storages = memories,
                     Rams = rams
                 };
 
@@ -134,23 +139,28 @@ namespace KomputerBudowanieAPI.Repository
                 var pcCase = await _context.Set<Case>().FindAsync(dto.CaseId);
                 var cpu = _context.Cpus.FirstOrDefault(x => x.Id == dto.CpuId);
                 var cpuCooling = _context.CpuCoolings.FirstOrDefault(x => x.Id == dto.CpuCoolingId);
-                var fan = _context.Fans.FirstOrDefault(x => x.Id == dto.FanId);
                 var motherboard = _context.Motherboards.FirstOrDefault(x => x.Id == dto.MotherboadId);
                 var graphicCard = _context.GraphicCards.FirstOrDefault(x => x.Id == dto.GraphicCardId);
                 var powerSupply = _context.PowerSupplys.FirstOrDefault(x => x.Id == dto.PowerSuplyId);
 
                 //var memories = _context.Memories.Where(x => newConfigurationDto.MemoryIds.Contains(x.Id)).ToList();
                 //var rams = _context.Rams.Where(x => newConfigurationDto.RamsIds.Contains(x.Id)).ToList();
-                var memories = new List<Memory>();
-                if (dto.MemoryIds != null && dto.MemoryIds.Any())
+                var memories = new List<Storage>();
+                if (dto.StorageIds != null && dto.StorageIds.Any())
                 {
-                    memories = _context.Memories.Where(x => dto.MemoryIds.Contains(x.Id)).ToList();
+                    memories = _context.Memories.Where(x => dto.StorageIds.Contains(x.Id)).ToList();
                 }
 
                 var rams = new List<Ram>();
                 if (dto.RamsIds != null && dto.RamsIds.Any())
                 {
                     rams = _context.Rams.Where(x => dto.RamsIds.Contains(x.Id)).ToList();
+                }
+
+                var fans = new List<Fan>();
+                if (dto.FanIds != null && dto.FanIds.Any())
+                {
+                    fans = _context.Fans.Where(x => dto.FanIds.Contains(x.Id)).ToList();
                 }
 
                 PcConfiguration pcConfiguration = new PcConfiguration()
@@ -161,11 +171,11 @@ namespace KomputerBudowanieAPI.Repository
                     Case = pcCase,
                     Cpu = cpu,
                     CPU_Cooling = cpuCooling,
-                    Fan = fan,
+                    Fans = fans,
                     Motherboard = motherboard,
                     GraphicCard = graphicCard,
                     PowerSupply = powerSupply,
-                    Memories = memories,
+                    Storages = memories,
                     Rams = rams
                 };
 
