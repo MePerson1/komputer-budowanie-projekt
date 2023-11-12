@@ -1,8 +1,6 @@
 ﻿using KomputerBudowanieAPI.Database;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
-using System.Formats.Asn1;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace KomputerBudowanieAPI.Services
@@ -116,7 +114,7 @@ namespace KomputerBudowanieAPI.Services
                 toast.Problems.Add("Something went wrong!");
                 return toast;
             }
-            if(configuration.GraphicCard is null)
+            if (configuration.GraphicCard is null)
             {
                 toast.Problems.Add("No graphic card!");
                 return toast;
@@ -125,7 +123,7 @@ namespace KomputerBudowanieAPI.Services
             Case_GraphicCard(ref toast, configuration); //1
             GraphicCard_Motherboard(ref toast, configuration); //3
             GraphicCard_PowerSupply(ref toast, configuration); //4
-            
+
             return toast;
         }
 
@@ -137,7 +135,7 @@ namespace KomputerBudowanieAPI.Services
                 toast.Problems.Add("Something went wrong");
                 return toast;
             }
-            GraphicCard_PowerSupply(ref toast, configuration); 
+            GraphicCard_PowerSupply(ref toast, configuration);
             Case_PowerSupply(ref toast, configuration);
 
             return toast;
@@ -167,12 +165,12 @@ namespace KomputerBudowanieAPI.Services
         //
         private static void Cpu_GraphicCard(ref Toast toast, PcConfiguration configuration)
         {
-            if(configuration.Cpu is null || configuration.GraphicCard is not null)
+            if (configuration.Cpu is null || configuration.GraphicCard is not null)
             {
                 return;
             }
-            
-            if(configuration.Cpu.IntegratedGraphics is null)
+
+            if (configuration.Cpu.IntegratedGraphics is null)
             {
                 toast.Problems.Add("This CPU does not have a integrated graphics!");
             }
@@ -244,7 +242,7 @@ namespace KomputerBudowanieAPI.Services
                     //W przypadku zasilacza:
                     //"formFactor": "ATX",
                     //"formFactor": "ATX 3.0",
-                    
+
                 }
                 else
                 {
@@ -311,7 +309,7 @@ namespace KomputerBudowanieAPI.Services
                     //W dyskach SATA
                     //"interface": "SATA 3",
                     //"formFactor": "2.5 cala",
-                    if(connectors.ContainsKey(disc.Interface))
+                    if (connectors.ContainsKey(disc.Interface))
                     {
                         if (connectors[disc.Interface] > 0) connectors[disc.Interface] = connectors[disc.Interface]--;
                         else toast.Problems.Add($"Lack of {disc.Interface} connectors!");
@@ -367,7 +365,7 @@ namespace KomputerBudowanieAPI.Services
 
         static private void GraphicCard_Motherboard(ref Toast toast, PcConfiguration configuration)
         {
-            if(configuration.GraphicCard is not null && configuration.Motherboard is not null)
+            if (configuration.GraphicCard is not null && configuration.Motherboard is not null)
             {
                 // GraphicCard:
                 // "connectorType": "PCI Express 4.0 x16",
@@ -503,6 +501,6 @@ namespace KomputerBudowanieAPI.Services
 
 public class Toast
 {
-    public ICollection<string> Warnings { get; set; } = new List<string>();
-    public ICollection<string> Problems { get; set; } = new List<string>();
+    public ICollection<string>? Warnings { get; set; } = new List<string>();
+    public ICollection<string>? Problems { get; set; } = new List<string>();
 }
