@@ -15,12 +15,12 @@ namespace KomputerBudowanieAPI.Dto
         public CpuCoolingDto CPU_Cooling { get; set; }
 
         public CaseDto Case { get; set; }
-        public FanDto Fan { get; set; } // tutaj tez many to many raczej
+        public WaterCoolingDto Fan { get; set; } // tutaj tez many to many raczej
         public PowerSupplyDto PowerSupply { get; set; }
 
         public User? User { get; set; } = null;
 
-        public ICollection<MemoryDto> Memories { get; set; }
+        public ICollection<StorageDto> Memories { get; set; }
         public ICollection<RamDto> Rams { get; set; }
     }
 }

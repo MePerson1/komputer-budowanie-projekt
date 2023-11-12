@@ -24,7 +24,7 @@
          * Pins / Connectors
          */
         public int ATX24Pin_20Plus4 { get; set; }
-        public int PCIE8Pin_6Plus4 { get; set; }
+        public int PCIE8Pin_6Plus2 { get; set; }
         public int PCIE16Pin { get; set; }
         public int PCIE8Pin { get; set; }
         public int PCIE6Pin { get; set; }
