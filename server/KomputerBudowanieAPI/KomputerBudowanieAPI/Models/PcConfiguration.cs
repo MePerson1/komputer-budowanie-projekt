@@ -24,8 +24,8 @@ namespace KomputerBudowanieAPI.Models
 
         public User? User { get; set; } = null;
 
-        public ICollection<Fan> Fans { get; set; }
-        public ICollection<Storage> Storages { get; set; }
-        public ICollection<Ram> Rams { get; set; }
+        public ICollection<Fan>? Fans { get; set; }
+        public ICollection<Storage>? Storages { get; set; }
+        public ICollection<Ram>? Rams { get; set; }
     }
 }

@@ -31,6 +31,16 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(configs);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var configuration = await _pcConfigurationRepository.GetByIdAsync(id);
+            if (configuration is null)
+                return NotFound();
+            return Ok(configuration);
+        }
+
+
         // GET api/users/5/configurations
         [Route("api/users/{userId}/configurations")]
         [HttpGet]
