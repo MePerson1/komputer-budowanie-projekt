@@ -78,7 +78,7 @@ namespace KomputerBudowanieAPI.Controllers
 
             var done = await _pcConfigurationRepository.Create(newConfigurationDetails);
 
-            return done == false ? BadRequest(done) : Ok(done);
+            return done == false ? BadRequest("Something went wrong") : Ok("New configuration created successfuly!");
         }
 
         // PUT api/<ConfigurationController>/5
