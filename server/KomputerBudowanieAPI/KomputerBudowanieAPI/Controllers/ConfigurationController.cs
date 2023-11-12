@@ -32,6 +32,16 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(configs);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var configuration = await _pcConfigurationRepository.GetByIdAsync(id);
+            if (configuration is null)
+                return NotFound();
+            return Ok(configuration);
+        }
+
+
         // GET api/users/5/configurations
         [Route("api/users/{userId}/configurations")]
         [HttpGet]
@@ -69,7 +79,7 @@ namespace KomputerBudowanieAPI.Controllers
 
             var done = await _pcConfigurationRepository.Create(newConfigurationDetails);
 
-            return done == false ? BadRequest(done) : Ok(done);
+            return done == false ? BadRequest("Something went wrong") : Ok("New configuration created successfuly!");
         }
 
         // PUT api/<ConfigurationController>/5
@@ -77,7 +87,7 @@ namespace KomputerBudowanieAPI.Controllers
         public async Task<IActionResult> Put(Guid id, [FromBody] PcConfigurationDto editingConfigurationDetails)
         {
             var done = await _pcConfigurationRepository.Update(id, editingConfigurationDetails);
-            return done == false ? BadRequest() : Ok();
+            return done == false ? BadRequest("Something went wrong.") : Ok("Configuration updated successfuly!");
         }
 
         // DELETE api/<ConfigurationController>/5

@@ -21,10 +21,10 @@ namespace KomputerBudowanieAPI.Repository
             .Include(pc => pc.Cpu)
             .Include(pc => pc.CPU_Cooling)
             .Include(pc => pc.Case)
-            .Include(pc => pc.Fan)
+            .Include(pc => pc.Fans)
             .Include(pc => pc.PowerSupply)
             .Include(pc => pc.User)
-            .Include(pc => pc.Memories)
+            .Include(pc => pc.Storages)
             .Include(pc => pc.Rams).ToListAsync();
         }
 
@@ -35,10 +35,10 @@ namespace KomputerBudowanieAPI.Repository
             .Include(pc => pc.Cpu)
             .Include(pc => pc.CPU_Cooling)
             .Include(pc => pc.Case)
-            .Include(pc => pc.Fan)
+            .Include(pc => pc.Fans)
             .Include(pc => pc.PowerSupply)
             .Include(pc => pc.User)
-            .Include(pc => pc.Memories)
+            .Include(pc => pc.Storages)
             .Include(pc => pc.Rams).ToListAsync();
         }
 
@@ -48,10 +48,10 @@ namespace KomputerBudowanieAPI.Repository
             .Include(pc => pc.Cpu)
             .Include(pc => pc.CPU_Cooling)
             .Include(pc => pc.Case)
-            .Include(pc => pc.Fan)
+            .Include(pc => pc.Fans)
             .Include(pc => pc.PowerSupply)
             .Include(pc => pc.User)
-            .Include(pc => pc.Memories)
+            .Include(pc => pc.Storages)
             .Include(pc => pc.Rams).FirstOrDefaultAsync(pc => pc.Id == id);
         }
 
@@ -59,47 +59,42 @@ namespace KomputerBudowanieAPI.Repository
         {
             try
             {
-                //var pcCase = _context.Cases.FirstOrDefault(x => x.Id == newConfigurationDto.CaseId);
                 var pcCase = await _context.Set<Case>().FindAsync(newConfigurationDto.CaseId);
-                var cpu = _context.Cpus.FirstOrDefault(x => x.Id == newConfigurationDto.CpuId);
-                var cpuCooling = _context.CpuCoolings.FirstOrDefault(x => x.Id == newConfigurationDto.CpuCoolingId);
-                var fan = _context.Fans.FirstOrDefault(x => x.Id == newConfigurationDto.FanId);
-                var motherboard = _context.Motherboards.FirstOrDefault(x => x.Id == newConfigurationDto.MotherboadId);
-                var graphicCard = _context.GraphicCards.FirstOrDefault(x => x.Id == newConfigurationDto.GraphicCardId);
-                var powerSupply = _context.PowerSupplys.FirstOrDefault(x => x.Id == newConfigurationDto.PowerSuplyId);
+                var cpu = await _context.Cpus.FirstOrDefaultAsync(x => x.Id == newConfigurationDto.CpuId);
+                var cpuCooling = await _context.CpuCoolings.FirstOrDefaultAsync(x => x.Id == newConfigurationDto.CpuCoolingId);
+                var motherboard = await _context.Motherboards.FirstOrDefaultAsync(x => x.Id == newConfigurationDto.MotherboadId);
+                var graphicCard = await _context.GraphicCards.FirstOrDefaultAsync(x => x.Id == newConfigurationDto.GraphicCardId);
+                var powerSupply = await _context.PowerSupplys.FirstOrDefaultAsync(x => x.Id == newConfigurationDto.PowerSuplyId);
 
-                //var memories = _context.Memories.Where(x => newConfigurationDto.MemoryIds.Contains(x.Id)).ToList();
-                //var rams = _context.Rams.Where(x => newConfigurationDto.RamsIds.Contains(x.Id)).ToList();
-                var memories = new List<Memory>();
-                if (newConfigurationDto.MemoryIds != null && newConfigurationDto.MemoryIds.Any())
-                {
-                    memories = _context.Memories.Where(x => newConfigurationDto.MemoryIds.Contains(x.Id)).ToList();
-                }
+                var storages = await _context.Storages
+                    .Where(x => newConfigurationDto.StorageIds != null && newConfigurationDto.StorageIds.Contains(x.Id))
+                    .ToListAsync();
 
-                var rams = new List<Ram>();
-                if (newConfigurationDto.RamsIds != null && newConfigurationDto.RamsIds.Any())
-                {
-                    rams = _context.Rams.Where(x => newConfigurationDto.RamsIds.Contains(x.Id)).ToList();
-                }
+                var rams = await _context.Rams
+                    .Where(x => newConfigurationDto.RamsIds != null && newConfigurationDto.RamsIds.Contains(x.Id))
+                    .ToListAsync();
+
+                var fans = await _context.Fans
+                    .Where(x => newConfigurationDto.FanIds != null && newConfigurationDto.FanIds.Contains(x.Id))
+                    .ToListAsync();
 
                 PcConfiguration pcConfiguration = new PcConfiguration()
                 {
-                    //Id = newConfigurationDto.Id,
                     Name = newConfigurationDto.Name,
                     Description = newConfigurationDto.Description,
                     Case = pcCase,
                     Cpu = cpu,
                     CPU_Cooling = cpuCooling,
-                    Fan = fan,
+                    Fans = fans,
                     Motherboard = motherboard,
                     GraphicCard = graphicCard,
                     PowerSupply = powerSupply,
-                    Memories = memories,
+                    Storages = storages,
                     Rams = rams
                 };
 
                 await _context.AddAsync(pcConfiguration);
-                //await _context.AddAsync();
+
                 await SaveChanges();
                 return true;
 
@@ -124,52 +119,44 @@ namespace KomputerBudowanieAPI.Repository
         public async Task<bool> Update(Guid id, PcConfigurationDto dto)
         {
 
-            var configuration = GetByIdAsync(id);
+            var configuration = await GetByIdAsync(id);
             if (configuration == null)
             {
                 return false;
             }
             try
             {
-                var pcCase = await _context.Set<Case>().FindAsync(dto.CaseId);
-                var cpu = _context.Cpus.FirstOrDefault(x => x.Id == dto.CpuId);
-                var cpuCooling = _context.CpuCoolings.FirstOrDefault(x => x.Id == dto.CpuCoolingId);
-                var fan = _context.Fans.FirstOrDefault(x => x.Id == dto.FanId);
-                var motherboard = _context.Motherboards.FirstOrDefault(x => x.Id == dto.MotherboadId);
-                var graphicCard = _context.GraphicCards.FirstOrDefault(x => x.Id == dto.GraphicCardId);
-                var powerSupply = _context.PowerSupplys.FirstOrDefault(x => x.Id == dto.PowerSuplyId);
+                var pcCase = await _context.Cases.FirstOrDefaultAsync(x => x.Id == dto.CaseId);
+                var cpu = await _context.Cpus.FirstOrDefaultAsync(x => x.Id == dto.CpuId);
+                var cpuCooling = await _context.CpuCoolings.FirstOrDefaultAsync(x => x.Id == dto.CpuCoolingId);
+                var motherboard = await _context.Motherboards.FirstOrDefaultAsync(x => x.Id == dto.MotherboadId);
+                var graphicCard = await _context.GraphicCards.FirstOrDefaultAsync(x => x.Id == dto.GraphicCardId);
+                var powerSupply = await _context.PowerSupplys.FirstOrDefaultAsync(x => x.Id == dto.PowerSuplyId);
 
-                //var memories = _context.Memories.Where(x => newConfigurationDto.MemoryIds.Contains(x.Id)).ToList();
-                //var rams = _context.Rams.Where(x => newConfigurationDto.RamsIds.Contains(x.Id)).ToList();
-                var memories = new List<Memory>();
-                if (dto.MemoryIds != null && dto.MemoryIds.Any())
-                {
-                    memories = _context.Memories.Where(x => dto.MemoryIds.Contains(x.Id)).ToList();
-                }
+                var storages = await _context.Storages
+                     .Where(x => dto.StorageIds != null && dto.StorageIds.Contains(x.Id))
+                     .ToListAsync();
 
-                var rams = new List<Ram>();
-                if (dto.RamsIds != null && dto.RamsIds.Any())
-                {
-                    rams = _context.Rams.Where(x => dto.RamsIds.Contains(x.Id)).ToList();
-                }
+                var rams = await _context.Rams
+                    .Where(x => dto.RamsIds != null && dto.RamsIds.Contains(x.Id))
+                    .ToListAsync();
 
-                PcConfiguration pcConfiguration = new PcConfiguration()
-                {
-                    Id = dto.Id,
-                    Name = dto.Name,
-                    Description = dto.Description,
-                    Case = pcCase,
-                    Cpu = cpu,
-                    CPU_Cooling = cpuCooling,
-                    Fan = fan,
-                    Motherboard = motherboard,
-                    GraphicCard = graphicCard,
-                    PowerSupply = powerSupply,
-                    Memories = memories,
-                    Rams = rams
-                };
+                var fans = await _context.Fans
+                    .Where(x => dto.FanIds != null && dto.FanIds.Contains(x.Id))
+                    .ToListAsync();
 
-                _context.Update(configuration);
+                configuration.Name = dto.Name;
+                configuration.Description = dto.Description;
+                configuration.Case = pcCase;
+                configuration.Cpu = cpu;
+                configuration.CPU_Cooling = cpuCooling;
+                configuration.Fans = fans;
+                configuration.Motherboard = motherboard;
+                configuration.GraphicCard = graphicCard;
+                configuration.PowerSupply = powerSupply;
+                configuration.Storages = storages;
+                configuration.Rams = rams;
+
                 await SaveChanges();
 
                 return true;

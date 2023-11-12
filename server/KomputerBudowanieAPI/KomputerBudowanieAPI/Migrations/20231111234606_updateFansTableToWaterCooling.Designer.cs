@@ -3,6 +3,7 @@ using System;
 using KomputerBudowanieAPI.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KomputerBudowanieAPI.Migrations
 {
     [DbContext(typeof(KomBuildDbContext))]
-    partial class KomBuildDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231111234606_updateFansTableToWaterCooling")]
+    partial class updateFansTableToWaterCooling
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace KomputerBudowanieAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("FanPcConfiguration", b =>
-                {
-                    b.Property<int>("FansId")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("PcConfigurationsId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("FansId", "PcConfigurationsId");
-
-                    b.HasIndex("PcConfigurationsId");
-
-                    b.ToTable("FanPcConfiguration");
-                });
 
             modelBuilder.Entity("KomputerBudowanieAPI.Models.Case", b =>
                 {
@@ -603,28 +591,32 @@ namespace KomputerBudowanieAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int?>("CPU_CoolingId")
+                    b.Property<int>("CPU_CoolingId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("CaseId")
+                    b.Property<int>("CaseId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("CpuId")
+                    b.Property<int>("CpuId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<int?>("GraphicCardId")
+                    b.Property<int>("FanId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("MotherboardId")
+                    b.Property<int>("GraphicCardId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MotherboardId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("PowerSupplyId")
+                    b.Property<int>("PowerSupplyId")
                         .HasColumnType("integer");
 
                     b.Property<int?>("UserId")
@@ -637,6 +629,8 @@ namespace KomputerBudowanieAPI.Migrations
                     b.HasIndex("CaseId");
 
                     b.HasIndex("CpuId");
+
+                    b.HasIndex("FanId");
 
                     b.HasIndex("GraphicCardId");
 
@@ -984,15 +978,16 @@ namespace KomputerBudowanieAPI.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Lighting")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<float?>("MaxAirflowCFM")
+                    b.Property<float>("MaxAirflowCFM")
                         .HasColumnType("real");
 
                     b.Property<int>("MaxFanSpeedRPM")
                         .HasColumnType("integer");
 
-                    b.Property<float?>("MaxNoiseLevelDBa")
+                    b.Property<float>("MaxNoiseLevelDBa")
                         .HasColumnType("real");
 
                     b.Property<string>("Name")
@@ -1011,6 +1006,7 @@ namespace KomputerBudowanieAPI.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PumpConnector")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<float>("RadiatorHeightMM")
@@ -1067,11 +1063,15 @@ namespace KomputerBudowanieAPI.Migrations
                 {
                     b.HasOne("KomputerBudowanieAPI.Models.CpuCooling", "CPU_Cooling")
                         .WithMany("Configurations")
-                        .HasForeignKey("CPU_CoolingId");
+                        .HasForeignKey("CPU_CoolingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("KomputerBudowanieAPI.Models.Case", "Case")
                         .WithMany("Configurations")
-                        .HasForeignKey("CaseId");
+                        .HasForeignKey("CaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("KomputerBudowanieAPI.Models.Cpu", "Cpu")
                         .WithMany("Configurations")
@@ -1087,15 +1087,21 @@ namespace KomputerBudowanieAPI.Migrations
 
                     b.HasOne("KomputerBudowanieAPI.Models.GraphicCard", "GraphicCard")
                         .WithMany("Configurations")
-                        .HasForeignKey("GraphicCardId");
+                        .HasForeignKey("GraphicCardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("KomputerBudowanieAPI.Models.Motherboard", "Motherboard")
                         .WithMany("Configurations")
-                        .HasForeignKey("MotherboardId");
+                        .HasForeignKey("MotherboardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("KomputerBudowanieAPI.Models.PowerSupply", "PowerSupply")
                         .WithMany("Configurations")
-                        .HasForeignKey("PowerSupplyId");
+                        .HasForeignKey("PowerSupplyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("KomputerBudowanieAPI.Models.User", "User")
                         .WithMany("Configurations")
@@ -1106,6 +1112,8 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Navigation("Case");
 
                     b.Navigation("Cpu");
+
+                    b.Navigation("Fan");
 
                     b.Navigation("GraphicCard");
 
@@ -1142,12 +1150,6 @@ namespace KomputerBudowanieAPI.Migrations
                     b.HasOne("KomputerBudowanieAPI.Models.PcConfiguration", null)
                         .WithMany()
                         .HasForeignKey("PcConfigurationsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KomputerBudowanieAPI.Models.Storage", null)
-                        .WithMany()
-                        .HasForeignKey("StoragesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -14,3 +14,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+body {
+  background: linear-gradient(
+    129deg,
+    rgba(23, 18, 27, 0.96) 17.02%,
+    #0d0017 106.45%
+  );
+  color: white;
+}
