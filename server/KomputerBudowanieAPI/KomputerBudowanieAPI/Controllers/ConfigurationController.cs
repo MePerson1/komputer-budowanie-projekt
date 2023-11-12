@@ -86,7 +86,7 @@ namespace KomputerBudowanieAPI.Controllers
         public async Task<IActionResult> Put(Guid id, [FromBody] PcConfigurationDto editingConfigurationDetails)
         {
             var done = await _pcConfigurationRepository.Update(id, editingConfigurationDetails);
-            return done == false ? BadRequest() : Ok();
+            return done == false ? BadRequest("Something went wrong.") : Ok("Configuration updated successfuly!");
         }
 
         // DELETE api/<ConfigurationController>/5
