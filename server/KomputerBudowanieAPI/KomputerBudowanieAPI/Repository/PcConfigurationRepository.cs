@@ -64,7 +64,7 @@ namespace KomputerBudowanieAPI.Repository
                 var cpuCooling = await _context.CpuCoolings.FirstOrDefaultAsync(x => x.Id == newConfigurationDto.CpuCoolingId);
                 var motherboard = await _context.Motherboards.FirstOrDefaultAsync(x => x.Id == newConfigurationDto.MotherboadId);
                 var graphicCard = await _context.GraphicCards.FirstOrDefaultAsync(x => x.Id == newConfigurationDto.GraphicCardId);
-                var powerSupply = await _context.PowerSupplys.FirstOrDefaultAsync(x => x.Id == newConfigurationDto.PowerSuplyId);
+                var powerSupply = await _context.PowerSupplies.FirstOrDefaultAsync(x => x.Id == newConfigurationDto.PowerSuplyId);
 
                 var storages = await _context.Storages
                     .Where(x => newConfigurationDto.StorageIds != null && newConfigurationDto.StorageIds.Contains(x.Id))
@@ -131,7 +131,7 @@ namespace KomputerBudowanieAPI.Repository
                 var cpuCooling = await _context.CpuCoolings.FirstOrDefaultAsync(x => x.Id == dto.CpuCoolingId);
                 var motherboard = await _context.Motherboards.FirstOrDefaultAsync(x => x.Id == dto.MotherboadId);
                 var graphicCard = await _context.GraphicCards.FirstOrDefaultAsync(x => x.Id == dto.GraphicCardId);
-                var powerSupply = await _context.PowerSupplys.FirstOrDefaultAsync(x => x.Id == dto.PowerSuplyId);
+                var powerSupply = await _context.PowerSupplies.FirstOrDefaultAsync(x => x.Id == dto.PowerSuplyId);
 
                 var storages = await _context.Storages
                      .Where(x => dto.StorageIds != null && dto.StorageIds.Contains(x.Id))

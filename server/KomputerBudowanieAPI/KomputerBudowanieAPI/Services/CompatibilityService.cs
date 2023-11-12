@@ -179,9 +179,9 @@ namespace KomputerBudowanieAPI.Services
 
         private static void Case_Memories(ref Toast toast, PcConfiguration configuration)
         {
-            if (configuration.Case is not null && configuration.Memories is not null)
+            if (configuration.Case is not null && configuration.Storages is not null)
             {
-                foreach (var storage in configuration.Memories)
+                foreach (var storage in configuration.Storages)
                 {
                     if (storage.FormFactor == "3.5 cala" && configuration.Case.InternalBaysThreePointFiveInch == 0)
                     {
@@ -200,7 +200,7 @@ namespace KomputerBudowanieAPI.Services
             if (configuration.Case is not null && configuration.CPU_Cooling is not null)
             {
                 //w zaleznosci od jednostki height dla cpu cooling
-                if (configuration.Case.MaxCoolingSystemHeightCM < configuration.CPU_Cooling.Height)
+                if (configuration.Case.MaxCoolingSystemHeightCM < configuration.CPU_Cooling.HeightMM)
                 {
                     toast.Problems.Add("Cpu Cooling is too high xd!");
                 }
@@ -297,10 +297,10 @@ namespace KomputerBudowanieAPI.Services
 
         static private void Memory_Motherboard(ref Toast toast, PcConfiguration configuration)
         {
-            if (configuration.Memories is not null && configuration.Motherboard is not null)
+            if (configuration.Storages is not null && configuration.Motherboard is not null)
             {
                 Dictionary<string, int> connectors = ExtractDiscConnectorInfoFromMotherboard(configuration.Motherboard.DriveConnectors);
-                foreach (var disc in configuration.Memories)
+                foreach (var disc in configuration.Storages)
                 {
                     //W dyskach M2
                     //"interface": "PCI-E x4 Gen4 NVMe", "PCI-E x4 Gen3 NVMe",
@@ -393,7 +393,7 @@ namespace KomputerBudowanieAPI.Services
             {
                 List<string> graphicCardConnectors = ExtractConnectorInfoFromGraphicCard(configuration.GraphicCard.PowerConnectors);
 
-                int powerSupply6_plus2pin = configuration.PowerSupply.PCIE8Pin_6Plus4;
+                int powerSupply6_plus2pin = configuration.PowerSupply.PCIE8Pin_6Plus2;
                 int powerSupply6pin = configuration.PowerSupply.PCIE6Pin;
                 int powerSupply8pin = configuration.PowerSupply.PCIE8Pin;
                 int powerSupply16pin = configuration.PowerSupply.PCIE16Pin;
