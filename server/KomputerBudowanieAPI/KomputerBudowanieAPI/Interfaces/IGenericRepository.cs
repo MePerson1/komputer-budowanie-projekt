@@ -12,5 +12,6 @@
         Task Update(TEntity entity);
         Task Delete(TEntity entity);
         Task SaveChanges();
+
     }
 }
