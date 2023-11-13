@@ -80,7 +80,7 @@ namespace KomputerBudowanieAPI.Services
             return Task.FromResult<Toast?>(toast);
         }
 
-        public async Task<Toast?> MemoryCompatibilityCheck(PcConfiguration configuration) //DO DOKOŃCZENIA!!!!!!!!!!!
+        public async Task<Toast?> StorageCompatibilityCheck(PcConfiguration configuration) //DO DOKOŃCZENIA!!!!!!!!!!!
         {
             Toast toast = new();
 
@@ -127,7 +127,7 @@ namespace KomputerBudowanieAPI.Services
             return toast;
         }
 
-        private async Task<Toast?> PowerSupplyCompatibliityCheck(PcConfiguration configuration)
+        public async Task<Toast?> PowerSupplyCompatibliityCheck(PcConfiguration configuration)
         {
             Toast toast = new();
             if (configuration is null)
@@ -497,10 +497,4 @@ namespace KomputerBudowanieAPI.Services
             return result;
         }
     }
-}
-
-public class Toast
-{
-    public ICollection<string>? Warnings { get; set; } = new List<string>();
-    public ICollection<string>? Problems { get; set; } = new List<string>();
 }

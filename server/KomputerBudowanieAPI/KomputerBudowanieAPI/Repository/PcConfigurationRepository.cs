@@ -59,40 +59,9 @@ namespace KomputerBudowanieAPI.Repository
         {
             try
             {
-                var pcCase = await _context.Set<Case>().FindAsync(newConfigurationDto.CaseId);
-                var cpu = await _context.Cpus.FirstOrDefaultAsync(x => x.Id == newConfigurationDto.CpuId);
-                var cpuCooling = await _context.CpuCoolings.FirstOrDefaultAsync(x => x.Id == newConfigurationDto.CpuCoolingId);
-                var motherboard = await _context.Motherboards.FirstOrDefaultAsync(x => x.Id == newConfigurationDto.MotherboadId);
-                var graphicCard = await _context.GraphicCards.FirstOrDefaultAsync(x => x.Id == newConfigurationDto.GraphicCardId);
-                var powerSupply = await _context.PowerSupplies.FirstOrDefaultAsync(x => x.Id == newConfigurationDto.PowerSuplyId);
+                PcConfiguration pcConfiguration = new PcConfiguration();
 
-                var storages = await _context.Storages
-                    .Where(x => newConfigurationDto.StorageIds != null && newConfigurationDto.StorageIds.Contains(x.Id))
-                    .ToListAsync();
-
-                var rams = await _context.Rams
-                    .Where(x => newConfigurationDto.RamsIds != null && newConfigurationDto.RamsIds.Contains(x.Id))
-                    .ToListAsync();
-
-                var fans = await _context.Fans
-                    .Where(x => newConfigurationDto.FanIds != null && newConfigurationDto.FanIds.Contains(x.Id))
-                    .ToListAsync();
-
-                PcConfiguration pcConfiguration = new PcConfiguration()
-                {
-                    Name = newConfigurationDto.Name,
-                    Description = newConfigurationDto.Description,
-                    Case = pcCase,
-                    Cpu = cpu,
-                    CPU_Cooling = cpuCooling,
-                    Fans = fans,
-                    Motherboard = motherboard,
-                    GraphicCard = graphicCard,
-                    PowerSupply = powerSupply,
-                    Storages = storages,
-                    Rams = rams
-                };
-
+                pcConfiguration = await GetDataFromIds(newConfigurationDto, pcConfiguration);
                 await _context.AddAsync(pcConfiguration);
 
                 await SaveChanges();
@@ -120,42 +89,14 @@ namespace KomputerBudowanieAPI.Repository
         {
 
             var configuration = await GetByIdAsync(id);
+
             if (configuration == null)
             {
                 return false;
             }
             try
             {
-                var pcCase = await _context.Cases.FirstOrDefaultAsync(x => x.Id == dto.CaseId);
-                var cpu = await _context.Cpus.FirstOrDefaultAsync(x => x.Id == dto.CpuId);
-                var cpuCooling = await _context.CpuCoolings.FirstOrDefaultAsync(x => x.Id == dto.CpuCoolingId);
-                var motherboard = await _context.Motherboards.FirstOrDefaultAsync(x => x.Id == dto.MotherboadId);
-                var graphicCard = await _context.GraphicCards.FirstOrDefaultAsync(x => x.Id == dto.GraphicCardId);
-                var powerSupply = await _context.PowerSupplies.FirstOrDefaultAsync(x => x.Id == dto.PowerSuplyId);
-
-                var storages = await _context.Storages
-                     .Where(x => dto.StorageIds != null && dto.StorageIds.Contains(x.Id))
-                     .ToListAsync();
-
-                var rams = await _context.Rams
-                    .Where(x => dto.RamsIds != null && dto.RamsIds.Contains(x.Id))
-                    .ToListAsync();
-
-                var fans = await _context.Fans
-                    .Where(x => dto.FanIds != null && dto.FanIds.Contains(x.Id))
-                    .ToListAsync();
-
-                configuration.Name = dto.Name;
-                configuration.Description = dto.Description;
-                configuration.Case = pcCase;
-                configuration.Cpu = cpu;
-                configuration.CPU_Cooling = cpuCooling;
-                configuration.Fans = fans;
-                configuration.Motherboard = motherboard;
-                configuration.GraphicCard = graphicCard;
-                configuration.PowerSupply = powerSupply;
-                configuration.Storages = storages;
-                configuration.Rams = rams;
+                configuration = await GetDataFromIds(dto, configuration);
 
                 await SaveChanges();
 
@@ -166,6 +107,43 @@ namespace KomputerBudowanieAPI.Repository
                 return false;
             }
 
+
+        }
+
+        public async Task<PcConfiguration?> GetDataFromIds(PcConfigurationDto dto, PcConfiguration pcConfiguration)
+        {
+            var pcCase = await _context.Set<Case>().FindAsync(dto.CaseId);
+            var cpu = await _context.Cpus.FirstOrDefaultAsync(x => x.Id == dto.CpuId);
+            var cpuCooling = await _context.CpuCoolings.FirstOrDefaultAsync(x => x.Id == dto.CpuCoolingId);
+            var motherboard = await _context.Motherboards.FirstOrDefaultAsync(x => x.Id == dto.MotherboadId);
+            var graphicCard = await _context.GraphicCards.FirstOrDefaultAsync(x => x.Id == dto.GraphicCardId);
+            var powerSupply = await _context.PowerSupplies.FirstOrDefaultAsync(x => x.Id == dto.PowerSuplyId);
+
+            var storages = await _context.Storages
+                .Where(x => dto.StorageIds != null && dto.StorageIds.Contains(x.Id))
+                .ToListAsync();
+
+            var rams = await _context.Rams
+                .Where(x => dto.RamsIds != null && dto.RamsIds.Contains(x.Id))
+                .ToListAsync();
+
+            var fans = await _context.Fans
+                .Where(x => dto.FanIds != null && dto.FanIds.Contains(x.Id))
+                .ToListAsync();
+
+            pcConfiguration.Name = dto.Name;
+            pcConfiguration.Description = dto.Description;
+            pcConfiguration.Case = pcCase;
+            pcConfiguration.Cpu = cpu;
+            pcConfiguration.CPU_Cooling = cpuCooling;
+            pcConfiguration.Fans = fans;
+            pcConfiguration.Motherboard = motherboard;
+            pcConfiguration.GraphicCard = graphicCard;
+            pcConfiguration.PowerSupply = powerSupply;
+            pcConfiguration.Storages = storages;
+            pcConfiguration.Rams = rams;
+
+            return pcConfiguration;
         }
     }
 }
