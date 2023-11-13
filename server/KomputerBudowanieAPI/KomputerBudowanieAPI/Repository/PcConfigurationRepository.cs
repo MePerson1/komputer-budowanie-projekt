@@ -118,7 +118,7 @@ namespace KomputerBudowanieAPI.Repository
             var motherboard = await _context.Motherboards.FirstOrDefaultAsync(x => x.Id == dto.MotherboadId);
             var graphicCard = await _context.GraphicCards.FirstOrDefaultAsync(x => x.Id == dto.GraphicCardId);
             var powerSupply = await _context.PowerSupplies.FirstOrDefaultAsync(x => x.Id == dto.PowerSuplyId);
-
+            var waterCooling = await _context.WaterCoolings.FirstOrDefaultAsync(x => x.Id != dto.WaterCoolingId);
             var storages = await _context.Storages
                 .Where(x => dto.StorageIds != null && dto.StorageIds.Contains(x.Id))
                 .ToListAsync();
@@ -142,6 +142,7 @@ namespace KomputerBudowanieAPI.Repository
             pcConfiguration.PowerSupply = powerSupply;
             pcConfiguration.Storages = storages;
             pcConfiguration.Rams = rams;
+            pcConfiguration.WaterCooling = waterCooling;
 
             return pcConfiguration;
         }
