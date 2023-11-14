@@ -49,7 +49,7 @@ namespace KomputerBudowanieAPI.Services
             //Chipset**
             Case_Motherboard(ref toast, configuration); //4
             Ram_Motherboard(ref toast, configuration); //5 i 6
-            Memory_Motherboard(ref toast, configuration); //7
+            Storage_Motherboard(ref toast, configuration); //7
 
             return toast;
         }
@@ -90,7 +90,7 @@ namespace KomputerBudowanieAPI.Services
                 return toast;
             }
 
-            Memory_Motherboard(ref toast, configuration); //1
+            Storage_Motherboard(ref toast, configuration); //1
             //Memory_PowerSupply //2
 
             return toast;
@@ -295,7 +295,7 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
-        static private void Memory_Motherboard(ref Toast toast, PcConfiguration configuration)
+        static private void Storage_Motherboard(ref Toast toast, PcConfiguration configuration)
         {
             if (configuration.Storages is not null && configuration.Motherboard is not null)
             {
