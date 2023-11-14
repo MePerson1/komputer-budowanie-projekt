@@ -39,3 +39,5 @@ const Case = {
   powerSupplyPower: 0,
   description: "string",
 };
+
+export default Case;
