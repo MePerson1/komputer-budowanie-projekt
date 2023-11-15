@@ -14,12 +14,10 @@ cooling_route = int(config.get('Settings', 'cooling_route'))
 show_raw_data_in_console = True if config.get('Settings', 'show_raw_data_in_console') == "1" else False
 show_translated_data_in_console = True if config.get('Settings', 'show_translated_data_in_console') == "1" else False
 add_to_database = True if config.get('Settings', 'add_to_database') == "1" else False
-
-if main_route not in [0, 2]:
-    main_route = None
+fill_database = True if config.get('Settings', 'fill_database') == "1" else False
 
 
-def go_through_route():
+def go_through_route(first_route, second_route):
     # zloz main routes
     main_routes = []
     html_main = get("https://www.morele.net/podzespoly-komputerowe/").text
@@ -29,7 +27,7 @@ def go_through_route():
         main_routes.append(link_base + link['href'])
 
     # przejdz przez main route, zloz routy dla czesci
-    html_parts = get(main_routes[main_route]).text
+    html_parts = get(main_routes[first_route]).text
     soup = BeautifulSoup(html_parts, "lxml")
     parts_routes = []
 
@@ -37,18 +35,18 @@ def go_through_route():
     for link in parts_links:
         parts_routes.append(link_base + link['href'])
 
-    if main_route == 2:
+    if first_route == 2:
         # usuniecie z listy po kolei linkow do dyskow hdd z demontazu, dyskow ssd z demontazu, pamieci ram z demontazu
         # oraz tunerow TV, FM, kart wideo
         parts_routes = [link for index, link in enumerate(parts_routes) if index not in [1, 3, 11, 15]]
 
         # przejdz przez parts route
-        html_processors = get(parts_routes[parts_route]).text
-    elif main_route == 0:
+        html_processors = get(parts_routes[second_route]).text
+    elif first_route == 0:
         # usuniecie z listy po kolei linkow do akcesorii chlodzenia wodnego, past termoprzewodzacych i termopadow
         parts_routes = [link for index, link in enumerate(parts_routes) if index not in [1, 3, 4]]
         # przejdz przez cooling route
-        html_processors = get(parts_routes[cooling_route]).text
+        html_processors = get(parts_routes[second_route]).text
     else:
         html_processors = ""
 
@@ -63,7 +61,7 @@ def go_through_route():
     return prod_links
 
 
-def get_product_specs(prod_links):
+def get_product_specs(first_route, second_route, prod_links):
     i = 1
     all_products = []
     for link in prod_links:
@@ -97,10 +95,10 @@ def get_product_specs(prod_links):
                     for key, value in product_specs.items():
                         print(key, ':', value)
 
-                if main_route == 2:
-                    translated_product_specs = translate_and_parse_parts(product_specs)
-                elif main_route == 0:
-                    translated_product_specs = translate_and_parse_cooling(product_specs)
+                if first_route == 2:
+                    translated_product_specs = translate_and_parse_parts(second_route, product_specs)
+                elif first_route == 0:
+                    translated_product_specs = translate_and_parse_cooling(second_route, product_specs)
                 else:
                     translated_product_specs = {}
 
@@ -121,8 +119,8 @@ def get_product_specs(prod_links):
     return all_products
 
 
-def translate_and_parse_cooling(specs):
-    if cooling_route == 0:  # chlodzenie CPU
+def translate_and_parse_cooling(second_route, specs):
+    if second_route == 0:  # chlodzenie CPU
         translated = {
             "Name": specs["Nazwa"],
             "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
@@ -147,7 +145,7 @@ def translate_and_parse_cooling(specs):
             "AirflowCFM": float(specs["Przepływ powietrza [CFM]"]) if specs["Przepływ powietrza [CFM]"] != "Brak danych" else None,
             "LifespanHours": int(specs["Żywotność"].split()[0]) if specs["Żywotność"] != "Brak danych" else None,
         }
-    elif cooling_route == 1:
+    elif second_route == 1:
         translated = {
             "Name": specs["Nazwa"],
             "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
@@ -176,8 +174,8 @@ def translate_and_parse_cooling(specs):
     return translated
 
 
-def translate_and_parse_parts(specs):
-    if parts_route == 0:  # dyski HDD
+def translate_and_parse_parts(second_route, specs):
+    if second_route == 0:  # dyski HDD
         translated = {
             "Name": specs["Nazwa"].replace('"', " cala"),
             "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
@@ -195,7 +193,7 @@ def translate_and_parse_parts(specs):
             "RotatingSpeedRPM": int(specs["Prędkość obrotowa"].split()[0]),
             "WeightG": float(specs["Waga [g]"]) if specs["Waga [g]"] != "Brak danych" else None
         }
-    elif parts_route == 1:  # dyski SSD
+    elif second_route == 1:  # dyski SSD
         translated = {
             "Name": specs["Nazwa"].replace('"', " cala"),
             "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
@@ -217,11 +215,11 @@ def translate_and_parse_parts(specs):
             "WriteRandomIOPS": int(specs["Zapis losowy"].split()[0]) if specs["Zapis losowy"] != "Brak danych" else None,
             "Longevity": specs["Nominalny czas pracy"] if specs["Nominalny czas pracy"] != "Brak danych" else None,
             "TBW": None if specs["TBW (Total Bytes Written)"] == "Brak danych" else specs["TBW (Total Bytes Written)"],
-            "Key": specs["Klucz"],
+            "Key": specs["Klucz"] if specs["Klucz"] != "Nie dotyczy" else None,
             "Controler": specs["Kontroler"] if specs["Kontroler"] != "Brak danych" else None,
             "HardwareEncryption": True if specs["Szyfrowanie sprzętowe"] == "Tak" else False
         }
-    elif parts_route == 3:  # karty graficzne
+    elif second_route == 3:  # karty graficzne
         translated = {
             "Name": specs["Nazwa"],
             "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
@@ -258,7 +256,7 @@ def translate_and_parse_parts(specs):
             "PowerConnectors": specs["Złącza zasilania"],
             "Description": None
         }
-    elif parts_route == 6:  # obudowy
+    elif second_route == 6:  # obudowy
         translated = {
             "Name": specs["Nazwa"],
             "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
@@ -299,10 +297,10 @@ def translate_and_parse_parts(specs):
             "PowerSupplyPower": specs["Moc zasilacza"] if specs["Moc zasilacza"] != "Brak zasilacza" else None,
             "Description": None
         }
-    elif parts_route == 8:  # pamięci RAM
+    elif second_route == 8:  # pamięci RAM
         translated = {
             "Name": specs["Nazwa"],
-            "Price": float(specs["Cena"].replace(" zł", "").replace(",", ".")),
+            "Price": float(specs["Cena"].replace("zł", "").replace(",", ".").replace(" ", "")),
             "Producer": specs["Producent"],
             "ProducerCode": specs["Kod producenta"],
             "Description": None,
@@ -319,10 +317,10 @@ def translate_and_parse_parts(specs):
             "Color": specs["Kolor"],
             "HasLighting": True if specs["Podświetlenie"] == "Tak" else False
         }
-    elif parts_route == 9:  # płyty główne
+    elif second_route == 9:  # płyty główne
         translated = {
             "Name": specs["Nazwa"],
-            "Price": float(specs["Cena"].replace(" zł", "").replace(",", ".")),
+            "Price": float(specs["Cena"].replace("zł", "").replace(",", ".").replace(" ", "")),
             "Producer": specs["Producent"],
             "ProducerCode": specs["Kod producenta"],
             "BoardStandard": specs["Standard płyty"],
@@ -352,7 +350,7 @@ def translate_and_parse_parts(specs):
             "RearPanelConnectors": specs["Panel tylny"].replace("\n", ""),
             "IncludedAccessories": specs["Załączone wyposażenie"].replace("\n", "") if specs.get("Załączone wyposażenie") is not None else None,
         }
-    elif parts_route == 11:  # procesory
+    elif second_route == 11:  # procesory
         translated = {
             "Name": specs["Nazwa"],
             "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
@@ -378,7 +376,7 @@ def translate_and_parse_parts(specs):
             "L3Cache": specs["Pamięć podręczna L3"],
             "AddedEquipment": specs.get("Załączone wyposażenie")
         }
-    elif parts_route == 12:  # zasilacze
+    elif second_route == 12:  # zasilacze
         translated = {
             "Name": specs["Nazwa"],
             "Price": float(specs["Cena"].replace("zł", "").replace(" ", "").replace(",", ".")),
@@ -413,37 +411,36 @@ def translate_and_parse_parts(specs):
     return translated
 
 
-def add_products_to_database(prods):
-    if main_route == 2:  # podzespoly
-        if parts_route == 0:
-            url = 'http://localhost:5198/api/Storage'
-        elif parts_route == 1:
-            url = 'http://localhost:5198/api/Storage'
-        elif parts_route == 3:
-            url = "http://localhost:5198/api/GraphicCard"
-        elif parts_route == 6:
-            url = 'http://localhost:5198/api/Case'
-        elif parts_route == 8:
-            url = 'http://localhost:5198/api/Ram'
-        elif parts_route == 9:
-            url = 'http://localhost:5198/api/Motherboard'
-        elif parts_route == 11:
-            url = 'http://localhost:5198/api/Cpu'
-        elif parts_route == 12:
-            url = 'http://localhost:5198/api/PowerSupply'
+def add_products_to_database(first_route, second_route, prods):
+    url = "http://localhost:5198/api/"
+    if first_route == 2:  # podzespoly
+        if second_route in [0, 1]:  # dyski hdd lub ssd
+            url += 'Storage'
+        elif second_route == 3:
+            url += 'GraphicCard'
+        elif second_route == 6:
+            url += 'Case'
+        elif second_route == 8:
+            url += 'Ram'
+        elif second_route == 9:
+            url += 'Motherboard'
+        elif second_route == 11:
+            url += 'Cpu'
+        elif second_route == 12:
+            url += 'PowerSupply'
         else:
-            url = ""
-    elif main_route == 0:  # chlodzenie
-        if cooling_route == 0:
-            url = "http://localhost:5198/api/CpuCooling"
-        elif cooling_route == 1:
-            url = "http://localhost:5198/api/WaterCooling"
+            url = None
+    elif first_route == 0:  # chlodzenie
+        if second_route == 0:
+            url += "CpuCooling"
+        elif second_route == 1:
+            url += "WaterCooling"
         else:
-            url = ""
+            url = None
     else:
-        url = ""
+        url = None
 
-    if url != "":
+    if url is not None:
         i = 1
         for product in prods:
             response = requests.post(url, json=product)
@@ -458,8 +455,31 @@ def add_products_to_database(prods):
             i += 1
 
 
-if main_route is not None:
-    product_links = go_through_route()
-    products = get_product_specs(product_links)
-    if add_to_database:
-        add_products_to_database(products)
+def load_up_database():
+    mains = [0, 2]
+    coolings = [0, 1]
+    parts = [0, 1, 3, 6, 8, 9, 11, 12]
+    for second_route in coolings:
+        prod_links = go_through_route(mains[0], second_route)
+        prods = get_product_specs(mains[0], second_route, prod_links)
+        add_products_to_database(mains[0], second_route, prods)
+    for second_route in parts:
+        prod_links = go_through_route(mains[1], second_route)
+        prods = get_product_specs(mains[1], second_route, prod_links)
+        add_products_to_database(mains[1], second_route, prods)
+
+
+if fill_database is True:
+    load_up_database()
+elif main_route in [0, 2] and fill_database is False:
+    if main_route == 0:
+        product_links = go_through_route(main_route, cooling_route)
+        products = get_product_specs(main_route, cooling_route, product_links)
+        if add_to_database:
+            add_products_to_database(main_route, cooling_route, products)
+
+    elif main_route == 2:
+        product_links = go_through_route(main_route, parts_route)
+        products = get_product_specs(main_route, parts_route, product_links)
+        if add_to_database:
+            add_products_to_database(main_route, parts_route, products)
