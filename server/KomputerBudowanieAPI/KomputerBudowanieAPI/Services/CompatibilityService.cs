@@ -154,7 +154,7 @@ namespace KomputerBudowanieAPI.Services
             Case_PowerSupply(ref toast, configuration); //2 i 3
             Case_GraphicCard(ref toast, configuration); //4
             Case_CpuCooling(ref toast, configuration); //5
-            Case_Memories(ref toast, configuration); //7
+            Case_Storages(ref toast, configuration); //7
 
             return toast;
         }
@@ -177,7 +177,7 @@ namespace KomputerBudowanieAPI.Services
         }
 
 
-        private static void Case_Memories(ref Toast toast, PcConfiguration configuration)
+        private static void Case_Storages(ref Toast toast, PcConfiguration configuration)
         {
             if (configuration.Case is not null && configuration.Storages is not null)
             {
@@ -200,9 +200,9 @@ namespace KomputerBudowanieAPI.Services
             if (configuration.Case is not null && configuration.CPU_Cooling is not null)
             {
                 //w zaleznosci od jednostki height dla cpu cooling
-                if (configuration.Case.MaxCoolingSystemHeightCM < configuration.CPU_Cooling.HeightMM)
+                if (configuration.Case.MaxCoolingSystemHeightCM < configuration.CPU_Cooling.HeightMM * 10)
                 {
-                    toast.Problems.Add("Cpu Cooling is too high xd!");
+                    toast.Problems.Add("Cpu Cooling is too high for this pc case!");
                 }
             }
         }
@@ -356,7 +356,7 @@ namespace KomputerBudowanieAPI.Services
         {
             if (configuration.GraphicCard is not null && configuration.Case is not null)
             {
-                if (configuration.Case.MaxGPULengthCM <= configuration.GraphicCard.CardLengthMM * 10)
+                if (configuration.Case.MaxGPULengthCM < configuration.GraphicCard.CardLengthMM * 10)
                 {
                     toast.Problems.Add("Grahic Card is too big for that case!");
                 }
