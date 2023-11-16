@@ -8,16 +8,14 @@ import Ram from "./Ram";
 import Storage from "./Storage";
 import WaterCooling from "./WaterCooling";
 
-const PcConfiguration = {
-  case: Case,
-  cpu: Cpu,
-  cpuCooling: CpuCooling,
-  graphicCard: GraphicCard,
-  motherboard: Motherboard,
-  powerSupply: PowerSupply,
-  ram: Ram,
-  storage: Storage,
-  waterCooling: WaterCooling,
+export {
+  Case,
+  Cpu,
+  CpuCooling,
+  GraphicCard,
+  Motherboard,
+  PowerSupply,
+  Ram,
+  Storage,
+  WaterCooling,
 };
-
-export default PcConfiguration;

@@ -1,6 +1,10 @@
 import ComponentView from "../components/shared/ComponentView";
-
+import { useState, useEffect } from "react";
+import axios from "axios";
 const Build = () => {
+  useEffect(() => {
+    axios.get();
+  });
   return (
     <>
       <div>
