@@ -17,8 +17,8 @@ const PcConfiguration = {
   graphicCard: GraphicCard,
   motherboard: Motherboard,
   powerSupply: PowerSupply,
-  ram: [Ram],
-  storage: [Storage],
+  rams: [Ram],
+  storages: [Storage],
   waterCooling: WaterCooling,
 };
 

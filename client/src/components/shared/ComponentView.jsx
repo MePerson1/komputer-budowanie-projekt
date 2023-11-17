@@ -1,24 +1,21 @@
 const ComponentView = (props) => {
   return (
-    <div class="card card-bordered card-side bg-base-200 shadow-xl m-7">
-      <figure>
-        <img src="logo192.png" alt="Movie" />
-      </figure>
-      <div class="card-body">
-        <h2 class="card-title">name</h2>
-        <div class="flex ">
+    <div className="card card-bordered card-side bg-base-200 shadow-xl m-7 flex justify-between items-center">
+      <figure>{/* Include your figure content here */}</figure>
+      <div className="card-body">
+        <h2 className="card-title">{props.name}</h2>
+        <div className="flex">
           <div className="m-5">
-            <p>Specyfikacje</p>
-            <p>Specyfikacje</p>
-          </div>
-          <div className="m-5">
-            <p>Specyfikacje</p>
-            <p>Specyfikacje</p>
+            <p>Producent: {props.producer}</p>
+            {props.price !== undefined && (
+              <p>Cena: {props.price.toString().replace(".", ",")} zł</p>
+            )}
+            {props.price === undefined && <p>Cena: N/A</p>}
           </div>
         </div>
       </div>
-      <div>
-        <button className="btn btn-secondary">Dodaj</button>
+      <div className="mr-7">
+        <button className="btn btn-outline">Zmień</button>
       </div>
     </div>
   );
