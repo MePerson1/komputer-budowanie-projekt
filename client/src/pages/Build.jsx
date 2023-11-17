@@ -1,21 +1,26 @@
 import ComponentView from "../components/shared/ComponentView";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { PcConfiguration, Motherboard } from "../models/index";
 const Build = () => {
-  useEffect(() => {
-    axios.get();
-  });
+  let pcConfiguration = useState(PcConfiguration);
+  console.log(pcConfiguration);
+  console.log(pcConfiguration.motherboard);
   return (
     <>
       <div>
         <div className="flex">
           <table className="table">
             <tbody>
-              <tr>
+              <tr id="cpu">
                 <ComponentView />
               </tr>
-              <tr>
-                <ComponentView />
+              <tr id="motherboard">
+                {pcConfiguration.motherboard !== undefined ? (
+                  <ComponentView />
+                ) : (
+                  <ComponentView />
+                )}
               </tr>
               <tr>
                 <ComponentView />

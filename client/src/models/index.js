@@ -7,6 +7,7 @@ import PowerSupply from "./PowerSupply";
 import Ram from "./Ram";
 import Storage from "./Storage";
 import WaterCooling from "./WaterCooling";
+import PcConfiguration from "./PcConfiguration";
 
 export {
   Case,
@@ -18,4 +19,5 @@ export {
   Ram,
   Storage,
   WaterCooling,
+  PcConfiguration,
 };
