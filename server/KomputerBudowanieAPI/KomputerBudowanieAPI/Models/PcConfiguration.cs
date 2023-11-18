@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace KomputerBudowanieAPI.Models
 {
@@ -22,10 +23,14 @@ namespace KomputerBudowanieAPI.Models
         public Case? Case { get; set; }
         public PowerSupply? PowerSupply { get; set; } = null;
         public WaterCooling? WaterCooling { get; set; }
-        public User? User { get; set; } = null;
+        public int? UserId { get; set; } // Nullable foreign key to User
+        public User? User { get; set; }
 
         public ICollection<Fan>? Fans { get; set; }
         public ICollection<Storage>? Storages { get; set; }
         public ICollection<Ram>? Rams { get; set; }
+
+        [JsonIgnore]
+        public ICollection<User>? UsersFavorited { get; set; }
     }
 }

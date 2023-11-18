@@ -20,5 +20,19 @@ namespace KomputerBudowanieAPI.Database
         public DbSet<PowerSupply> PowerSupplies { get; set; }
         public DbSet<Case> Cases { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<PcConfiguration>()
+                .HasOne(pc => pc.User)           // Each PcConfiguration has one User
+                .WithMany(u => u.UserConfigurations)  // User has many PcConfigurations
+                .HasForeignKey(pc => pc.UserId) // Foreign key property in PcConfiguration
+                .IsRequired(false);             // Optional relationship (user might not be assigned)
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.FavouriteConfigurations)
+                .WithMany(pc => pc.UsersFavorited)
+                .UsingEntity(j => j.ToTable("UserFavoriteConfigurations"));
+        }
+
     }
 }
