@@ -7,13 +7,13 @@ const Info = () => {
             <td className="text-lg">
               <b>Budżet:</b>
             </td>
-            <td className="text-lg">1000 zł</td>
+            <td className="text-lg">2000 zł</td>
           </tr>
           <tr>
             <td className="text-lg">
               <b>Łączna cena:</b>
             </td>
-            <td className="text-lg">100 zł</td>
+            <td className="text-lg">661,49 zł</td>
           </tr>
           <tr>
             <td className="text-lg">

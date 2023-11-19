@@ -10,7 +10,7 @@ const EmptyComponentView = (props) => {
           <div className="m-5">{props.info}</div>
         </div>
       </div>
-      <div className="mr-3">
+      <div className="mr-7">
         <button className="btn btn-secondary">Dodaj</button>
       </div>
     </div>
