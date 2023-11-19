@@ -1,6 +1,6 @@
 const ComponentView = (props) => {
   return (
-    <div className="card card-bordered card-side bg-base-200 shadow-xl m-7 flex justify-between items-center">
+    <div className="card card-bordered card-side bg-base-200 shadow-xl m-5 flex justify-between items-center">
       <figure>{/* Include your figure content here */}</figure>
       <div className="card-body">
         <h2 className="card-title">{props.name}</h2>

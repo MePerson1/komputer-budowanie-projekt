@@ -1,5 +1,5 @@
-import ComponentView from "../components/shared/ComponentView";
-import EmptyComponentView from "../components/Build/EmptyComponentView";
+import ComponentsTable from "../components/Build/ComponentsTable";
+import Info from "../components/Build/Info";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { PcConfiguration, Motherboard } from "../models/index";
@@ -52,6 +52,7 @@ const Build = () => {
   ];
   useEffect(() => {
     getData();
+    console.log(pcConfiguration);
   }, []);
 
   async function getData() {
@@ -69,75 +70,37 @@ const Build = () => {
   return (
     <>
       <div>
-        <div className="flex">
-          <table className="table">
-            <tbody>
-              <tr id="cpu">
-                {pcConfiguration.cpu !== null ? (
-                  <ComponentView {...pcConfiguration.cpu} />
-                ) : (
-                  <EmptyComponentView {...pcParts[0]} />
-                )}
-              </tr>
-              <tr id="cpuCooling">
-                {pcConfiguration.cpuCooling !== null &&
-                pcConfiguration.waterCooling !== undefined ? (
-                  <ComponentView {...pcConfiguration.cpuCooling} />
-                ) : (
-                  <EmptyComponentView {...pcParts[1]} />
-                )}
-              </tr>
-              <tr id="motherboard">
-                {pcConfiguration.motherboard !== null ? (
-                  <ComponentView {...pcConfiguration} />
-                ) : (
-                  <EmptyComponentView {...pcParts[2]} />
-                )}
-              </tr>
-              <tr id="graphicCard">
-                {pcConfiguration.graphicCard !== null ? (
-                  <ComponentView />
-                ) : (
-                  <EmptyComponentView {...pcParts[3]} />
-                )}
-              </tr>
-              <tr id="ram">
-                {pcConfiguration.rams !== undefined &&
-                pcConfiguration.rams.length !== 0 ? (
-                  pcConfiguration.rams.map((ram, index) => (
-                    <ComponentView key={index} {...ram} />
-                  ))
-                ) : (
-                  <EmptyComponentView {...pcParts[4]} />
-                )}
-              </tr>
+        <div className="flex justify-between">
+          <ComponentsTable
+            pcParts={pcParts}
+            pcConfiguration={pcConfiguration}
+          />
+          <div>
+            <Info />
+            <div className=" m-5 rounded-md inline-block">
+              <div className="bg-black bg-opacity-25 rounded-md border-black border-2 shadow-lg shadow-black p-3 pl-10 pr-10 w-full sm:w-96 flex flex-col mb-5">
+                <div className="text-base mb-4">
+                  <h3 className="font-bold text-lg mb-2">Problemy:</h3>
+                  <ul className="list-disc pl-5">
+                    <li className="text-sm text-red-600">
+                      Płyta główna nie wspiera procesora tej lini!
+                    </li>
 
-              <tr id="storage">
-                {pcConfiguration.storage !== undefined &&
-                pcConfiguration.storage.length !== 0 ? (
-                  <ComponentView />
-                ) : (
-                  <EmptyComponentView {...pcParts[5]} />
-                )}
-              </tr>
-              <tr id="case">
-                {pcConfiguration.case !== null ? (
-                  <ComponentView />
-                ) : (
-                  <EmptyComponentView {...pcParts[6]} />
-                )}
-              </tr>
-            </tbody>
-          </table>
-          <div className="m-20 flex-col">
-            <p>Dodatkowe info</p>
-            <p>Cena łączna</p>
-            <p>Wolatage</p>
-            <button className="btn btn-primary btn-sm">zapisz</button>
+                    {/* Add more list items with warning details */}
+                  </ul>
+                </div>
+                <div className="text-base">
+                  <h3 className="font-bold text-lg mb-2">Uwagi:</h3>
+                  <ul className="list-disc pl-5">
+                    <li className="text-sm text-blue-400">
+                      Procesor nie zawiera zintegrowanego układu graficznego.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-
-        <div>Informacja o kompaktybilnosci</div>
       </div>
     </>
   );
