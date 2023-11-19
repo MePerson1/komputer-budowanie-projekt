@@ -24,7 +24,7 @@ namespace KomputerBudowanieAPI.Services
 
             if (configuration is null)
             {
-                toast.Problems.Add("Something went wrong");
+                toast.Problems.Add("Coś poszło nie tak!");
                 return toast;
             }
 
@@ -40,7 +40,7 @@ namespace KomputerBudowanieAPI.Services
 
             if (configuration is null)
             {
-                toast.Problems.Add("Something went wrong");
+                toast.Problems.Add("Coś poszło nie tak!");
                 return toast;
             }
 
@@ -70,7 +70,7 @@ namespace KomputerBudowanieAPI.Services
 
             if (configuration is null)
             {
-                toast.Problems.Add("Something went wrong");
+                toast.Problems.Add("Coś poszło nie tak!");
                 return Task.FromResult<Toast?>(toast);
             }
 
@@ -86,7 +86,7 @@ namespace KomputerBudowanieAPI.Services
 
             if (configuration is null)
             {
-                toast.Problems.Add("Something went wrong");
+                toast.Problems.Add("Coś poszło nie tak!");
                 return toast;
             }
 
@@ -111,12 +111,12 @@ namespace KomputerBudowanieAPI.Services
 
             if (configuration is null)
             {
-                toast.Problems.Add("Something went wrong!");
+                toast.Problems.Add("Coś poszło nie tak!");
                 return toast;
             }
             if (configuration.GraphicCard is null)
             {
-                toast.Problems.Add("No graphic card!");
+                toast.Problems.Add("Brak karty graficznej!");
                 return toast;
             }
 
@@ -132,7 +132,7 @@ namespace KomputerBudowanieAPI.Services
             Toast toast = new();
             if (configuration is null)
             {
-                toast.Problems.Add("Something went wrong");
+                toast.Problems.Add("Coś poszło nie tak!");
                 return toast;
             }
             GraphicCard_PowerSupply(ref toast, configuration);
@@ -146,7 +146,7 @@ namespace KomputerBudowanieAPI.Services
             Toast toast = new();
             if (configuration is null)
             {
-                toast.Problems.Add("Something went wrong");
+                toast.Problems.Add("Coś poszło nie tak!");
                 return toast;
             }
 
@@ -154,7 +154,7 @@ namespace KomputerBudowanieAPI.Services
             Case_PowerSupply(ref toast, configuration); //2 i 3
             Case_GraphicCard(ref toast, configuration); //4
             Case_CpuCooling(ref toast, configuration); //5
-            Case_Memories(ref toast, configuration); //7
+            Case_Storage(ref toast, configuration); //7
 
             return toast;
         }
@@ -172,65 +172,75 @@ namespace KomputerBudowanieAPI.Services
 
             if (configuration.Cpu.IntegratedGraphics is null)
             {
-                toast.Problems.Add("This CPU does not have a integrated graphics!");
+                toast.Problems.Add("Ten procesor nie ma zintegrowanej karty graficznej! Dodaj kartę graficzną.");
             }
         }
 
 
-        private static void Case_Memories(ref Toast toast, PcConfiguration configuration)
+        private static void Case_Storage(ref Toast toast, PcConfiguration configuration)
         {
             if (configuration.Case is not null && configuration.Storages is not null)
             {
+                var internalBaysThreePointFiveInch = configuration.Case.InternalBaysThreePointFiveInch;
+                var internalBaysTwoPointFiveInc = configuration.Case.InternalBaysTwoPointFiveInch;
                 foreach (var storage in configuration.Storages)
                 {
-                    if (storage.FormFactor == "3.5 cala" && configuration.Case.InternalBaysThreePointFiveInch == 0)
+                    if (storage.FormFactor == "3.5 cala")
                     {
-                        toast.Problems.Add("Case doesn't include internal bays for 3.5\" storage!");
+                        if (internalBaysThreePointFiveInch == 0) toast.Problems.Add("Ta obudowa nie ma odpowiedniej ilości wnęk 3.5 cala!");
+                        else internalBaysThreePointFiveInch--;
                     }
-                    if (storage.FormFactor == "2.5 cala" && configuration.Case.InternalBaysTwoPointFiveInch == 0)
+                    if (storage.FormFactor == "2.5 cala")
                     {
-                        toast.Problems.Add("Case doesn't include internal bays for 2.5\" storage!");
+                        if (internalBaysTwoPointFiveInc == 0) toast.Problems.Add("Ta obudowa nie ma odpowiedniej ilości wnęk 2.5 cala!");
+                        else internalBaysTwoPointFiveInc--;
                     }
                 }
             }
         }
 
-        private static void Case_CpuCooling(ref Toast toast, PcConfiguration configuration)
+        private static void Case_CpuCooling(ref Toast toast, PcConfiguration configuration) //------------------------------------------------------------------------------
         {
+            //trzeba dodać sprawdzanie dla chłodzenia wodnego, bo to w sumie co jest to działa tylko dla powietrznego
             if (configuration.Case is not null && configuration.CPU_Cooling is not null)
             {
                 //w zaleznosci od jednostki height dla cpu cooling
                 if (configuration.Case.MaxCoolingSystemHeightCM < configuration.CPU_Cooling.HeightMM)
                 {
-                    toast.Problems.Add("Cpu Cooling is too high xd!");
+                    toast.Problems.Add("Chłodzenie CPU nie mieści się w obudowie!");
                 }
             }
         }
 
         private static void Case_Motherboard(ref Toast toast, PcConfiguration configuration)
         {
+            //Case:
+            //Compatibylity: "ATX, Extended ATX (e-ATX), Micro ATX (uATX), Mini ITX"
+
+            //Motherboard:
+            //BoardStandard: "ATX", "Micro ATX"
             if (configuration.Case is not null && configuration.Motherboard is not null)
             {
                 //Problem w tym ,że obsługiwane standardy w case są zapisywane naraz kilka i po przecinku!
                 if (configuration.Motherboard.BoardStandard == "ATX")
                 {
-                    string compatiblity = configuration.Case.Compatibility + ",";
+                    string compatiblity = " " + configuration.Case.Compatibility + ",";
                     if (!compatiblity.Contains(" " + configuration.Motherboard.BoardStandard + ",")) //Chyba poprawiłem
                     {
-                        toast.Problems.Add("Case is not compatibility with motherboard standard!");
+                        toast.Problems.Add($"Obudowa nie jest kompatybilna z standardem płyty głównej {configuration.Motherboard.BoardStandard}!");
                     }
                 }
                 else
                 {
                     if (!configuration.Case.Compatibility.Contains(configuration.Motherboard.BoardStandard))
                     {
-                        toast.Problems.Add("Case is not compatibility with motherboard standard!");
+                        toast.Problems.Add($"Obudowa nie jest kompatybilna z standardem płyty głównej {configuration.Motherboard.BoardStandard}!");
                     }
                 }
             }
         }
 
-        private static void Case_PowerSupply(ref Toast toast, PcConfiguration configuration)
+        private static void Case_PowerSupply(ref Toast toast, PcConfiguration configuration) //------------------------------------------------------------------------------
         {
             if (configuration.Case is not null && configuration.PowerSupply is not null)
             {
@@ -246,7 +256,7 @@ namespace KomputerBudowanieAPI.Services
                 }
                 else
                 {
-                    toast.Problems.Add("Case already contains power supply!");
+                    toast.Warnings.Add("Obudowa już zawiera zasilacz!");
                 }
             }
         }
@@ -279,18 +289,18 @@ namespace KomputerBudowanieAPI.Services
                     //CheckRamStandard
                     if (configuration.Motherboard.MemoryStandard != ram.MemoryType)
                     {
-                        toast.Problems.Add("Motherboard doesn't support this memory standard! " + ram.Name);
+                        toast.Problems.Add("Płyta główna nie wspiera tego standardu pamięci ram! " + ram.Name);
                     }
                     //CheckMRamPinType
                     if (configuration.Motherboard.MemoryConnectorType != ram.PinType) //zmienić nazwe zmiennych może
                     {
-                        toast.Problems.Add("Motherboard connector is different then ram pin type! " + ram.Name);
+                        toast.Problems.Add("Płyta główna ma inne złącze do ramu! " + ram.Name);
                     }
                 }
                 //CheckRamSlotCount
                 if (configuration.Motherboard.MemorySlotsCount < ramCount)
                 {
-                    toast.Problems.Add("Motherboard don't have enough memory slots! Memory slots count: " + configuration.Motherboard.MemorySlotsCount);
+                    toast.Problems.Add($"Płyta głowna nie pomieści więcej niż {configuration.Motherboard.MemorySlotsCount} kości ram!");
                 }
             }
         }
@@ -312,16 +322,16 @@ namespace KomputerBudowanieAPI.Services
                     if (connectors.ContainsKey(disc.Interface))
                     {
                         if (connectors[disc.Interface] > 0) connectors[disc.Interface] = connectors[disc.Interface]--;
-                        else toast.Problems.Add($"Lack of {disc.Interface} connectors!");
+                        else toast.Problems.Add($"Brak złączy {disc.Interface}!");
                     }
                     else if (disc.FormFactor.Contains("M.2"))
                     {
                         if (connectors["M.2 slot"] > 0) connectors["M.2 slot"] = connectors["M.2 slot"]--;
-                        else toast.Problems.Add($"Lack of M.2 connectors!");
+                        else toast.Problems.Add($"Brak złączy M2!");
                     }
                     else
                     {
-                        toast.Problems.Add($"{configuration.Motherboard.Name} does not have a {disc.Interface} connector for {disc.Name} disc!");
+                        toast.Problems.Add($"Płyta {configuration.Motherboard.Name} nie ma żadnego złącza {disc.Interface} dla dysku {disc.Name}!");
                     }
                 }
             }
@@ -338,7 +348,7 @@ namespace KomputerBudowanieAPI.Services
                 //CheckSupportedProcessor
                 if (!configuration.Motherboard.SupportedProcessors.Contains(configuration.Cpu.Line))
                 {
-                    toast.Problems.Add("Motherboard doesn't support this Cpu line!");
+                    toast.Problems.Add("Płyta główna nie wspiera tej linii procesorów!");
                 }
                 //Motherboard:
                 //"cpuSocket": "Socket 1700",
@@ -347,7 +357,7 @@ namespace KomputerBudowanieAPI.Services
                 //CheckCPUSocket
                 if (configuration.Motherboard.CPUSocket != configuration.Cpu.SocketType)
                 {
-                    toast.Problems.Add("Motherboard socket is different then cpu socket type!");
+                    toast.Problems.Add("Płyta główna ma inny typ gniazda niż procesor!");
                 }
             }
         }
@@ -358,7 +368,7 @@ namespace KomputerBudowanieAPI.Services
             {
                 if (configuration.Case.MaxGPULengthCM <= configuration.GraphicCard.CardLengthMM * 10)
                 {
-                    toast.Problems.Add("Grahic Card is too big for that case!");
+                    toast.Problems.Add("Karta graficzna jest za dużo dla tej obudowy!");
                 }
             }
         }
@@ -382,7 +392,7 @@ namespace KomputerBudowanieAPI.Services
 
                 if (!configuration.Motherboard.ExpansionSlots.Contains(GraphicCardConnector))
                 {
-                    toast.Problems.Add("Graphic card and motherboard don't share the same connector!");
+                    toast.Problems.Add("Płyta główna nie ma odpowiedniego złącza dla tej karty graficznej!");
                 }
             }
         }
@@ -402,23 +412,23 @@ namespace KomputerBudowanieAPI.Services
                     if (connector == "16-pin")
                     {
                         if (powerSupply16pin > 0) { powerSupply16pin--; }
-                        else { toast.Problems.Add("Insufficient 16-pin connectors on the power supply!"); }
+                        else { toast.Problems.Add("Niewystarczająca ilość 16 pinowych złączy do karty graficznej!"); }
                     }
                     else if (connector == "8-pin")
                     {
                         if (powerSupply8pin > 0) { powerSupply8pin--; }
                         else if (powerSupply6_plus2pin > 0) { powerSupply6_plus2pin--; }
-                        else { toast.Problems.Add("Insufficient 8-pin connectors on the power supply!"); }
+                        else { toast.Problems.Add("Niewystarczająca ilość 8 pinowych złączy do karty graficznej!"); }
                     }
                     else if (connector == "6-pin")
                     {
                         if (powerSupply6pin > 0) { powerSupply6pin--; }
                         else if (powerSupply6_plus2pin > 0) { powerSupply6_plus2pin--; }
-                        else { toast.Problems.Add("Insufficient 6-pin connectors on the power supply!"); }
+                        else { toast.Problems.Add("Niewystarczająca ilość 6 pinowych złączy do karty graficznej!"); }
                     }
                     else
                     {
-                        toast.Problems.Add($"Something went wrong while checking connectors! ({connector})");
+                        toast.Problems.Add($"Coś poszło nie tak podczas sprawdzania złączy! ({connector})");
                     }
                 }
             }
