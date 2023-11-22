@@ -49,7 +49,7 @@ namespace KomputerBudowanieAPI.Services
             //Chipset**
             Case_Motherboard(ref toast, configuration); //4
             Ram_Motherboard(ref toast, configuration); //5 i 6
-            Memory_Motherboard(ref toast, configuration); //7
+            Storage_Motherboard(ref toast, configuration); //7
 
             return toast;
         }
@@ -80,7 +80,7 @@ namespace KomputerBudowanieAPI.Services
             return Task.FromResult<Toast?>(toast);
         }
 
-        public async Task<Toast?> MemoryCompatibilityCheck(PcConfiguration configuration) //DO DOKOŃCZENIA!!!!!!!!!!!
+        public async Task<Toast?> StorageCompatibilityCheck(PcConfiguration configuration) //DO DOKOŃCZENIA!!!!!!!!!!!
         {
             Toast toast = new();
 
@@ -90,7 +90,7 @@ namespace KomputerBudowanieAPI.Services
                 return toast;
             }
 
-            Memory_Motherboard(ref toast, configuration); //1
+            Storage_Motherboard(ref toast, configuration); //1
             //Memory_PowerSupply //2
 
             return toast;
@@ -127,7 +127,7 @@ namespace KomputerBudowanieAPI.Services
             return toast;
         }
 
-        private async Task<Toast?> PowerSupplyCompatibliityCheck(PcConfiguration configuration)
+        public async Task<Toast?> PowerSupplyCompatibliityCheck(PcConfiguration configuration)
         {
             Toast toast = new();
             if (configuration is null)
@@ -154,7 +154,7 @@ namespace KomputerBudowanieAPI.Services
             Case_PowerSupply(ref toast, configuration); //2 i 3
             Case_GraphicCard(ref toast, configuration); //4
             Case_CpuCooling(ref toast, configuration); //5
-            Case_Storage(ref toast, configuration); //7
+            Case_Storages(ref toast, configuration); //7
 
             return toast;
         }
@@ -177,7 +177,7 @@ namespace KomputerBudowanieAPI.Services
         }
 
 
-        private static void Case_Storage(ref Toast toast, PcConfiguration configuration)
+        private static void Case_Storages(ref Toast toast, PcConfiguration configuration)
         {
             if (configuration.Case is not null && configuration.Storages is not null)
             {
@@ -205,7 +205,7 @@ namespace KomputerBudowanieAPI.Services
             if (configuration.Case is not null && configuration.CPU_Cooling is not null)
             {
                 //w zaleznosci od jednostki height dla cpu cooling
-                if (configuration.Case.MaxCoolingSystemHeightCM < configuration.CPU_Cooling.HeightMM)
+                if (configuration.Case.MaxCoolingSystemHeightCM < configuration.CPU_Cooling.HeightMM * 10)
                 {
                     toast.Problems.Add("Chłodzenie CPU nie mieści się w obudowie!");
                 }
@@ -305,7 +305,7 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
-        static private void Memory_Motherboard(ref Toast toast, PcConfiguration configuration)
+        static private void Storage_Motherboard(ref Toast toast, PcConfiguration configuration)
         {
             if (configuration.Storages is not null && configuration.Motherboard is not null)
             {
@@ -366,7 +366,7 @@ namespace KomputerBudowanieAPI.Services
         {
             if (configuration.GraphicCard is not null && configuration.Case is not null)
             {
-                if (configuration.Case.MaxGPULengthCM <= configuration.GraphicCard.CardLengthMM * 10)
+                if (configuration.Case.MaxGPULengthCM < configuration.GraphicCard.CardLengthMM * 10)
                 {
                     toast.Problems.Add("Karta graficzna jest za dużo dla tej obudowy!");
                 }
@@ -507,10 +507,4 @@ namespace KomputerBudowanieAPI.Services
             return result;
         }
     }
-}
-
-public class Toast
-{
-    public ICollection<string>? Warnings { get; set; } = new List<string>();
-    public ICollection<string>? Problems { get; set; } = new List<string>();
 }

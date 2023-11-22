@@ -13,11 +13,13 @@ namespace KomputerBudowanieAPI.Controllers
     {
         public readonly IPcConfigurationRepository _pcConfigurationRepository;
         public readonly IUserRepository _userRepository;
+        public readonly ICompatibilityService _compatibilityService;
 
-        public ConfigurationController(IPcConfigurationRepository pcConfigurationRepository, IUserRepository userRepository)
+        public ConfigurationController(IPcConfigurationRepository pcConfigurationRepository, IUserRepository userRepository, ICompatibilityService compatibilityService)
         {
             _pcConfigurationRepository = pcConfigurationRepository;
             _userRepository = userRepository;
+            _compatibilityService = compatibilityService;
         }
 
         // GET: api/<ConfigurationController>
@@ -104,13 +106,139 @@ namespace KomputerBudowanieAPI.Controllers
             return Accepted();
         }
 
+        /*
+         * COMPABILITY CHECK ROUTES
+         */
 
-        [HttpPost("Comatibility/Cpu")]
-        public async Task<IActionResult> CpuCompatibilityCheck(PcConfiguration pcConfiguration)
+        [HttpPost("Compatibility/Cpu")]
+        public async Task<IActionResult> CpuCompatibilityCheck([FromBody] PcConfigurationDto pcConfigurationDto)
         {
+            PcConfiguration pcConfigration = new PcConfiguration();
+            pcConfigration = await _pcConfigurationRepository.GetDataFromIds(pcConfigurationDto, pcConfigration);
 
-            return Ok();
+            if (pcConfigration is null)
+            {
+                return BadRequest();
+            }
+
+            var toast = await _compatibilityService.CpuCompatibilityCheck(pcConfigration);
+
+            return Ok(toast);
         }
+
+        [HttpPost("Compatibility/Motherboard")]
+        public async Task<IActionResult> MotherboardCompatibilityCheck([FromBody] PcConfigurationDto pcConfigurationDto)
+        {
+            PcConfiguration pcConfigration = new PcConfiguration();
+            pcConfigration = await _pcConfigurationRepository.GetDataFromIds(pcConfigurationDto, pcConfigration);
+
+            if (pcConfigration is null)
+            {
+                return BadRequest();
+            }
+
+            var toast = await _compatibilityService.MotherboardCompatibilityCheck(pcConfigration);
+
+            return Ok(toast);
+        }
+
+        [HttpPost("Compatibility/Storage")]
+        public async Task<IActionResult> StorageCompatibilityCheck([FromBody] PcConfigurationDto pcConfigurationDto)
+        {
+            PcConfiguration pcConfigration = new PcConfiguration();
+            pcConfigration = await _pcConfigurationRepository.GetDataFromIds(pcConfigurationDto, pcConfigration);
+
+            if (pcConfigration is null)
+            {
+                return BadRequest();
+            }
+
+            var toast = await _compatibilityService.StorageCompatibilityCheck(pcConfigration);
+
+            return Ok(toast);
+        }
+
+        [HttpPost("Compatibility/CpuCooling")]
+        public async Task<IActionResult> CpuCoolingCompatibilityCheck([FromBody] PcConfigurationDto pcConfigurationDto)
+        {
+            PcConfiguration pcConfigration = new PcConfiguration();
+            pcConfigration = await _pcConfigurationRepository.GetDataFromIds(pcConfigurationDto, pcConfigration);
+
+            if (pcConfigration is null)
+            {
+                return BadRequest();
+            }
+
+            var toast = await _compatibilityService.CpuCoolingCompatibilityCheck(pcConfigration);
+
+            return Ok(toast);
+        }
+
+        [HttpPost("Compatibility/Ram")]
+        public async Task<IActionResult> RamCompatibilityCheck([FromBody] PcConfigurationDto pcConfigurationDto)
+        {
+            PcConfiguration pcConfigration = new PcConfiguration();
+            pcConfigration = await _pcConfigurationRepository.GetDataFromIds(pcConfigurationDto, pcConfigration);
+
+            if (pcConfigration is null)
+            {
+                return BadRequest();
+            }
+
+            var toast = await _compatibilityService.RamCompatibilityCheck(pcConfigration);
+
+            return Ok(toast);
+        }
+
+        [HttpPost("Compatibility/GraphicCard")]
+        public async Task<IActionResult> GraphicCardCompatibilityCheck([FromBody] PcConfigurationDto pcConfigurationDto)
+        {
+            PcConfiguration pcConfigration = new PcConfiguration();
+            pcConfigration = await _pcConfigurationRepository.GetDataFromIds(pcConfigurationDto, pcConfigration);
+
+            if (pcConfigration is null)
+            {
+                return BadRequest();
+            }
+
+            var toast = await _compatibilityService.GraphicCardCompatibilityCheck(pcConfigration);
+
+            return Ok(toast);
+        }
+
+        [HttpPost("Compatibility/Case")]
+        public async Task<IActionResult> CaseCompatibilityCheck([FromBody] PcConfigurationDto pcConfigurationDto)
+        {
+            PcConfiguration pcConfigration = new PcConfiguration();
+            pcConfigration = await _pcConfigurationRepository.GetDataFromIds(pcConfigurationDto, pcConfigration);
+
+            if (pcConfigration is null)
+            {
+                return BadRequest();
+            }
+
+            var toast = await _compatibilityService.CaseCompatibilityCheck(pcConfigration);
+
+            return Ok(toast);
+        }
+
+        [HttpPost("Compatibility/PowerSupply")]
+        public async Task<IActionResult> PowerSupplyCompatibilityCheck([FromBody] PcConfigurationDto pcConfigurationDto)
+        {
+            PcConfiguration pcConfigration = new PcConfiguration();
+            pcConfigration = await _pcConfigurationRepository.GetDataFromIds(pcConfigurationDto, pcConfigration);
+
+            if (pcConfigration is null)
+            {
+                return BadRequest();
+            }
+
+            var toast = await _compatibilityService.PowerSupplyCompatibliityCheck(pcConfigration);
+
+            return Ok(toast);
+        }
+
+
 
     }
 }
