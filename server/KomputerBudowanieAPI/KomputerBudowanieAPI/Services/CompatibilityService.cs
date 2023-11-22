@@ -309,7 +309,7 @@ namespace KomputerBudowanieAPI.Services
         {
             if (configuration.Storages is not null && configuration.Motherboard is not null)
             {
-                Dictionary<string, int> connectors = ExtractDiscConnectorInfoFromMotherboard(configuration.Motherboard.DriveConnectors);
+                Dictionary<string, int> connectors = ExtractConnectorInfoService.FromMotherboard(configuration.Motherboard.DriveConnectors);
                 foreach (var disc in configuration.Storages)
                 {
                     //W dyskach M2
@@ -401,7 +401,7 @@ namespace KomputerBudowanieAPI.Services
         {
             if (configuration.GraphicCard is not null && configuration.PowerSupply is not null)
             {
-                List<string> graphicCardConnectors = ExtractConnectorInfoFromGraphicCard(configuration.GraphicCard.PowerConnectors);
+                List<string> graphicCardConnectors = ExtractConnectorInfoService.FromGraphicCard(configuration.GraphicCard.PowerConnectors);
 
                 int powerSupply6_plus2pin = configuration.PowerSupply.PCIE8Pin_6Plus2;
                 int powerSupply6pin = configuration.PowerSupply.PCIE6Pin;
@@ -432,79 +432,6 @@ namespace KomputerBudowanieAPI.Services
                     }
                 }
             }
-        }
-
-        //
-        // Prywatne metody do przetwarzania danych ze stringów
-        //
-
-        static private List<string> ExtractConnectorInfoFromGraphicCard(string input)
-        {
-            List<string> connectors = new();
-
-            string[] parts = input.Split('+'); // Dzielimy string na części po znaku '+'
-
-            foreach (var part in parts)
-            {
-                if (part.Contains('x'))
-                {
-                    // Jeśli w danej części występuje "x", to oczekujemy, że jest to w formie "Nx 8-pin"
-                    string[] subparts = part.Trim().Split('x');
-                    if (subparts.Length == 2 && int.TryParse(subparts[0], out int count))
-                    {
-                        string connector = subparts[1].Trim();
-                        for (int i = 0; i < count; i++)
-                        {
-                            connectors.Add(connector);
-                        }
-                    }
-                }
-                else
-                {
-                    // W przeciwnym przypadku, traktujemy całą część jako jedno złącze
-                    connectors.Add(part.Trim());
-                }
-            }
-
-            return connectors;
-        }
-
-        static private Dictionary<string, int> ExtractDiscConnectorInfoFromMotherboard(string input)
-        {
-            // "M.2 slot x2, SATA 3 x4"
-            // "M.2 slot x3, SATA 3 x6"
-            // "M.2 slot x1, SATA 3 x4"
-
-            Dictionary<string, int> result = new Dictionary<string, int>();
-
-            // Dzielimy wejściowy string na części po przecinkach
-            string[] parts = input.Split(',');
-
-            foreach (var part in parts)
-            {
-                // Usuwamy białe znaki na początku i końcu każdej części
-                string trimmedPart = part.Trim();
-
-                if (trimmedPart.Contains("x"))
-                {
-                    // Jeśli w danej części występuje "x", to oczekujemy, że jest to w formie "M.2 slot x2"
-                    string[] subparts = trimmedPart.Split('x');
-                    if (subparts.Length == 2 && int.TryParse(subparts[1], out int count))
-                    {
-                        string connector = subparts[0].Trim();
-                        if (result.ContainsKey(connector)) { result[connector] += count; }
-                        else { result[connector] = count; }
-                    }
-                }
-                else
-                {
-                    // W przeciwnym przypadku traktujemy całą część jako jedno złącze
-                    if (result.ContainsKey(trimmedPart)) { result[trimmedPart]++; }
-                    else { result[trimmedPart] = 1; }
-                }
-            }
-
-            return result;
         }
     }
 }
