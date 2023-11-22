@@ -8,14 +8,12 @@ namespace KomputerBudowanieAPI.Services
 
         public void CpuFilter(PcConfiguration configuration, ref ICollection<Cpu> cpus)
         {
-
             if (configuration.Motherboard is not null)
             {
                 cpus = cpus
                     .Where(cpu => Cpu_Motherboard(cpu, configuration.Motherboard))
                     .ToList();
             }
-
         }
 
         public void MotherboardFilter(PcConfiguration configuration, ref ICollection<Motherboard> motherboards)
@@ -34,7 +32,6 @@ namespace KomputerBudowanieAPI.Services
             }
             if (configuration.Case is not null)
             {
-
                 string compatibility = configuration.Case.Compatibility + ",";
                 motherboards = motherboards
                     .Where(motherboard => Case_Motherboard(configuration.Case, motherboard))
@@ -45,7 +42,6 @@ namespace KomputerBudowanieAPI.Services
                 var ramCount = 0; //tutaj jak z tym ram count to trzeba przemyslec xd
                 foreach (Ram ram in configuration.Rams)
                 {
-
                     motherboards = motherboards
                         .Where(motherboard => Ram_Motherboard(ram, motherboard))
                         .ToList();
@@ -112,7 +108,6 @@ namespace KomputerBudowanieAPI.Services
                 graphicCards = graphicCards
                     .Where(graphicCard => GraphicCard_PowerSupply(graphicCard, configuration.PowerSupply)).ToList();
             }
-
         }
 
         public void CaseFilter(PcConfiguration configuration, ref ICollection<Case> cases)
@@ -139,10 +134,7 @@ namespace KomputerBudowanieAPI.Services
                     cases = cases.Where(c => Case_Storages(c, storage)).ToList();
                 }
             }
-
         }
-
-
 
         static private bool Case_Motherboard(Case pcCase, Motherboard motherboard) =>
             (motherboard.BoardStandard == "ATX" && pcCase.Compatibility.Contains(" " + motherboard.BoardStandard + ",")) ||
@@ -171,7 +163,7 @@ namespace KomputerBudowanieAPI.Services
         static private bool GraphicCard_PowerSupply(GraphicCard graphicCard, PowerSupply powerSupply)
         {
 
-            List<string> graphicCardConnectors = ExtractConnectorInfoFromGraphicCard(graphicCard.PowerConnectors);
+            List<string> graphicCardConnectors = ExtractConnectorInfoService.FromGraphicCard(graphicCard.PowerConnectors);
 
             int powerSupply6_plus2pin = powerSupply.PCIE8Pin_6Plus2;
             int powerSupply6pin = powerSupply.PCIE6Pin;
@@ -231,7 +223,7 @@ namespace KomputerBudowanieAPI.Services
         static private bool Storage_Motherboard(Storage storage, Motherboard motherboard)
         {
 
-            Dictionary<string, int> connectors = ExtractDiscConnectorInfoFromMotherboard(motherboard.DriveConnectors);
+            Dictionary<string, int> connectors = ExtractConnectorInfoService.FromMotherboard(motherboard.DriveConnectors);
 
             //W dyskach M2
             //"interface": "PCI-E x4 Gen4 NVMe", "PCI-E x4 Gen3 NVMe",
@@ -255,86 +247,6 @@ namespace KomputerBudowanieAPI.Services
                 return false;
             }
             return true;
-
-
         }
-
-
-
-        //
-        // Prywatne metody do przetwarzania danych ze stringów
-        //
-
-        static private List<string> ExtractConnectorInfoFromGraphicCard(string input)
-        {
-            List<string> connectors = new();
-
-            string[] parts = input.Split('+'); // Dzielimy string na części po znaku '+'
-
-            foreach (var part in parts)
-            {
-                if (part.Contains('x'))
-                {
-                    // Jeśli w danej części występuje "x", to oczekujemy, że jest to w formie "Nx 8-pin"
-                    string[] subparts = part.Trim().Split('x');
-                    if (subparts.Length == 2 && int.TryParse(subparts[0], out int count))
-                    {
-                        string connector = subparts[1].Trim();
-                        for (int i = 0; i < count; i++)
-                        {
-                            connectors.Add(connector);
-                        }
-                    }
-                }
-                else
-                {
-                    // W przeciwnym przypadku, traktujemy całą część jako jedno złącze
-                    connectors.Add(part.Trim());
-                }
-            }
-
-            return connectors;
-        }
-
-        static private Dictionary<string, int> ExtractDiscConnectorInfoFromMotherboard(string input)
-        {
-            // "M.2 slot x2, SATA 3 x4"
-            // "M.2 slot x3, SATA 3 x6"
-            // "M.2 slot x1, SATA 3 x4"
-
-            Dictionary<string, int> result = new Dictionary<string, int>();
-
-            // Dzielimy wejściowy string na części po przecinkach
-            string[] parts = input.Split(',');
-
-            foreach (var part in parts)
-            {
-                // Usuwamy białe znaki na początku i końcu każdej części
-                string trimmedPart = part.Trim();
-
-                if (trimmedPart.Contains("x"))
-                {
-                    // Jeśli w danej części występuje "x", to oczekujemy, że jest to w formie "M.2 slot x2"
-                    string[] subparts = trimmedPart.Split('x');
-                    if (subparts.Length == 2 && int.TryParse(subparts[1], out int count))
-                    {
-                        string connector = subparts[0].Trim();
-                        if (result.ContainsKey(connector)) { result[connector] += count; }
-                        else { result[connector] = count; }
-                    }
-                }
-                else
-                {
-                    // W przeciwnym przypadku traktujemy całą część jako jedno złącze
-                    if (result.ContainsKey(trimmedPart)) { result[trimmedPart]++; }
-                    else { result[trimmedPart] = 1; }
-                }
-            }
-
-            return result;
-        }
-
     }
-
-
 }
