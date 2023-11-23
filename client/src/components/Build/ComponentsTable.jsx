@@ -59,12 +59,22 @@ const ComponentsTable = ({ pcConfiguration, pcParts }) => {
             <EmptyComponentView {...pcParts[5]} />
           )}
         </tr>
-        <tr id="case">
-          {pcConfiguration.case !== null &&
-          pcConfiguration.storage !== undefined ? (
+        <tr id="powerSupply">
+          {pcConfiguration.powerSupply !== null &&
+          pcConfiguration.powerSupply.id !== 0 &&
+          pcConfiguration.powerSupply !== undefined ? (
             <ComponentView />
           ) : (
             <EmptyComponentView {...pcParts[6]} />
+          )}
+        </tr>
+        <tr id="case">
+          {pcConfiguration.case !== null &&
+          pcConfiguration.case.id !== 0 &&
+          pcConfiguration.case !== undefined ? (
+            <ComponentView />
+          ) : (
+            <EmptyComponentView {...pcParts[7]} />
           )}
         </tr>
       </tbody>
