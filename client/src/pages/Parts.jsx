@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-
+import { Route, Routes } from "react-router-dom";
 const Parts = () => {
   return (
     <>
@@ -45,6 +45,7 @@ const Parts = () => {
           </Link>
         </div>
       </div>
+      <Routes></Routes>
     </>
   );
 };

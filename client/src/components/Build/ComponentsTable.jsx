@@ -60,7 +60,8 @@ const ComponentsTable = ({ pcConfiguration, pcParts }) => {
           )}
         </tr>
         <tr id="case">
-          {pcConfiguration.case !== null ? (
+          {pcConfiguration.case !== null &&
+          pcConfiguration.storage !== undefined ? (
             <ComponentView />
           ) : (
             <EmptyComponentView {...pcParts[6]} />
