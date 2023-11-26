@@ -7,12 +7,6 @@ namespace KomputerBudowanieAPI.Services
 {
     public class CompatibilityService : ICompatibilityService
     {
-        protected KomBuildDbContext _context;
-        public CompatibilityService(KomBuildDbContext context)
-        {
-            this._context = context;
-        }
-
         public async Task<Toast?> CompatibilityCheck(PcConfiguration configuration)
         {
             Toast toast = new();
