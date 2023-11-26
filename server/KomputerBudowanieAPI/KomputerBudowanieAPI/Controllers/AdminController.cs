@@ -10,7 +10,7 @@ namespace KomputerBudowanieAPI.Controllers
     {
         readonly KomBuildDbContext _context;
 
-        private readonly string[] tables = { "Cases", "CpuCoolings", "Fans", "Cpus", "GraphicCards", "Memories", "Motherboards", "Rams", "PowerSupplys" };
+        private readonly string[] tables = { "Cases", "CpuCoolings", "Fans", "Cpus", "GraphicCards", "Storages", "Motherboards", "Rams", "PowerSupplys" };
 
         public AdminController(KomBuildDbContext context)
         {
@@ -41,35 +41,35 @@ namespace KomputerBudowanieAPI.Controllers
             _context.Database.ExecuteSqlRaw($"DELETE FROM \"{tables[1]}\"");
             return Ok();
         }
-        
+
         [HttpDelete("DeleteAllFans")]
         public IActionResult DeleteAllFans()
         {
             _context.Database.ExecuteSqlRaw($"DELETE FROM \"{tables[2]}\"");
             return Ok();
         }
-        
+
         [HttpDelete("DeleteAllCpus")]
         public IActionResult DeleteAllCpus()
         {
             _context.Database.ExecuteSqlRaw($"DELETE FROM \"{tables[3]}\"");
             return Ok();
         }
-        
+
         [HttpDelete("DeleteAllGraphicCard")]
         public IActionResult DeleteAllGraphicCards()
         {
             _context.Database.ExecuteSqlRaw($"DELETE FROM \"{tables[4]}\"");
             return Ok();
         }
-        
+
         [HttpDelete("DeleteAllMemorie")]
         public IActionResult DeleteAllMemories()
         {
             _context.Database.ExecuteSqlRaw($"DELETE FROM \"{tables[5]}\"");
             return Ok();
         }
-        
+
         [HttpDelete("DeleteAllMotherboard")]
         public IActionResult DeleteAllMotherboards()
         {
@@ -90,6 +90,7 @@ namespace KomputerBudowanieAPI.Controllers
             _context.Database.ExecuteSqlRaw($"DELETE FROM \"{tables[8]}\"");
             return Ok();
         }
-        
+
+
     }
 }

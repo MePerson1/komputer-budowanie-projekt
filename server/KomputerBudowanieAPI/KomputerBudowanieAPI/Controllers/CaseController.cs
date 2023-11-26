@@ -89,5 +89,7 @@ namespace KomputerBudowanieAPI.Controllers
             }
         }
 
+        //HttpPost do sprawdznia compactybilnosci przy pobieraniu danych
+
     }
 }

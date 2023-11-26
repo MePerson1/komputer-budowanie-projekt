@@ -13,5 +13,7 @@ namespace KomputerBudowanieAPI.Interfaces
         Task<bool> Update(Guid id, PcConfigurationDto entity);
         Task Delete(PcConfiguration entity);
         Task SaveChanges();
+        Task<PcConfiguration?> GetDataFromIds(PcConfigurationDto dto, PcConfiguration pcConfiguration);
+
     }
 }

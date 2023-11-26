@@ -1,5 +1,6 @@
 ﻿using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Interfaces;
+using KomputerBudowanieAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -7,13 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace KomputerBudowanieAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/configuration")]
     public class ConfigurationController : ControllerBase
     {
         public readonly IPcConfigurationRepository _pcConfigurationRepository;
         public readonly IUserRepository _userRepository;
 
-        public ConfigurationController(IPcConfigurationRepository pcConfigurationRepository, IUserRepository userRepository)
+        public ConfigurationController(IPcConfigurationRepository pcConfigurationRepository, IUserRepository userRepository, ICompatibilityService compatibilityService)
         {
             _pcConfigurationRepository = pcConfigurationRepository;
             _userRepository = userRepository;
@@ -31,8 +32,18 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(configs);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var configuration = await _pcConfigurationRepository.GetByIdAsync(id);
+            if (configuration is null)
+                return NotFound();
+            return Ok(configuration);
+        }
+
+
         // GET api/users/5/configurations
-        [Route("api/users/{userId}/configurations")]
+        [Route("users/{userId}")]
         [HttpGet]
         public async Task<IActionResult> Get(int userId)
         {
@@ -45,7 +56,7 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         // GET api/<ConfigurationController>/5
-        [Route("api/users/{userId}/configurations/{configurationId}")]
+        [Route("users/{userId}/{configurationId}")]
         [HttpGet]
         public async Task<IActionResult> Get(int userId, Guid configurationId)
         {
@@ -68,7 +79,7 @@ namespace KomputerBudowanieAPI.Controllers
 
             var done = await _pcConfigurationRepository.Create(newConfigurationDetails);
 
-            return done == false ? BadRequest(done) : Ok(done);
+            return done == false ? BadRequest("Something went wrong") : Ok("New configuration created successfuly!");
         }
 
         // PUT api/<ConfigurationController>/5
@@ -76,7 +87,7 @@ namespace KomputerBudowanieAPI.Controllers
         public async Task<IActionResult> Put(Guid id, [FromBody] PcConfigurationDto editingConfigurationDetails)
         {
             var done = await _pcConfigurationRepository.Update(id, editingConfigurationDetails);
-            return done == false ? BadRequest() : Ok();
+            return done == false ? BadRequest("Something went wrong.") : Ok("Configuration updated successfuly!");
         }
 
         // DELETE api/<ConfigurationController>/5
@@ -92,7 +103,5 @@ namespace KomputerBudowanieAPI.Controllers
             await _pcConfigurationRepository.Delete(pcConf);
             return Accepted();
         }
-
-
     }
 }
