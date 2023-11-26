@@ -1,5 +1,6 @@
 const pcParts = [
   {
+    key: "cpu",
     nameENG: "Cpu",
     namePL: "Procesor",
     icon: "images/parts/cpu-tower.png",
@@ -7,6 +8,7 @@ const pcParts = [
     tip: "Nie zapomnij śmiać się z siebie",
   },
   {
+    key: "cpuCooling",
     nameENG: "Cpu Cooling",
     namePL: "Chłodzenie procesora",
     icon: "images/parts/cpu-cooling.png",
@@ -14,6 +16,7 @@ const pcParts = [
     tip: "Zapomnij śmiać się z siebie",
   },
   {
+    key: "motherboard",
     nameENG: "Motherboard",
     namePL: "Płyta główna",
     icon: "images/parts/motherboard.png",
@@ -21,6 +24,7 @@ const pcParts = [
     tip: "Nie zapomnij śmiać się z siebie",
   },
   {
+    key: "graphicCard",
     nameENG: "Graphic Card",
     namePL: "Karta graficzna",
     icon: "images/parts/graphic-card.png",
@@ -28,6 +32,7 @@ const pcParts = [
     tip: "Nie zapomnij śmiać się z siebie",
   },
   {
+    key: "ram",
     nameENG: "Memory",
     namePL: "Pamięć RAM",
     icon: "images/parts/ram.png",
@@ -35,6 +40,7 @@ const pcParts = [
     tip: "Nie zapomnij śmiać się z siebie",
   },
   {
+    key: "storage",
     nameENG: "Storage",
     namePL: "Dysk",
     icon: "images/parts/hard-disk.png",
@@ -42,6 +48,7 @@ const pcParts = [
     tip: "Nie zapomnij śmiać się z siebie",
   },
   {
+    key: "powerSupply",
     nameENG: "Power Supply",
     namePL: "Zasilacz",
     icon: "images/parts/power-supply.png",
@@ -49,6 +56,7 @@ const pcParts = [
     tip: "Nie zapomnij śmiać się z siebie",
   },
   {
+    key: "case",
     nameENG: "Case",
     namePL: "Obudowa",
     icon: "images/parts/computer-case.png",

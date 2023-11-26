@@ -11,7 +11,6 @@ const Parts = () => {
           </div>
         ))}
       </div>
-      <Routes></Routes>
     </>
   );
 };

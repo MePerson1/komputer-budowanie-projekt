@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 const ChooseCategory = ({ pcPart }) => {
   return (
-    <Link className="hover:animate-pulse" to={pcPart.nameENG}>
+    <Link className="hover:animate-pulse" to={pcPart.key}>
       <div className="border-4 border-black rounded-lg bg-black bg-opacity-25 p-5">
         <figure>
           <img
