@@ -14,9 +14,6 @@ namespace KomputerBudowanieAPI.Interfaces
         Task<Toast?> RamCompatibilityCheck(PcConfiguration configuration);
 
         Task<Toast?> CaseCompatibilityCheck(PcConfiguration configuration);
-        Task<string> CompatibilityCheck(PcConfiguration configuration);
-
-
-
+        Task<Toast?> CompatibilityCheck(PcConfiguration configuration);
     }
 }

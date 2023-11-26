@@ -13,9 +13,33 @@ namespace KomputerBudowanieAPI.Services
             this._context = context;
         }
 
-        public async Task<string> CompatibilityCheck(PcConfiguration configuration)
+        public async Task<Toast?> CompatibilityCheck(PcConfiguration configuration)
         {
-            throw new NotImplementedException();
+            Toast toast = new();
+            if (configuration is null)
+            {
+                toast.Problems.Add("Coś poszło nie tak!");
+                return toast;
+            }
+
+            Cpu_Motherboard(ref toast, configuration);
+            Cpu_GraphicCard(ref toast, configuration);
+
+            GraphicCard_Motherboard(ref toast, configuration);
+            GraphicCard_PowerSupply(ref toast, configuration);
+
+            Case_Motherboard(ref toast, configuration);
+            Case_PowerSupply(ref toast, configuration);
+            Case_GraphicCard(ref toast, configuration);
+            Case_CpuCooling(ref toast, configuration);
+            Case_Storages(ref toast, configuration);
+
+            Ram_CpuCooling(ref toast, configuration);
+            Ram_Motherboard(ref toast, configuration);
+
+            Storage_Motherboard(ref toast, configuration);
+
+            return toast;
         }
 
         public async Task<Toast?> CpuCompatibilityCheck(PcConfiguration configuration)

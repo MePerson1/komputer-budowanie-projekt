@@ -113,7 +113,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpPost("Compatibility/Cpu")]
         public async Task<IActionResult> CpuCompatibilityCheck([FromBody] PcConfigurationDto pcConfigurationDto)
         {
-            PcConfiguration pcConfigration = new PcConfiguration();
+            PcConfiguration? pcConfigration = new PcConfiguration();
             pcConfigration = await _pcConfigurationRepository.GetDataFromIds(pcConfigurationDto, pcConfigration);
 
             if (pcConfigration is null)
@@ -129,7 +129,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpPost("Compatibility/Motherboard")]
         public async Task<IActionResult> MotherboardCompatibilityCheck([FromBody] PcConfigurationDto pcConfigurationDto)
         {
-            PcConfiguration pcConfigration = new PcConfiguration();
+            PcConfiguration? pcConfigration = new PcConfiguration();
             pcConfigration = await _pcConfigurationRepository.GetDataFromIds(pcConfigurationDto, pcConfigration);
 
             if (pcConfigration is null)
@@ -145,7 +145,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpPost("Compatibility/Storage")]
         public async Task<IActionResult> StorageCompatibilityCheck([FromBody] PcConfigurationDto pcConfigurationDto)
         {
-            PcConfiguration pcConfigration = new PcConfiguration();
+            PcConfiguration? pcConfigration = new PcConfiguration();
             pcConfigration = await _pcConfigurationRepository.GetDataFromIds(pcConfigurationDto, pcConfigration);
 
             if (pcConfigration is null)
@@ -161,7 +161,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpPost("Compatibility/CpuCooling")]
         public async Task<IActionResult> CpuCoolingCompatibilityCheck([FromBody] PcConfigurationDto pcConfigurationDto)
         {
-            PcConfiguration pcConfigration = new PcConfiguration();
+            PcConfiguration? pcConfigration = new PcConfiguration();
             pcConfigration = await _pcConfigurationRepository.GetDataFromIds(pcConfigurationDto, pcConfigration);
 
             if (pcConfigration is null)
@@ -177,7 +177,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpPost("Compatibility/Ram")]
         public async Task<IActionResult> RamCompatibilityCheck([FromBody] PcConfigurationDto pcConfigurationDto)
         {
-            PcConfiguration pcConfigration = new PcConfiguration();
+            PcConfiguration? pcConfigration = new PcConfiguration();
             pcConfigration = await _pcConfigurationRepository.GetDataFromIds(pcConfigurationDto, pcConfigration);
 
             if (pcConfigration is null)
@@ -193,7 +193,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpPost("Compatibility/GraphicCard")]
         public async Task<IActionResult> GraphicCardCompatibilityCheck([FromBody] PcConfigurationDto pcConfigurationDto)
         {
-            PcConfiguration pcConfigration = new PcConfiguration();
+            PcConfiguration? pcConfigration = new PcConfiguration();
             pcConfigration = await _pcConfigurationRepository.GetDataFromIds(pcConfigurationDto, pcConfigration);
 
             if (pcConfigration is null)
@@ -209,7 +209,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpPost("Compatibility/Case")]
         public async Task<IActionResult> CaseCompatibilityCheck([FromBody] PcConfigurationDto pcConfigurationDto)
         {
-            PcConfiguration pcConfigration = new PcConfiguration();
+            PcConfiguration? pcConfigration = new PcConfiguration();
             pcConfigration = await _pcConfigurationRepository.GetDataFromIds(pcConfigurationDto, pcConfigration);
 
             if (pcConfigration is null)
@@ -225,7 +225,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpPost("Compatibility/PowerSupply")]
         public async Task<IActionResult> PowerSupplyCompatibilityCheck([FromBody] PcConfigurationDto pcConfigurationDto)
         {
-            PcConfiguration pcConfigration = new PcConfiguration();
+            PcConfiguration? pcConfigration = new PcConfiguration();
             pcConfigration = await _pcConfigurationRepository.GetDataFromIds(pcConfigurationDto, pcConfigration);
 
             if (pcConfigration is null)
@@ -237,8 +237,5 @@ namespace KomputerBudowanieAPI.Controllers
 
             return Ok(toast);
         }
-
-
-
     }
 }
