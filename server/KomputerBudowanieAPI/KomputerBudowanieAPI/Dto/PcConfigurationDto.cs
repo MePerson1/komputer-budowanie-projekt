@@ -10,6 +10,8 @@
         public int? GraphicCardId { get; set; }
         public int? CpuId { get; set; }
         public int? CpuCoolingId { get; set; }
+
+        public int? WaterCoolingId { get; set; }
         public int? CaseId { get; set; }
         public int? PowerSuplyId { get; set; }
 

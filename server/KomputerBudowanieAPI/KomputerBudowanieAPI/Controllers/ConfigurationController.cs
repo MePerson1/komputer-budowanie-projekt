@@ -8,13 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace KomputerBudowanieAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/configuration")]
     public class ConfigurationController : ControllerBase
     {
         public readonly IPcConfigurationRepository _pcConfigurationRepository;
         public readonly IUserRepository _userRepository;
 
-        public ConfigurationController(IPcConfigurationRepository pcConfigurationRepository, IUserRepository userRepository)
+        public ConfigurationController(IPcConfigurationRepository pcConfigurationRepository, IUserRepository userRepository, ICompatibilityService compatibilityService)
         {
             _pcConfigurationRepository = pcConfigurationRepository;
             _userRepository = userRepository;
@@ -43,7 +43,7 @@ namespace KomputerBudowanieAPI.Controllers
 
 
         // GET api/users/5/configurations
-        [Route("api/users/{userId}/configurations")]
+        [Route("users/{userId}")]
         [HttpGet]
         public async Task<IActionResult> Get(int userId)
         {
@@ -56,7 +56,7 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         // GET api/<ConfigurationController>/5
-        [Route("api/users/{userId}/configurations/{configurationId}")]
+        [Route("users/{userId}/{configurationId}")]
         [HttpGet]
         public async Task<IActionResult> Get(int userId, Guid configurationId)
         {
@@ -103,14 +103,5 @@ namespace KomputerBudowanieAPI.Controllers
             await _pcConfigurationRepository.Delete(pcConf);
             return Accepted();
         }
-
-
-        [HttpPost("Comatibility/Cpu")]
-        public async Task<IActionResult> CpuCompatibilityCheck(PcConfiguration pcConfiguration)
-        {
-
-            return Ok();
-        }
-
     }
 }

@@ -11,7 +11,7 @@ namespace KomputerBudowanieAPI.Models
         [Key]
         public Guid Id { get; set; }
 
-        public string? Name { get; set; } = "Moja konfiguracja";
+        public string? Name { get; set; }
         public string? Description { get; set; }
 
         public Motherboard? Motherboard { get; set; }
