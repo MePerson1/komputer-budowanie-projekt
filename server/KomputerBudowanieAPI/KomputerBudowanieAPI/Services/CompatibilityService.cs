@@ -1,6 +1,8 @@
 ﻿using KomputerBudowanieAPI.Database;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
+using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Text.RegularExpressions;
 
 namespace KomputerBudowanieAPI.Services
@@ -18,6 +20,7 @@ namespace KomputerBudowanieAPI.Services
 
             Cpu_Motherboard(ref toast, configuration);
             Cpu_GraphicCard(ref toast, configuration);
+            Cpu_Cooling(ref toast, configuration);
 
             GraphicCard_Motherboard(ref toast, configuration);
             GraphicCard_PowerSupply(ref toast, configuration);
@@ -47,6 +50,7 @@ namespace KomputerBudowanieAPI.Services
             }
 
             Cpu_Motherboard(ref toast, configuration); //1 i 2
+            Cpu_Cooling (ref toast, configuration);
             Cpu_GraphicCard(ref toast, configuration); //3
 
             return toast;
@@ -64,7 +68,6 @@ namespace KomputerBudowanieAPI.Services
 
             Cpu_Motherboard(ref toast, configuration); //1
             GraphicCard_Motherboard(ref toast, configuration); //2
-            //Chipset**
             Case_Motherboard(ref toast, configuration); //4
             Ram_Motherboard(ref toast, configuration); //5 i 6
             Storage_Motherboard(ref toast, configuration); //7
@@ -77,7 +80,29 @@ namespace KomputerBudowanieAPI.Services
             Toast toast = new();
 
             Case_CpuCooling(ref toast, configuration); //2
+            Cpu_CpuCooling(ref toast, configuration);
             Ram_CpuCooling(ref toast, configuration); //4
+
+            return toast;
+        }
+
+        public async Task<Toast?> WaterCoolingCompatibilityCheck(PcConfiguration configuration)
+        {
+            Toast toast = new();
+
+            Case_WaterCooling(ref toast, configuration);
+            Cpu_WaterCooling(ref toast, configuration);
+
+            return toast;
+        }
+
+        public async Task<Toast?> CoolingCompatibilityCheck(PcConfiguration configuration)
+        {
+            Toast toast = new();
+
+            Case_CpuCooling(ref toast, configuration);
+            Cpu_Cooling(ref toast, configuration);
+            Ram_CpuCooling(ref toast, configuration); 
 
             return toast;
         }
@@ -98,7 +123,7 @@ namespace KomputerBudowanieAPI.Services
             return Task.FromResult<Toast?>(toast);
         }
 
-        public async Task<Toast?> StorageCompatibilityCheck(PcConfiguration configuration) //DO DOKOŃCZENIA!!!!!!!!!!!
+        public async Task<Toast?> StorageCompatibilityCheck(PcConfiguration configuration) 
         {
             Toast toast = new();
 
@@ -109,7 +134,7 @@ namespace KomputerBudowanieAPI.Services
             }
 
             Storage_Motherboard(ref toast, configuration); //1
-            //Memory_PowerSupply //2
+            Storage_PowerSupply(ref toast, configuration); //2
 
             return toast;
         }
@@ -153,8 +178,10 @@ namespace KomputerBudowanieAPI.Services
                 toast.Problems.Add("Coś poszło nie tak!");
                 return toast;
             }
+
             GraphicCard_PowerSupply(ref toast, configuration);
             Case_PowerSupply(ref toast, configuration);
+            Storage_PowerSupply(ref toast, configuration);
 
             return toast;
         }
@@ -172,6 +199,7 @@ namespace KomputerBudowanieAPI.Services
             Case_PowerSupply(ref toast, configuration); //2 i 3
             Case_GraphicCard(ref toast, configuration); //4
             Case_CpuCooling(ref toast, configuration); //5
+            Case_WaterCooling(ref toast, configuration);
             Case_Storages(ref toast, configuration); //7
 
             return toast;
@@ -181,6 +209,7 @@ namespace KomputerBudowanieAPI.Services
         // Prywatne metody do sprawdzania kompatybilności części
         // PcPart1_PcPart2
         //
+
         private static void Cpu_GraphicCard(ref Toast toast, PcConfiguration configuration)
         {
             if (configuration.Cpu is null || configuration.GraphicCard is not null)
@@ -194,6 +223,121 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
+        //Sprawdzanie ogólne chłodzenia aby ktoś nie dał chłodzenia wodnego i powietrznego jednocześnie
+        private static void Cpu_Cooling(ref Toast toast, PcConfiguration configuration)
+        {
+            if(configuration.CpuCooling is not null && configuration.WaterCooling is not null)
+            {
+                toast.Problems.Add($"Procesor ma 2 chłodzenia! Wodne: {configuration.WaterCooling.Name} i powietrzne: {configuration.CpuCooling.Name}!");
+            }
+
+            Cpu_CpuCooling(ref toast, configuration);
+            Cpu_WaterCooling(ref toast, configuration);
+        }
+
+        private static void Cpu_CpuCooling(ref Toast toast, PcConfiguration configuration)
+        {
+            //CPU:
+            //"socketType": "Socket 1700",
+
+            //CpuCooling:
+            //"processorSocket": "1150/1151/1155/1156/1200, 1366, 1700, 2011/2011-3, 2066, 775, AM3(+)/AM2(+)/FM2(+)/FM1, AM4/AM5",
+
+            if (configuration.Cpu is null || configuration.CpuCooling is null)
+            {
+                return;
+            }
+
+            List<string> sockets = ExtractConnectorInfoService.ExtractSocketsFromCpuCooling(configuration.CpuCooling.ProcessorSocket);
+            string socket = configuration.Cpu.SocketType.Replace("Socket ", "").Replace("(+)", "").Trim();
+
+            if(!sockets.Contains(socket))
+            {
+                toast.Problems.Add($"{configuration.CpuCooling.Name} nie wspiera gniazda procesora {socket}!");
+            }
+        }
+
+        private static void Cpu_WaterCooling(ref Toast toast, PcConfiguration configuration) 
+        {
+            //CPU:
+            //Intel:
+            //"socketType": "Socket 1700",
+            //AMD:
+            //"socketType": "Socket AM4"
+
+            //WaterCooling:
+            //"intelCompatibility": "LGA 1150/1151/1155/1156/1200, LGA 1700, LGA 2011/2011-3, LGA 2066",
+            //"amdCompatibility": "AM3(+)/AM2(+)/FM2(+)/FM1, AM4/AM5",
+            if (configuration.Cpu is null || configuration.WaterCooling is null)
+            {
+                return;
+            }
+
+            List<string> sockets;
+            if (configuration.Cpu.Producer == "Intel")
+            {
+                sockets = ExtractConnectorInfoService.ExtractSocketsFromCpuCooling(configuration.WaterCooling.IntelCompatibility);
+            }
+            else if (configuration.Cpu.Producer == "AMD")
+            {
+                sockets = ExtractConnectorInfoService.ExtractSocketsFromCpuCooling(configuration.WaterCooling.AMDCompatibility);
+            }
+            else
+            {
+                toast.Problems.Add("Nie wykrywam poprawnie producenta procesora!");
+                return;
+            }
+
+            string socket = configuration.Cpu.SocketType.Replace("Socket ", "").Replace("(+)", "").Trim();
+            for (int i = 0; i < sockets.Count; i++)
+            {
+                sockets[i] = sockets[i].Replace("LGA ", "");
+            }
+
+            if (!sockets.Contains(socket))
+            {
+                toast.Problems.Add($"{configuration.WaterCooling.Name} nie wspiera gniazda procesora {socket}!");
+            }
+
+        }
+
+        // TODO:
+        // - dokończyć, znowu k*^wa trzeba jakąś gimnastykę tu robić
+        private static void Case_WaterCooling(ref Toast toast, PcConfiguration configuration) 
+        {
+            //Case:
+            //"panelFront": "120 mm/140 mm x2",
+            //"panelRear": null,
+            //"panelSide": null,
+            //"panelBottom": null,
+            //"panelTop": "120 mm x3/140 mm x2",
+            //"powerSupply": null,
+            //"powerSupplyPower": null,
+
+            //WaterCooling:
+            //"fanCount": 3,
+            //"fanDiameterMM": 120,
+            if (configuration.Case is null || configuration.WaterCooling is not null)
+            {
+                return;
+            }
+
+
+        }
+
+        private static void Case_CpuCooling(ref Toast toast, PcConfiguration configuration)
+        {
+            if (configuration.Case is not null && configuration.CpuCooling is not null)
+            {
+                //"maxCoolingSystemHeightCM": 17.5,
+                //"heightMM": 155,
+                //w zaleznosci od jednostki height dla cpu cooling
+                if (configuration.Case.MaxCoolingSystemHeightCM * 10 < configuration.CpuCooling.HeightMM)
+                {
+                    toast.Problems.Add("Chłodzenie CPU nie mieści się w obudowie!");
+                }
+            }
+        }
 
         private static void Case_Storages(ref Toast toast, PcConfiguration configuration)
         {
@@ -213,19 +357,6 @@ namespace KomputerBudowanieAPI.Services
                         if (internalBaysTwoPointFiveInc == 0) toast.Problems.Add("Ta obudowa nie ma odpowiedniej ilości wnęk 2.5 cala!");
                         else internalBaysTwoPointFiveInc--;
                     }
-                }
-            }
-        }
-
-        private static void Case_CpuCooling(ref Toast toast, PcConfiguration configuration) //------------------------------------------------------------------------------
-        {
-            //trzeba dodać sprawdzanie dla chłodzenia wodnego, bo to w sumie co jest to działa tylko dla powietrznego
-            if (configuration.Case is not null && configuration.CPU_Cooling is not null)
-            {
-                //w zaleznosci od jednostki height dla cpu cooling
-                if (configuration.Case.MaxCoolingSystemHeightCM < configuration.CPU_Cooling.HeightMM * 10)
-                {
-                    toast.Problems.Add("Chłodzenie CPU nie mieści się w obudowie!");
                 }
             }
         }
@@ -258,7 +389,9 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
-        private static void Case_PowerSupply(ref Toast toast, PcConfiguration configuration) //------------------------------------------------------------------------------
+        // WARNING:
+        // - brak danych aby sprawdzić czy powersupply wejdzie do obudowy
+        private static void Case_PowerSupply(ref Toast toast, PcConfiguration configuration) 
         {
             if (configuration.Case is not null && configuration.PowerSupply is not null)
             {
@@ -279,15 +412,16 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
-        private static void Ram_CpuCooling(ref Toast toast, PcConfiguration configuration) //------------------------------------------------------------------------------
+        // TODO:
+        // - dokończyć, jakoś nie wiem jeszcze jak to dobrze zrobić, być może dobrze się nie da
+        private static void Ram_CpuCooling(ref Toast toast, PcConfiguration configuration) 
         {
-            if (configuration.Rams is not null && configuration.CPU_Cooling is not null)
+            if (configuration.Rams is not null && configuration.CpuCooling is not null)
             {
                 //CheckCoolingSize
                 //tutaj sprawdzenie rozmiaru chłodzenia i czy ram jest lowprofile przy tym ale jeszcze nie ma cpucooling kinda
-                if (configuration.CPU_Cooling is not null)
+                if (configuration.CpuCooling is not null)
                 {
-
                     foreach (Ram ram in configuration.Rams)
                     {
 
@@ -340,12 +474,12 @@ namespace KomputerBudowanieAPI.Services
                     if (connectors.ContainsKey(disc.Interface))
                     {
                         if (connectors[disc.Interface] > 0) connectors[disc.Interface] = connectors[disc.Interface]--;
-                        else toast.Problems.Add($"Brak złączy {disc.Interface}!");
+                        else toast.Problems.Add($"Niewystarczająca ilość złączy {disc.Interface}!");
                     }
                     else if (disc.FormFactor.Contains("M.2"))
                     {
                         if (connectors["M.2 slot"] > 0) connectors["M.2 slot"] = connectors["M.2 slot"]--;
-                        else toast.Problems.Add($"Brak złączy M2!");
+                        else toast.Problems.Add($"Niewystarczająca ilość złączy M2!");
                     }
                     else
                     {
@@ -355,6 +489,20 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
+        // TODO:
+        // - dokończyć
+        static private void Storage_PowerSupply(ref Toast toast, PcConfiguration configuration)
+        {
+            if (configuration.Storages is null || !configuration.Storages.Any() || configuration.PowerSupply is null)
+            {
+                return;
+            }
+
+            
+        }
+
+        // TODO:
+        // - dodać sprawdzanie chipsetu może?
         static private void Cpu_Motherboard(ref Toast toast, PcConfiguration configuration)
         {
             if (configuration.Cpu is not null && configuration.Motherboard is not null)
@@ -366,7 +514,7 @@ namespace KomputerBudowanieAPI.Services
                 //CheckSupportedProcessor
                 if (!configuration.Motherboard.SupportedProcessors.Contains(configuration.Cpu.Line))
                 {
-                    toast.Problems.Add("Płyta główna nie wspiera tej linii procesorów!");
+                    toast.Problems.Add($"Płyta główna nie wspiera tej procesorów {configuration.Cpu.Line}!");
                 }
                 //Motherboard:
                 //"cpuSocket": "Socket 1700",
@@ -375,7 +523,7 @@ namespace KomputerBudowanieAPI.Services
                 //CheckCPUSocket
                 if (configuration.Motherboard.CPUSocket != configuration.Cpu.SocketType)
                 {
-                    toast.Problems.Add("Płyta główna ma inny typ gniazda niż procesor!");
+                    toast.Problems.Add($"Płyta główna ma inny typ gniazda {configuration.Motherboard.CPUSocket}, a procesor {configuration.Cpu.SocketType}!");
                 }
             }
         }
@@ -386,12 +534,14 @@ namespace KomputerBudowanieAPI.Services
             {
                 if (configuration.Case.MaxGPULengthCM < configuration.GraphicCard.CardLengthMM * 10)
                 {
-                    toast.Problems.Add("Karta graficzna jest za dużo dla tej obudowy!");
+                    toast.Problems.Add("Karta graficzna jest za duża dla tej obudowy!");
                 }
             }
         }
 
-        static private void GraphicCard_Motherboard(ref Toast toast, PcConfiguration configuration)
+        // WARNING:
+        // - tu by się jeszcze przydało zwrócić warning jak płyta główna ma starszy typ złącza od karty graficznej, problem jest taki że nie ma danych
+        static private void GraphicCard_Motherboard(ref Toast toast, PcConfiguration configuration) 
         {
             if (configuration.GraphicCard is not null && configuration.Motherboard is not null)
             {

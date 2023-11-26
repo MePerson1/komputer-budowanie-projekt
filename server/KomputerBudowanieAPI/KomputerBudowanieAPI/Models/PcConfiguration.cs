@@ -17,7 +17,7 @@ namespace KomputerBudowanieAPI.Models
         public Motherboard? Motherboard { get; set; }
         public GraphicCard? GraphicCard { get; set; }
         public Cpu? Cpu { get; set; }
-        public CpuCooling? CPU_Cooling { get; set; } = null;
+        public CpuCooling? CpuCooling { get; set; } = null;
 
         public Case? Case { get; set; }
         public PowerSupply? PowerSupply { get; set; } = null;

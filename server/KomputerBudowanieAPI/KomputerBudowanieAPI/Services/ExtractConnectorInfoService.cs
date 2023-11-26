@@ -70,5 +70,19 @@
 
             return connectors;
         }
+
+        static public List<string> ExtractSocketsFromCpuCooling(string input)
+        {
+            List<string> sockets = new List<string>();
+
+            string[] separators = { ",", "/" };
+
+            foreach (var part in input.Split(separators, StringSplitOptions.RemoveEmptyEntries))
+            {
+                sockets.Add(part.Trim());
+            }
+
+            return sockets;
+        }
     }
 }

@@ -102,6 +102,22 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(toast);
         }
 
+        [HttpPost("water-cooling")]
+        public async Task<IActionResult> WaterCoolingCompatibilityCheck([FromBody] PcConfigurationDto pcConfigurationDto)
+        {
+            PcConfiguration? pcConfigration = new PcConfiguration();
+            pcConfigration = await _pcConfigurationRepository.GetDataFromIds(pcConfigurationDto, pcConfigration);
+
+            if (pcConfigration is null)
+            {
+                return BadRequest();
+            }
+
+            var toast = await _compatibilityService.WaterCoolingCompatibilityCheck(pcConfigration);
+
+            return Ok(toast);
+        }
+
         [HttpPost("ram")]
         public async Task<IActionResult> RamCompatibilityCheck([FromBody] PcConfigurationDto pcConfigurationDto)
         {

@@ -122,9 +122,9 @@ namespace KomputerBudowanieAPI.Services
 
             }
 
-            if (configuration.CPU_Cooling is not null)
+            if (configuration.CpuCooling is not null)
             {
-                cases = cases.Where(c => Case_CpuCooling(c, configuration.CPU_Cooling)).ToList();
+                cases = cases.Where(c => Case_CpuCooling(c, configuration.CpuCooling)).ToList();
             }
 
             if (configuration.Storages is not null)

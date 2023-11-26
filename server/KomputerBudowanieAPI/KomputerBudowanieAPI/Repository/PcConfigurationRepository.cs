@@ -19,7 +19,7 @@ namespace KomputerBudowanieAPI.Repository
             return await _context.PcConfigurations.Include(pc => pc.Motherboard)
             .Include(pc => pc.GraphicCard)
             .Include(pc => pc.Cpu)
-            .Include(pc => pc.CPU_Cooling)
+            .Include(pc => pc.CpuCooling)
             .Include(pc => pc.Case)
             .Include(pc => pc.Fans)
             .Include(pc => pc.PowerSupply)
@@ -33,7 +33,7 @@ namespace KomputerBudowanieAPI.Repository
             return await _context.Set<PcConfiguration>().Where(config => config.User.Id == userId)
                 .Include(pc => pc.GraphicCard)
             .Include(pc => pc.Cpu)
-            .Include(pc => pc.CPU_Cooling)
+            .Include(pc => pc.CpuCooling)
             .Include(pc => pc.Case)
             .Include(pc => pc.Fans)
             .Include(pc => pc.PowerSupply)
@@ -46,7 +46,7 @@ namespace KomputerBudowanieAPI.Repository
         {
             return await _context.Set<PcConfiguration>().Include(pc => pc.GraphicCard)
             .Include(pc => pc.Cpu)
-            .Include(pc => pc.CPU_Cooling)
+            .Include(pc => pc.CpuCooling)
             .Include(pc => pc.Case)
             .Include(pc => pc.Fans)
             .Include(pc => pc.PowerSupply)
@@ -118,7 +118,7 @@ namespace KomputerBudowanieAPI.Repository
             var motherboard = await _context.Motherboards.FirstOrDefaultAsync(x => x.Id == dto.MotherboadId);
             var graphicCard = await _context.GraphicCards.FirstOrDefaultAsync(x => x.Id == dto.GraphicCardId);
             var powerSupply = await _context.PowerSupplies.FirstOrDefaultAsync(x => x.Id == dto.PowerSuplyId);
-            var waterCooling = await _context.WaterCoolings.FirstOrDefaultAsync(x => x.Id != dto.WaterCoolingId);
+            var waterCooling = await _context.WaterCoolings.FirstOrDefaultAsync(x => x.Id == dto.WaterCoolingId);
             var storages = await _context.Storages
                 .Where(x => dto.StorageIds != null && dto.StorageIds.Contains(x.Id))
                 .ToListAsync();
@@ -135,7 +135,7 @@ namespace KomputerBudowanieAPI.Repository
             pcConfiguration.Description = dto.Description;
             pcConfiguration.Case = pcCase;
             pcConfiguration.Cpu = cpu;
-            pcConfiguration.CPU_Cooling = cpuCooling;
+            pcConfiguration.CpuCooling = cpuCooling;
             pcConfiguration.Fans = fans;
             pcConfiguration.Motherboard = motherboard;
             pcConfiguration.GraphicCard = graphicCard;
