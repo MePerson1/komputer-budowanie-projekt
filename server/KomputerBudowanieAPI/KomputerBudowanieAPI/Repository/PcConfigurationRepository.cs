@@ -19,7 +19,7 @@ namespace KomputerBudowanieAPI.Repository
             return await _context.PcConfigurations.Include(pc => pc.Motherboard)
             .Include(pc => pc.GraphicCard)
             .Include(pc => pc.Cpu)
-            .Include(pc => pc.CPU_Cooling)
+            .Include(pc => pc.CpuCooling)
             .Include(pc => pc.Case)
             .Include(pc => pc.Fans)
             .Include(pc => pc.PowerSupply)
@@ -33,7 +33,7 @@ namespace KomputerBudowanieAPI.Repository
             return await _context.Set<PcConfiguration>().Where(config => config.User.Id == userId)
                 .Include(pc => pc.GraphicCard)
             .Include(pc => pc.Cpu)
-            .Include(pc => pc.CPU_Cooling)
+            .Include(pc => pc.CpuCooling)
             .Include(pc => pc.Case)
             .Include(pc => pc.Fans)
             .Include(pc => pc.PowerSupply)
@@ -46,7 +46,7 @@ namespace KomputerBudowanieAPI.Repository
         {
             return await _context.Set<PcConfiguration>().Include(pc => pc.GraphicCard)
             .Include(pc => pc.Cpu)
-            .Include(pc => pc.CPU_Cooling)
+            .Include(pc => pc.CpuCooling)
             .Include(pc => pc.Case)
             .Include(pc => pc.Fans)
             .Include(pc => pc.PowerSupply)
@@ -84,7 +84,7 @@ namespace KomputerBudowanieAPI.Repository
                     Description = newConfigurationDto.Description,
                     Case = pcCase,
                     Cpu = cpu,
-                    CPU_Cooling = cpuCooling,
+                    CpuCooling = cpuCooling,
                     Fans = fans,
                     Motherboard = motherboard,
                     GraphicCard = graphicCard,
@@ -149,7 +149,7 @@ namespace KomputerBudowanieAPI.Repository
                 configuration.Description = dto.Description;
                 configuration.Case = pcCase;
                 configuration.Cpu = cpu;
-                configuration.CPU_Cooling = cpuCooling;
+                configuration.CpuCooling = cpuCooling;
                 configuration.Fans = fans;
                 configuration.Motherboard = motherboard;
                 configuration.GraphicCard = graphicCard;

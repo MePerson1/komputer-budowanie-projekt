@@ -197,10 +197,10 @@ namespace KomputerBudowanieAPI.Services
 
         private static void Case_CpuCooling(ref Toast toast, PcConfiguration configuration)
         {
-            if (configuration.Case is not null && configuration.CPU_Cooling is not null)
+            if (configuration.Case is not null && configuration.CpuCooling is not null)
             {
                 //w zaleznosci od jednostki height dla cpu cooling
-                if (configuration.Case.MaxCoolingSystemHeightCM < configuration.CPU_Cooling.HeightMM)
+                if (configuration.Case.MaxCoolingSystemHeightCM < configuration.CpuCooling.HeightMM)
                 {
                     toast.Problems.Add("Cpu Cooling is too high xd!");
                 }
@@ -253,11 +253,11 @@ namespace KomputerBudowanieAPI.Services
 
         private static void Ram_CpuCooling(ref Toast toast, PcConfiguration configuration) //------------------------------------------------------------------------------
         {
-            if (configuration.Rams is not null && configuration.CPU_Cooling is not null)
+            if (configuration.Rams is not null && configuration.CpuCooling is not null)
             {
                 //CheckCoolingSize
                 //tutaj sprawdzenie rozmiaru chłodzenia i czy ram jest lowprofile przy tym ale jeszcze nie ma cpucooling kinda
-                if (configuration.CPU_Cooling is not null)
+                if (configuration.CpuCooling is not null)
                 {
 
                     foreach (Ram ram in configuration.Rams)
