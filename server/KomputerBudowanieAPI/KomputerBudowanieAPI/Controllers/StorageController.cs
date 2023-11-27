@@ -7,17 +7,23 @@ using Microsoft.AspNetCore.Mvc;
 namespace KomputerBudowanieAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/storage")]
     public class StorageController : Controller
     {
-        public readonly IGenericRepository<Storage> _memoryRepository;
-        public readonly IMapper _mapper;
+        private readonly IGenericRepository<Storage> _memoryRepository;
+        private readonly IMapper _mapper;
 
-        public StorageController(IGenericRepository<Storage> memoryRepository, IMapper mapper)
+        private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
+        private readonly IPcConfigurationRepository _pcConfigurationRepository;
+
+        public StorageController(IGenericRepository<Storage> memoryRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _memoryRepository = memoryRepository;
             _mapper = mapper;
+            _compatibilityDataFilterService = compatibilityDataFilterService;
+            _pcConfigurationRepository = pcConfigurationRepository;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAllMemories()
         {
@@ -36,6 +42,29 @@ namespace KomputerBudowanieAPI.Controllers
             if (memory is null)
                 return NotFound();
             return Ok(_mapper.Map<StorageDto>(memory));
+        }
+
+        [HttpPost("compatible")]
+        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails)
+        {
+            try
+            {
+                var storages = await _memoryRepository.GetAllAsync();
+                if (storages is null || !storages.Any())
+                {
+                    return NotFound();
+                }
+
+                var configuration = new PcConfiguration();
+                await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
+                _compatibilityDataFilterService.StorageFilter(configuration, ref storages);
+
+                return Ok(storages);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
