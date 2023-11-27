@@ -7,17 +7,23 @@ using Microsoft.AspNetCore.Mvc;
 namespace KomputerBudowanieAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/ram")]
     public class RamController : Controller
     {
-        public readonly IGenericRepository<Ram> _ramRepository;
-        public readonly IMapper _mapper;
+        private readonly IGenericRepository<Ram> _ramRepository;
+        private readonly IMapper _mapper;
 
-        public RamController(IGenericRepository<Ram> ramRepository, IMapper mapper)
+        private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
+        private readonly IPcConfigurationRepository _pcConfigurationRepository;
+
+        public RamController(IGenericRepository<Ram> ramRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _ramRepository = ramRepository;
             _mapper = mapper;
+            _compatibilityDataFilterService = compatibilityDataFilterService;
+            _pcConfigurationRepository = pcConfigurationRepository;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAllRam()
         {
@@ -36,6 +42,29 @@ namespace KomputerBudowanieAPI.Controllers
             if (ram is null)
                 return NotFound();
             return Ok(_mapper.Map<RamDto>(ram));
+        }
+
+        [HttpPost("compatible")]
+        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails)
+        {
+            try
+            {
+                var rams = await _ramRepository.GetAllAsync();
+                if (rams is null || !rams.Any())
+                {
+                    return NotFound();
+                }
+
+                var configuration = new PcConfiguration();
+                await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
+                _compatibilityDataFilterService.RamFilter(configuration, ref rams);
+
+                return Ok(rams);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]

@@ -7,16 +7,21 @@ using Microsoft.AspNetCore.Mvc;
 namespace KomputerBudowanieAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/cpu-cooling")]
     public class CpuCoolingController : Controller
     {
-        public readonly IGenericRepository<CpuCooling> _cpuCoolingRepository;
-        public readonly IMapper _mapper;
+        private readonly IGenericRepository<CpuCooling> _cpuCoolingRepository;
+        private readonly IMapper _mapper;
 
-        public CpuCoolingController(IGenericRepository<CpuCooling> cpuCoolingRepository, IMapper mapper)
+        private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
+        private readonly IPcConfigurationRepository _pcConfigurationRepository;
+
+        public CpuCoolingController(IGenericRepository<CpuCooling> cpuCoolingRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _cpuCoolingRepository = cpuCoolingRepository;
             _mapper = mapper;
+            _compatibilityDataFilterService = compatibilityDataFilterService;
+            _pcConfigurationRepository = pcConfigurationRepository;
         }
 
         [HttpGet]
@@ -40,6 +45,29 @@ namespace KomputerBudowanieAPI.Controllers
             }
 
             return Ok(_mapper.Map<CpuCoolingDto>(cpuCooling));
+        }
+
+        [HttpPost("compatible")]
+        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails)
+        {
+            try
+            {
+                var cpuCoolings = await _cpuCoolingRepository.GetAllAsync();
+                if (cpuCoolings is null || !cpuCoolings.Any())
+                {
+                    return NotFound();
+                }
+
+                var configuration = new PcConfiguration();
+                await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
+                _compatibilityDataFilterService.CpuCoolingFilter(configuration, ref cpuCoolings);
+
+                return Ok(cpuCoolings);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]

@@ -7,17 +7,23 @@ using Microsoft.AspNetCore.Mvc;
 namespace KomputerBudowanieAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/motherboard")]
     public class MotherboardController : Controller
     {
-        public readonly IGenericRepository<Motherboard> _motherboardRepository;
-        public readonly IMapper _mapper;
+        private readonly IGenericRepository<Motherboard> _motherboardRepository;
+        private readonly IMapper _mapper;
 
-        public MotherboardController(IGenericRepository<Motherboard> motherboardRepository, IMapper mapper)
+        private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
+        private readonly IPcConfigurationRepository _pcConfigurationRepository;
+
+        public MotherboardController(IGenericRepository<Motherboard> motherboardRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _motherboardRepository = motherboardRepository;
             _mapper = mapper;
+            _compatibilityDataFilterService = compatibilityDataFilterService;
+            _pcConfigurationRepository = pcConfigurationRepository;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAllMotherboards()
         {
@@ -36,6 +42,29 @@ namespace KomputerBudowanieAPI.Controllers
             if (motherboard is null)
                 return NotFound();
             return Ok(_mapper.Map<MotherboardDto>(motherboard));
+        }
+
+        [HttpPost("compatible")]
+        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails)
+        {
+            try
+            {
+                var motherboards = await _motherboardRepository.GetAllAsync();
+                if (motherboards is null || !motherboards.Any())
+                {
+                    return NotFound();
+                }
+
+                var configuration = new PcConfiguration();
+                await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
+                _compatibilityDataFilterService.MotherboardFilter(configuration, ref motherboards);
+
+                return Ok(motherboards);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]

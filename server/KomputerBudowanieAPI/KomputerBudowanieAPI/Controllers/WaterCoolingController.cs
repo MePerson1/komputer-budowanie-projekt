@@ -7,22 +7,27 @@ using Microsoft.AspNetCore.Mvc;
 namespace KomputerBudowanieAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/water-cooling")]
     public class WaterCoolingController : Controller
     {
-        public readonly IGenericRepository<WaterCooling> _fanRepository;
-        public readonly IMapper _mapper;
+        private readonly IGenericRepository<WaterCooling> _waterCoolingRepository;
+        private readonly IMapper _mapper;
 
-        public WaterCoolingController(IGenericRepository<WaterCooling> fanRepository, IMapper mapper)
+        private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
+        private readonly IPcConfigurationRepository _pcConfigurationRepository;
+
+        public WaterCoolingController(IGenericRepository<WaterCooling> waterCoolingRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
-            _fanRepository = fanRepository;
+            _waterCoolingRepository = waterCoolingRepository;
             _mapper = mapper;
+            _compatibilityDataFilterService = compatibilityDataFilterService;
+            _pcConfigurationRepository = pcConfigurationRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllFans()
         {
-            var fans = await _fanRepository.GetAllAsync();
+            var fans = await _waterCoolingRepository.GetAllAsync();
             if (fans is null || !fans.Any())
             {
                 return NotFound();
@@ -33,10 +38,33 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetFanById(int id)
         {
-            var fan = await _fanRepository.GetByIdAsync(id);
+            var fan = await _waterCoolingRepository.GetByIdAsync(id);
             if (fan is null)
                 return NotFound();
             return Ok(_mapper.Map<WaterCoolingDto>(fan));
+        }
+
+        [HttpPost("compatible")]
+        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails)
+        {
+            try
+            {
+                var waterCoolings = await _waterCoolingRepository.GetAllAsync();
+                if (waterCoolings is null || !waterCoolings.Any())
+                {
+                    return NotFound();
+                }
+
+                var configuration = new PcConfiguration();
+                await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
+                _compatibilityDataFilterService.WaterCoolingFilter(configuration, ref waterCoolings);
+
+                return Ok(waterCoolings);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
@@ -45,7 +73,7 @@ namespace KomputerBudowanieAPI.Controllers
             var newFan = _mapper.Map<WaterCooling>(fan);
             try
             {
-                await _fanRepository.Create(newFan);
+                await _waterCoolingRepository.Create(newFan);
                 return Ok();
             }
             catch (Exception ex) { return BadRequest(ex.Message); }
@@ -57,7 +85,7 @@ namespace KomputerBudowanieAPI.Controllers
             var newFan = _mapper.Map<WaterCooling>(fan);
             try
             {
-                await _fanRepository.Update(newFan);
+                await _waterCoolingRepository.Update(newFan);
                 return Ok();
             }
             catch (Exception ex) { return BadRequest(ex.Message); }
@@ -66,12 +94,12 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteFan(int id)
         {
-            var fan = await _fanRepository.GetByIdAsync(id);
+            var fan = await _waterCoolingRepository.GetByIdAsync(id);
             if (fan is null)
                 return NotFound();
             try
             {
-                await _fanRepository.Delete(fan);
+                await _waterCoolingRepository.Delete(fan);
                 return Ok();
             }
             catch (Exception ex) { return BadRequest(ex.Message); }

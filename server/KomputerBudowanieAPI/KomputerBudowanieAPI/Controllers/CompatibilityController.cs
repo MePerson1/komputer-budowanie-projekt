@@ -1,9 +1,6 @@
-﻿using KomputerBudowanieAPI.Database;
-using KomputerBudowanieAPI.Dto;
+﻿using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
-using KomputerBudowanieAPI.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KomputerBudowanieAPI.Controllers
@@ -12,8 +9,8 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/compatibility")]
     public class CompatibilityController : ControllerBase
     {
-        public readonly IPcConfigurationRepository _pcConfigurationRepository;
-        public readonly ICompatibilityService _compatibilityService;
+        private readonly IPcConfigurationRepository _pcConfigurationRepository;
+        private readonly ICompatibilityService _compatibilityService;
 
         public CompatibilityController(IPcConfigurationRepository pcConfigurationRepository, ICompatibilityService compatibilityService)
         {
