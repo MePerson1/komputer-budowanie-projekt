@@ -1,6 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-from requests import get
 from requests import exceptions
 import configparser
 
@@ -20,14 +19,14 @@ fill_database = True if config.get('Settings', 'fill_database') == "1" else Fals
 def go_through_route(first_route, second_route):
     # zloz main routes
     main_routes = []
-    html_main = get("https://www.morele.net/podzespoly-komputerowe/").text
+    html_main = requests.get("https://www.morele.net/podzespoly-komputerowe/").text
     soup = BeautifulSoup(html_main, "lxml")
     main_links = soup.find_all('a', class_='col-xs-12 col-md-6 col-lg-4 col-xl-3')
     for link in main_links:
         main_routes.append(link_base + link['href'])
 
     # przejdz przez main route, zloz routy dla czesci
-    html_parts = get(main_routes[first_route]).text
+    html_parts = requests.get(main_routes[first_route]).text
     soup = BeautifulSoup(html_parts, "lxml")
     parts_routes = []
 
@@ -41,12 +40,12 @@ def go_through_route(first_route, second_route):
         parts_routes = [link for index, link in enumerate(parts_routes) if index not in [1, 3, 11, 15]]
 
         # przejdz przez parts route
-        html_processors = get(parts_routes[second_route]).text
+        html_processors = requests.get(parts_routes[second_route]).text
     elif first_route == 0:
         # usuniecie z listy po kolei linkow do akcesorii chlodzenia wodnego, past termoprzewodzacych i termopadow
         parts_routes = [link for index, link in enumerate(parts_routes) if index not in [1, 3, 4]]
         # przejdz przez cooling route
-        html_processors = get(parts_routes[second_route]).text
+        html_processors = requests.get(parts_routes[second_route]).text
     else:
         html_processors = ""
 
@@ -67,7 +66,7 @@ def get_product_specs(first_route, second_route, prod_links):
     for link in prod_links:
         try:
             # wejdz do poszczegolnego produktu
-            html_product = get(link).text
+            html_product = requests.get(link).text
             soup = BeautifulSoup(html_product, "lxml")
 
             # sprawdz czy jest dostepny zanim w ogole zacznie sie jakas obrobka
@@ -102,11 +101,16 @@ def get_product_specs(first_route, second_route, prod_links):
                 else:
                     translated_product_specs = {}
 
+                # wyswietl rzeczy po tlumaczeniu
                 if show_translated_data_in_console:
-                    # wyswietl rzeczy po tlumaczeniu
                     print(f"\n(PRZETLUMACZONE) Produkt {i}: {link}")
                     for key, value in translated_product_specs.items():
                         print(key, ':', value)
+
+                all_product_prices = get_product_prices(translated_product_specs["ProducerCode"], link, translated_product_specs["Price"])
+                print("Product prices:")
+                for price in all_product_prices:
+                    print(price)
 
                 # dodaj speki produktu do listy ze wszystkimi
                 if translated_product_specs != {}:
@@ -117,6 +121,61 @@ def get_product_specs(first_route, second_route, prod_links):
         except Exception as e:
             print(f"\n\nAn unexpected error occurred for link {link}: {e}\n\n")
     return all_products
+
+
+def get_product_prices(code, link, price):
+    alternate_prices = []
+    # utworzenie ceny dla morele
+    morele = {
+        "Site": "Morele.net",
+        "Link": link,
+        "Price": price,
+        "ProducerCode": code
+    }
+    komputronik = get_komputronik_price(code)
+    euro = {}
+
+    # dodanie cen
+    alternate_prices.append(morele)
+    if komputronik != {}:
+        alternate_prices.append(komputronik)
+    if euro != {}:
+        alternate_prices.append(euro)
+
+    return alternate_prices
+
+
+def get_komputronik_price(code):
+    producerCodeQuery = code.replace(" ", "%20")  # w wyszukiwaniu nie moze byc spacji
+
+    html_komputronik = requests.get(f"https://www.komputronik.pl/search/category/1?query={producerCodeQuery}").text
+    soup = BeautifulSoup(html_komputronik, "lxml")
+
+    first_code = soup.find('div', class_="mb-4 text-xs text-gray-gravel")
+    # sprawdzenie czy pierwszy wynik w ogole istnieje
+    if not first_code:
+        return {}
+
+    first_code = first_code.find_all('p')  # znalezienie dwoch p z kodem systemowym i producenta
+    # powinien byc kod systemowy i kod producenta. Jesli dlugosc jest mniejsza niz 2 znaczy ze nie ma kodu producenta, wiec to moze nawet nie byc czesc
+    if len(first_code) < 2:
+        return {}
+    first_code = first_code[1].text  # wyluskanie "Kod producenta: [kod]"
+    first_code = first_code.split('[')[-1].split("]")[0]  # usuniecie wszystkiego przed [ i za ]
+
+    # jesli kody producenta z morele i z pierwszego wyniku wyszukiwania z komputronika sie pokrywaja znaczy ze taka rzecz jest na tej stronie i mozna porownywac ich ceny
+    if code == first_code:
+        first_link = soup.find('h2', class_="font-headline text-lg font-bold leading-6 line-clamp-3 md:text-xl md:leading-8").a.get("href")
+        first_price = float(soup.find('div', class_="text-3xl font-bold leading-8").text.replace(" zł", "").replace("\xa0", "").replace(",", "."))
+        komputronik = {
+            "Site": "Komputronik.pl",
+            "Link": first_link,
+            "Price": first_price,
+            "ProducerCode": code
+        }
+        return komputronik
+    else:
+        return {}
 
 
 def translate_and_parse_cooling(second_route, specs):
@@ -248,10 +307,10 @@ def translate_and_parse_parts(second_route, specs):
             "CoolingType": specs["Typ chłodzenia"],
             "FanCount": int(specs["Ilość wentylatorów"]),
             "DSub": int(specs["D-Sub"]) if specs["D-Sub"] != "Brak" else 0,
-            "DisplayPortCount": int(specs["DisplayPort"]) if "DisplayPort" in specs else 0,
+            "DisplayPortCount": int(specs["DisplayPort"]) if "DisplayPort" in specs and specs.get("DisplayPort") != "Brak" else 0,
             "MiniDisplayPort": int(specs["MiniDisplayPort"]) if specs["MiniDisplayPort"] != "Brak" else 0,
             "DVI": int(specs["DVI"]) if specs["DVI"] != "Brak" else 0,
-            "HDMI": int(specs["HDMI"]),
+            "HDMI": int(specs["HDMI"]) if specs["HDMI"] != "Brak" else 0,
             "USBC": int(specs["USB-C"]) if specs["USB-C"] != "Brak" else 0,
             "PowerConnectors": specs["Złącza zasilania"],
             "Description": None
