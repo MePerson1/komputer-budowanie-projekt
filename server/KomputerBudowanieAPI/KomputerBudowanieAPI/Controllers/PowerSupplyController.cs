@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace KomputerBudowanieAPI.Controllers
 {
     [ApiController]
-    [Route("api/powersupply")]
+    [Route("api/power-supply")]
     public class PowerSupplyController : Controller
     {
         private readonly IGenericRepository<PowerSupply> _powerSupplyRepository;
