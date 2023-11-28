@@ -7,17 +7,23 @@ using Microsoft.AspNetCore.Mvc;
 namespace KomputerBudowanieAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/graphic-card")]
     public class GraphicCardController : Controller
     {
-        public readonly IGenericRepository<GraphicCard> _graphicCardRepository;
-        public readonly IMapper _mapper;
+        private readonly IGenericRepository<GraphicCard> _graphicCardRepository;
+        private readonly IMapper _mapper;
 
-        public GraphicCardController(IGenericRepository<GraphicCard> graphicCardRepository, IMapper mapper)
+        private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
+        private readonly IPcConfigurationRepository _pcConfigurationRepository;
+
+        public GraphicCardController(IGenericRepository<GraphicCard> graphicCardRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _graphicCardRepository = graphicCardRepository;
             _mapper = mapper;
+            _compatibilityDataFilterService = compatibilityDataFilterService;
+            _pcConfigurationRepository = pcConfigurationRepository;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAllGraphicCards()
         {
@@ -36,6 +42,29 @@ namespace KomputerBudowanieAPI.Controllers
             if (graphicCard is null)
                 return NotFound();
             return Ok(_mapper.Map<GraphicCardDto>(graphicCard));
+        }
+
+        [HttpPost("compatible")]
+        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails)
+        {
+            try
+            {
+                var graphicCards = await _graphicCardRepository.GetAllAsync();
+                if (graphicCards is null || !graphicCards.Any())
+                {
+                    return NotFound();
+                }
+
+                var configuration = new PcConfiguration();
+                await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
+                _compatibilityDataFilterService.GraphicCardFilter(configuration, ref graphicCards);
+
+                return Ok(graphicCards);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]

@@ -1,12 +1,14 @@
-﻿using KomputerBudowanieAPI.Models;
+﻿using KomputerBudowanieAPI.Interfaces;
+using KomputerBudowanieAPI.Models;
 using System.Text.RegularExpressions;
 
 namespace KomputerBudowanieAPI.Services
 {
-    public class CompatibilityDataFilterService
+    public class CompatibilityDataFilterService : ICompatibilityDataFilterService
     {
-
-        public void CpuFilter(PcConfiguration configuration, ref ICollection<Cpu> cpus)
+        // TODO:
+        // - dodać sprawdzanie chłodzeń?
+        public void CpuFilter(PcConfiguration configuration, ref IEnumerable<Cpu> cpus)
         {
             if (configuration.Motherboard is not null)
             {
@@ -16,7 +18,7 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
-        public void MotherboardFilter(PcConfiguration configuration, ref ICollection<Motherboard> motherboards)
+        public void MotherboardFilter(PcConfiguration configuration, ref IEnumerable<Motherboard> motherboards)
         {
             if (configuration.Cpu is not null)
             {
@@ -58,7 +60,9 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
-        public void CpuCoolingFilter(PcConfiguration configuration, ref ICollection<CpuCooling> cpuCoolings)
+        // TODO:
+        // - dokończyć
+        public void CpuCoolingFilter(PcConfiguration configuration, ref IEnumerable<CpuCooling> cpuCoolings)
         {
             if (configuration.Case is not null)
             {
@@ -73,7 +77,22 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
-        public void RamFilter(PcConfiguration configuration, ref ICollection<Ram> rams)
+        // TODO:
+        // - dokończyć
+        public void WaterCoolingFilter(PcConfiguration configuration, ref IEnumerable<WaterCooling> waterCoolings)
+        {
+            if (configuration.Case is not null)
+            {
+                
+            }
+
+            if (configuration.Rams is not null)
+            {
+
+            }
+        }
+
+        public void RamFilter(PcConfiguration configuration, ref IEnumerable<Ram> rams)
         {
             if (configuration.Motherboard is not null)
             {
@@ -83,12 +102,21 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
-        public void StorageFilter(PcConfiguration configuration, ref ICollection<Storage> storages)
+        // TODO:
+        // - dokończyć
+        public void StorageFilter(PcConfiguration configuration, ref IEnumerable<Storage> storages)
         {
 
         }
 
-        public void GraphicCardFilter(PcConfiguration configuration, ref ICollection<GraphicCard> graphicCards)
+        // TODO:
+        // - dokończyć
+        public void PowerSupplyFilter(PcConfiguration configuration, ref IEnumerable<PowerSupply> powerSupplies)
+        {
+
+        }
+
+        public void GraphicCardFilter(PcConfiguration configuration, ref IEnumerable<GraphicCard> graphicCards)
         {
             if (configuration.Case is not null)
             {
@@ -110,7 +138,9 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
-        public void CaseFilter(PcConfiguration configuration, ref ICollection<Case> cases)
+        // TODO:
+        // - dokończyć
+        public void CaseFilter(PcConfiguration configuration, ref IEnumerable<Case> cases)
         {
             if (configuration.Motherboard is not null)
             {
@@ -149,10 +179,10 @@ namespace KomputerBudowanieAPI.Services
             && motherboard.MemorySlotsCount >= ram.ModuleCount;
 
         static private bool Case_GraphicCard(Case pcCase, GraphicCard card) =>
-            pcCase.MaxGPULengthCM >= card.CardLengthMM * 10;
+            pcCase.MaxGPULengthCM * 10 >= card.CardLengthMM;
 
         static private bool Case_CpuCooling(Case pcCase, CpuCooling cpuCooling) =>
-            pcCase.MaxCoolingSystemHeightCM >= cpuCooling.HeightMM * 10;
+            pcCase.MaxCoolingSystemHeightCM * 10 >= cpuCooling.HeightMM;
 
         static private bool Case_Storages(Case pcCase, Storage storage) =>
             (storage.FormFactor == "3.5 cala" && pcCase.InternalBaysThreePointFiveInch == 0) ||

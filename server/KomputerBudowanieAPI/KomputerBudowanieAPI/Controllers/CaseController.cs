@@ -7,16 +7,21 @@ using Microsoft.AspNetCore.Mvc;
 namespace KomputerBudowanieAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/case")]
     public class CaseController : Controller
     {
-        public readonly IGenericRepository<Case> _caseRepository;
-        public readonly IMapper _mapper;
+        private readonly IGenericRepository<Case> _caseRepository;
+        private readonly IMapper _mapper;
 
-        public CaseController(IGenericRepository<Case> caseRepository, IMapper mapper)
+        private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
+        private readonly IPcConfigurationRepository _pcConfigurationRepository;
+
+        public CaseController(IGenericRepository<Case> caseRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _caseRepository = caseRepository;
             _mapper = mapper;
+            _compatibilityDataFilterService = compatibilityDataFilterService;
+            _pcConfigurationRepository = pcConfigurationRepository;
         }
 
         [HttpGet]
@@ -40,6 +45,29 @@ namespace KomputerBudowanieAPI.Controllers
             }
 
             return Ok(_mapper.Map<CaseDto>(pcCase));
+        }
+
+        [HttpPost("compatible")]
+        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails)
+        {
+            try
+            {
+                var cases = await _caseRepository.GetAllAsync();
+                if (cases is null || !cases.Any())
+                {
+                    return NotFound();
+                }
+
+                var configuration = new PcConfiguration();
+                await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
+                _compatibilityDataFilterService.CaseFilter(configuration, ref cases);
+
+                return Ok(cases);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]

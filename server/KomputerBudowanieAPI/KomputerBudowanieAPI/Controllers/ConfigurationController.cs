@@ -11,8 +11,8 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/configuration")]
     public class ConfigurationController : ControllerBase
     {
-        public readonly IPcConfigurationRepository _pcConfigurationRepository;
-        public readonly IUserRepository _userRepository;
+        private readonly IPcConfigurationRepository _pcConfigurationRepository;
+        private readonly IUserRepository _userRepository;
 
         public ConfigurationController(IPcConfigurationRepository pcConfigurationRepository, IUserRepository userRepository, ICompatibilityService compatibilityService)
         {

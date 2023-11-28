@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 namespace KomputerBudowanieAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/admin")]
     public class AdminController : Controller
     {
-        readonly KomBuildDbContext _context;
+        private readonly KomBuildDbContext _context;
 
         private readonly string[] tables = { "Cases", "CpuCoolings", "Fans", "Cpus", "GraphicCards", "Storages", "Motherboards", "Rams", "PowerSupplys" };
 
@@ -17,7 +17,7 @@ namespace KomputerBudowanieAPI.Controllers
             this._context = context;
         }
 
-        [HttpDelete("DeleteAll")]
+        [HttpDelete("all")]
         public IActionResult DeleteAll()
         {
             foreach (var table in tables)
@@ -28,63 +28,63 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok();
         }
 
-        [HttpDelete("DeleteAllCases")]
+        [HttpDelete("all-cases")]
         public IActionResult DeleteAllCases()
         {
             _context.Database.ExecuteSqlRaw($"DELETE FROM \"{tables[0]}\"");
             return Ok();
         }
 
-        [HttpDelete("DeleteAllCpuCoolings")]
+        [HttpDelete("all-cpu-coolings")]
         public IActionResult DeleteAllCpuCoolings()
         {
             _context.Database.ExecuteSqlRaw($"DELETE FROM \"{tables[1]}\"");
             return Ok();
         }
 
-        [HttpDelete("DeleteAllFans")]
+        [HttpDelete("all-fan")]
         public IActionResult DeleteAllFans()
         {
             _context.Database.ExecuteSqlRaw($"DELETE FROM \"{tables[2]}\"");
             return Ok();
         }
 
-        [HttpDelete("DeleteAllCpus")]
+        [HttpDelete("all-cpu")]
         public IActionResult DeleteAllCpus()
         {
             _context.Database.ExecuteSqlRaw($"DELETE FROM \"{tables[3]}\"");
             return Ok();
         }
 
-        [HttpDelete("DeleteAllGraphicCard")]
+        [HttpDelete("all-graphic-card")]
         public IActionResult DeleteAllGraphicCards()
         {
             _context.Database.ExecuteSqlRaw($"DELETE FROM \"{tables[4]}\"");
             return Ok();
         }
 
-        [HttpDelete("DeleteAllMemorie")]
+        [HttpDelete("all-memory")]
         public IActionResult DeleteAllMemories()
         {
             _context.Database.ExecuteSqlRaw($"DELETE FROM \"{tables[5]}\"");
             return Ok();
         }
 
-        [HttpDelete("DeleteAllMotherboard")]
+        [HttpDelete("all-motherboard")]
         public IActionResult DeleteAllMotherboards()
         {
             _context.Database.ExecuteSqlRaw($"DELETE FROM \"{tables[6]}\"");
             return Ok();
         }
 
-        [HttpDelete("DeleteAllRams")]
+        [HttpDelete("all-ram")]
         public IActionResult DeleteAllRams()
         {
             _context.Database.ExecuteSqlRaw($"DELETE FROM \"{tables[7]}\"");
             return Ok();
         }
 
-        [HttpDelete("DeleteAllPowerSupplys")]
+        [HttpDelete("all-power-supply")]
         public IActionResult DeleteAllPowerSupplys()
         {
             _context.Database.ExecuteSqlRaw($"DELETE FROM \"{tables[8]}\"");

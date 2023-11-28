@@ -29,6 +29,7 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<IPcConfigurationRepository, PcConfigurationRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICompatibilityService, CompatibilityService>();
+builder.Services.AddScoped<ICompatibilityDataFilterService, CompatibilityDataFilterService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

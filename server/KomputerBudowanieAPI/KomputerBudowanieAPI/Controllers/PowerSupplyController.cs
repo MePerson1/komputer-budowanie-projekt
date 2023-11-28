@@ -7,17 +7,23 @@ using Microsoft.AspNetCore.Mvc;
 namespace KomputerBudowanieAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/powersupply")]
     public class PowerSupplyController : Controller
     {
-        public readonly IGenericRepository<PowerSupply> _powerSupplyRepository;
-        public readonly IMapper _mapper;
+        private readonly IGenericRepository<PowerSupply> _powerSupplyRepository;
+        private readonly IMapper _mapper;
 
-        public PowerSupplyController(IGenericRepository<PowerSupply> powerSupplyRepository, IMapper mapper)
+        private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
+        private readonly IPcConfigurationRepository _pcConfigurationRepository;
+
+        public PowerSupplyController(IGenericRepository<PowerSupply> powerSupplyRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _powerSupplyRepository = powerSupplyRepository;
             _mapper = mapper;
+            _compatibilityDataFilterService = compatibilityDataFilterService;
+            _pcConfigurationRepository = pcConfigurationRepository;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAllPowerSupplies()
         {
@@ -36,6 +42,29 @@ namespace KomputerBudowanieAPI.Controllers
             if (powerSupply is null)
                 return NotFound();
             return Ok(_mapper.Map<PowerSupplyDto>(powerSupply));
+        }
+
+        [HttpPost("compatible")]
+        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails)
+        {
+            try
+            {
+                var powerSupplies = await _powerSupplyRepository.GetAllAsync();
+                if (powerSupplies is null || !powerSupplies.Any())
+                {
+                    return NotFound();
+                }
+
+                var configuration = new PcConfiguration();
+                await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
+                _compatibilityDataFilterService.PowerSupplyFilter(configuration, ref powerSupplies);
+
+                return Ok(powerSupplies);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
