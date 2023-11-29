@@ -1,7 +1,8 @@
 import ComponentRow from "../PartsTable/ComponentRow";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const PartsTable = ({ parts }) => {
+  const navigate = useNavigate();
   return (
     <div>
       <table className="table">

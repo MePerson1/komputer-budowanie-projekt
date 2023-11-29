@@ -8,7 +8,7 @@ const ComponentRow = ({ part, index }) => {
   };
   return (
     <>
-      <tr onClick={handleDetails} className="hover:bg-opacit-40">
+      <tr onClick={handleDetails} className="hover:bg-black ">
         <td>Zdjecie</td>
         <td>{part.name}</td>
         <td>{part.producer}</td>

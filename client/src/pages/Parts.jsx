@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import pcParts from "../constants/pcParts";
+import pcParts from "../utils/constants/pcParts";
 import ChooseCategory from "../components/Parts/ChooseCategory";
 const Parts = () => {
   return (

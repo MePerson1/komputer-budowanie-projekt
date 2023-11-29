@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
+import ReturnButton from "./ReturnButton";
 
 const PartDetail = () => {
   const location = useLocation();
@@ -11,23 +12,62 @@ const PartDetail = () => {
     .replace("/", "")
     .replace("parts", "")
     .replace("/", "");
-  console.log(id);
+
   useEffect(() => {
+    async function getPart(partType, id) {
+      try {
+        const response = await axios.get(
+          `http://localhost:5198/api/${partType}/${id}`
+        );
+        setPart(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
     if (id) {
       getPart(partType, id);
     }
-  }, [id]);
+  }, [id, partType]);
 
-  async function getPart(partType, id) {
-    try {
-      const response = await axios.get(`http://localhost:5198/api/Cpu/${id}`);
-      setPart(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  const renderSpecifications = () => {
+    const specifications = Object.entries(part).map(([key, value]) => {
+      if (typeof value === "boolean") {
+        return <p key={key}>{`${key}: ${value ? "Yes" : "No"}`}</p>;
+      } else if (typeof value === "number" && key !== "id") {
+        return <p key={key}>{`${key}: ${value}`}</p>;
+      } else if (typeof value === "string" && key !== "description") {
+        return <p key={key}>{`${key}: ${value}`}</p>;
+      }
+      return null;
+    });
 
-  return part !== null ? <p>{part.name}</p> : <p>Nieoczekiwany błąd</p>;
+    return specifications;
+  };
+
+  return (
+    <div>
+      <ReturnButton />
+
+      {part !== null ? (
+        <div>
+          <p>Nazwa: {part.name}</p>
+          <p>Producent: {part.producer}</p>
+          <p>Cena: {part.price} zł</p>
+          <p>Kod producenta: {part.producerCode}</p>
+          <div>
+            <h3>Specyfikacje:</h3>
+            {renderSpecifications()}
+          </div>
+        </div>
+      ) : (
+        <div className="flex justify-center content-center  animate-bounce p-5">
+          <span className="loading loading-spinner loading-lg"></span>
+          <p className="content-cent p-5 text-3xl">Ładowanie</p>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default PartDetail;

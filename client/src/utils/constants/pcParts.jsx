@@ -8,7 +8,7 @@ const pcParts = [
     tip: "Nie zapomnij śmiać się z siebie",
   },
   {
-    key: "cpuCooling",
+    key: "cpu-cooling",
     nameENG: "Cpu Cooling",
     namePL: "Chłodzenie procesora",
     icon: "images/parts/cpu-cooling.png",
@@ -24,7 +24,7 @@ const pcParts = [
     tip: "Nie zapomnij śmiać się z siebie",
   },
   {
-    key: "graphicCard",
+    key: "graphic-card",
     nameENG: "Graphic Card",
     namePL: "Karta graficzna",
     icon: "images/parts/graphic-card.png",
@@ -48,7 +48,7 @@ const pcParts = [
     tip: "Nie zapomnij śmiać się z siebie",
   },
   {
-    key: "powerSupply",
+    key: "power-supply",
     nameENG: "Power Supply",
     namePL: "Zasilacz",
     icon: "images/parts/power-supply.png",
