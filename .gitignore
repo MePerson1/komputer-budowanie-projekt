@@ -314,3 +314,5 @@ yarn-error.log*
 scrapper/dummy.py
 scrapper/Nowy dokument tekstowy.txt
 scrapper/dummy2.py
+scraper/dummy.py
+scraper/dummy2.py
