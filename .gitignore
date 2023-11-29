@@ -313,3 +313,4 @@ yarn-error.log*
 # End of https://www.toptal.com/developers/gitignore/api/aspnetcore,react
 scrapper/dummy.py
 scrapper/Nowy dokument tekstowy.txt
+scrapper/dummy2.py
