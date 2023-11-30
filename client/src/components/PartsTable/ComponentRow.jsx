@@ -1,20 +1,29 @@
 import { useNavigate, useLocation } from "react-router-dom";
 
-const ComponentRow = ({ part, index }) => {
+const ComponentRow = ({ part, index, setPcConfiguration }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const handleDetails = () => {
     navigate(`${window.location.pathname}/${part.id}`);
   };
+  const handleAddPart = (e) => {
+    e.stopPropagation();
+
+    if (part.key === "motherboard") setPcConfiguration();
+
+    navigate("/build");
+  };
   return (
     <>
-      <tr onClick={handleDetails} className="hover:bg-black ">
+      <tr onClick={handleDetails} className="hover:bg-black">
         <td>Zdjecie</td>
         <td>{part.name}</td>
         <td>{part.producer}</td>
         <td>{part.price} zł</td>
         <td>
-          <button className="btn btn-primary">+</button>
+          <button onClick={handleAddPart} className="btn btn-primary">
+            +
+          </button>
         </td>
       </tr>
     </>

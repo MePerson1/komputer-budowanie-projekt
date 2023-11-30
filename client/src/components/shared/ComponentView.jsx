@@ -22,8 +22,11 @@ const ComponentView = (props) => {
           </div>
         </div>
       </div>
-      <div className="mr-7">
-        <button className="btn btn-outline">Zmień</button>
+      <div className="mr-7 flex flex-col">
+        <button className="m-2 btn btn-outline">Zmień</button>
+        <button className="m-2 btn btn-sm bg-red-600 hover:bg-opacity-80 hover:bg-red-950">
+          Usuń
+        </button>
       </div>
     </div>
   );

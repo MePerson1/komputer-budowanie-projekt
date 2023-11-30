@@ -1,8 +1,6 @@
 import ComponentRow from "../PartsTable/ComponentRow";
-import { Link, useNavigate } from "react-router-dom";
 
-const PartsTable = ({ parts }) => {
-  const navigate = useNavigate();
+const PartsTable = ({ parts, setPcConfiguration }) => {
   return (
     <div>
       <table className="table">
@@ -19,7 +17,12 @@ const PartsTable = ({ parts }) => {
           {parts !== undefined &&
             parts !== null &&
             parts.map((part, index) => (
-              <ComponentRow part={part} key={index} index={index} />
+              <ComponentRow
+                part={part}
+                key={index}
+                index={index}
+                setPcConfiguration={setPcConfiguration}
+              />
             ))}
         </tbody>
       </table>

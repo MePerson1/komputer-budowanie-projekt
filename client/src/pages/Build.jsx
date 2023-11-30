@@ -5,14 +5,28 @@ import axios from "axios";
 import { PcConfiguration, Motherboard } from "../utils/models/index";
 import ConfigurationInfo from "../components/Build/ConfigurationInfo";
 import pcParts from "../utils/constants/pcParts";
-const Build = () => {
-  let [pcConfiguration, setPcConfiguration] = useState(PcConfiguration);
-
+const Build = ({ pcConfiguration, setPcConfiguration }) => {
   useEffect(() => {
     getData();
-    console.log(pcConfiguration);
+    if (JSON.parse(localStorage.getItem("localConfiugration")) !== null)
+      setPcConfiguration(
+        JSON.parse(localStorage.getItem("localConfiugration"))
+      );
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem("localConfiugration", JSON.stringify(pcConfiguration));
+    getInfo(pcConfiguration);
+  }, [pcConfiguration]);
+
+  async function getInfo(pcConfiguration) {
+    await axios
+      .post("http://localhost:5198/api/compatibility", pcConfiguration)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => console.log(err));
+  }
   async function getData() {
     await axios
       .get(
