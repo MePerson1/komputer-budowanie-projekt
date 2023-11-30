@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
+using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Models;
 
-namespace KomputerBudowanieAPI.Dto
+namespace KomputerBudowanieAPI.Helpers
 {
     public class MappingProfiles : Profile
     {
@@ -33,6 +34,16 @@ namespace KomputerBudowanieAPI.Dto
 
             CreateMap<Ram, RamDto>();
             CreateMap<RamDto, Ram>();
+
+            CreateMap<Ram, ProductDto>();
+            CreateMap<Case, ProductDto>();
+            CreateMap<CpuCooling, ProductDto>();
+            CreateMap<Cpu, ProductDto>();
+            CreateMap<WaterCooling, ProductDto>();
+            CreateMap<GraphicCard, ProductDto>();
+            CreateMap<Storage, ProductDto>();
+            CreateMap<Motherboard, ProductDto>();
+            CreateMap<PowerSupply, ProductDto>();
 
         }
     }

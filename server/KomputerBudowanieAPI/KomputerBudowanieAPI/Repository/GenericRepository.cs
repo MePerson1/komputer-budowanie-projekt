@@ -19,7 +19,7 @@ namespace KomputerBudowanieAPI.Repository
 
         public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            return await _context.Set<TEntity>().ToListAsync();
+            return await _context.Set<TEntity>().Include("Prices").ToListAsync();
         }
 
         /*

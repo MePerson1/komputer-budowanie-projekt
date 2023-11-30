@@ -32,7 +32,7 @@ namespace KomputerBudowanieAPI.Controllers
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<IEnumerable<CaseDto>>(cases));
+            return Ok(_mapper.Map<ICollection<ProductDto>>(cases));
         }
 
         [HttpGet("{id:int}")]

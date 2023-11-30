@@ -8,7 +8,8 @@ namespace KomputerBudowanieAPI.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
-        public double Price { get; set; }
+        [JsonIgnore]
+        public ICollection<ShopPrice> Prices { get; set; }
         public string Producer { get; set; }
         public string? Description { get; set; } = null;
         public string ProducerCode { get; set; }
@@ -16,8 +17,8 @@ namespace KomputerBudowanieAPI.Models
         public string PinType { get; set; }
 
         public string MemoryType { get; set; }
-        public bool LowProfile { get; set; } 
-        public string Cooling { get; set; } 
+        public bool LowProfile { get; set; }
+        public string Cooling { get; set; }
 
         public int CapacityGB { get; set; }
         public int ModuleCount { get; set; }
@@ -28,7 +29,7 @@ namespace KomputerBudowanieAPI.Models
         public string OverclockingProfile { get; set; } //technologia podkręcania
 
         public string Color { get; set; }
-        public bool HasLighting { get; set; } 
+        public bool HasLighting { get; set; }
 
 
         /*
