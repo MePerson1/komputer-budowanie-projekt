@@ -21,7 +21,12 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   return (
     <div>
       <ReturnButton />
-      <PartsTable parts={parts} setPcConfiguration={setPcConfiguration} />
+      <PartsTable
+        parts={parts}
+        partType={partType}
+        setPcConfiguration={setPcConfiguration}
+        pcConfiguration={pcConfiguration}
+      />
     </div>
   );
 };

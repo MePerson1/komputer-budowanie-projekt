@@ -1,69 +1,78 @@
 import ComponentView from "../shared/ComponentView";
 import EmptyComponentView from "./EmptyComponentView";
 
-const ComponentsTable = ({ pcConfiguration, pcParts }) => {
+const ComponentsTable = ({ setPcConfiguration, pcConfiguration, pcParts }) => {
+  const handleSetToNull = (key) => {
+    console.log(key);
+    setPcConfiguration({ ...pcConfiguration, [key]: null });
+  };
   return (
     <table className="table table-sm text-xs ">
       <tbody>
         <tr id="cpu">
-          {pcConfiguration.cpu !== null && pcConfiguration.cpu.id !== 0 ? (
-            <ComponentView {...pcConfiguration.cpu} />
+          {pcConfiguration.cpu !== undefined && pcConfiguration.cpu !== null ? (
+            <ComponentView
+              pcPart={pcConfiguration.cpu}
+              handleSetToNull={handleSetToNull}
+              partKey={"cpu"}
+            />
           ) : (
             <EmptyComponentView pcPart={pcParts[0]} />
           )}
         </tr>
         <tr id="cpuCooling">
           {pcConfiguration.cpuCooling !== null &&
-          pcConfiguration.cpuCooling.id !== 0 &&
           pcConfiguration.waterCooling !== undefined ? (
-            <ComponentView {...pcConfiguration.cpuCooling} />
+            <ComponentView
+              pcPart={pcConfiguration.cpuCooling}
+              handleSetToNull={handleSetToNull}
+              partKey={"cpuCooling"}
+            />
           ) : (
             <EmptyComponentView pcPart={pcParts[1]} />
           )}
         </tr>
         <tr id="motherboard">
           {pcConfiguration.motherboard !== null &&
-          pcConfiguration.motherboard.id !== 0 &&
           pcConfiguration.motherboard !== undefined ? (
-            <ComponentView {...pcConfiguration} />
+            <ComponentView pcPart={pcConfiguration.motherboard} />
           ) : (
             <EmptyComponentView pcPart={pcParts[2]} />
           )}
         </tr>
         <tr id="graphicCard">
           {pcConfiguration.graphicCard !== null &&
-          pcConfiguration.graphicCard.id !== 0 &&
           pcConfiguration.graphicCard !== undefined ? (
-            <ComponentView />
+            <ComponentView pcPart={pcConfiguration.graphicCard} />
           ) : (
             <EmptyComponentView pcPart={pcParts[3]} />
           )}
         </tr>
-        <tr id="ram">
+        <tr id="rams">
           {pcConfiguration.rams !== undefined &&
-          pcConfiguration.rams.length !== 0 &&
-          pcConfiguration.rams[0].id !== 0 ? (
+          pcConfiguration.rams.length !== 0 ? (
             pcConfiguration.rams.map((ram, index) => (
-              <ComponentView key={index} {...ram} />
+              <ComponentView key={index} pcPart={ram} />
             ))
           ) : (
             <EmptyComponentView pcPart={pcParts[4]} />
           )}
         </tr>
 
-        <tr id="storage">
-          {pcConfiguration.storage !== undefined &&
-          pcConfiguration.storage.length !== 0 ? (
-            <ComponentView />
+        <tr id="storages">
+          {pcConfiguration.storages !== undefined &&
+          pcConfiguration.storages.length !== 0 ? (
+            pcConfiguration.storages.map((storage, index) => (
+              <ComponentView key={index} pcPart={storage} />
+            ))
           ) : (
             <EmptyComponentView pcPart={pcParts[5]} />
           )}
         </tr>
         <tr id="powerSupply">
           {pcConfiguration.powerSupply !== null &&
-          pcConfiguration.powerSupply.id !== 0 &&
           pcConfiguration.powerSupply !== undefined ? (
-            <ComponentView />
+            <ComponentView pcPart={pcConfiguration.powerSupply} />
           ) : (
             <EmptyComponentView pcPart={pcParts[6]} />
           )}
@@ -72,7 +81,7 @@ const ComponentsTable = ({ pcConfiguration, pcParts }) => {
           {pcConfiguration.case !== null &&
           pcConfiguration.case.id !== 0 &&
           pcConfiguration.case !== undefined ? (
-            <ComponentView />
+            <ComponentView pcPart={pcConfiguration.case} />
           ) : (
             <EmptyComponentView pcPart={pcParts[7]} />
           )}

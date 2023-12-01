@@ -6,39 +6,6 @@ import { PcConfiguration, Motherboard } from "../utils/models/index";
 import ConfigurationInfo from "../components/Build/ConfigurationInfo";
 import pcParts from "../utils/constants/pcParts";
 const Build = ({ pcConfiguration, setPcConfiguration }) => {
-  useEffect(() => {
-    getData();
-    if (JSON.parse(localStorage.getItem("localConfiugration")) !== null)
-      setPcConfiguration(
-        JSON.parse(localStorage.getItem("localConfiugration"))
-      );
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("localConfiugration", JSON.stringify(pcConfiguration));
-    getInfo(pcConfiguration);
-  }, [pcConfiguration]);
-
-  async function getInfo(pcConfiguration) {
-    await axios
-      .post("http://localhost:5198/api/compatibility", pcConfiguration)
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((err) => console.log(err));
-  }
-  async function getData() {
-    await axios
-      .get(
-        "http://localhost:5198/api/Configuration/97b3af2b-f26d-4052-a408-8ec969716f65"
-      )
-      .then((res) => {
-        console.log(res.data);
-        setPcConfiguration(res.data);
-      })
-      .catch((err) => console.log(err));
-  }
-
   return (
     <>
       <div>
@@ -46,6 +13,7 @@ const Build = ({ pcConfiguration, setPcConfiguration }) => {
           <ComponentsTable
             pcParts={pcParts}
             pcConfiguration={pcConfiguration}
+            setPcConfiguration={setPcConfiguration}
           />
           <div id="infos">
             <Info />

@@ -1,6 +1,13 @@
 import { useNavigate, useLocation } from "react-router-dom";
 
-const ComponentRow = ({ part, index, setPcConfiguration }) => {
+const ComponentRow = ({
+  part,
+  key,
+  index,
+  partType,
+  pcConfiguration,
+  setPcConfiguration,
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const handleDetails = () => {
@@ -9,10 +16,46 @@ const ComponentRow = ({ part, index, setPcConfiguration }) => {
   const handleAddPart = (e) => {
     e.stopPropagation();
 
-    if (part.key === "motherboard") setPcConfiguration();
-
-    navigate("/build");
+    switch (partType) {
+      case "motherboard":
+        setPcConfiguration({ ...pcConfiguration, motherboard: part });
+        navigate("/build");
+        break;
+      case "cpu":
+        setPcConfiguration({ ...pcConfiguration, cpu: part });
+        navigate("/build");
+        break;
+      case "cpu-cooling":
+        setPcConfiguration({ ...pcConfiguration, cpuCooling: part });
+        navigate("/build");
+        break;
+      case "case":
+        setPcConfiguration({ ...pcConfiguration, case: part });
+        navigate("/build");
+        break;
+      case "graphic-card":
+        setPcConfiguration({ ...pcConfiguration, graphicCard: part });
+        navigate("/build");
+        break;
+      case "power-supply":
+        setPcConfiguration({ ...pcConfiguration, powerSupply: part });
+        navigate("/build");
+        break;
+      case "ram":
+        const updatedRams = [...pcConfiguration.rams, part];
+        setPcConfiguration({ ...pcConfiguration, rams: updatedRams });
+        navigate("/build");
+        break;
+      case "storage":
+        const updatedStorages = [...pcConfiguration.storages, part];
+        setPcConfiguration({ ...pcConfiguration, storages: updatedStorages });
+        navigate("/build");
+        break;
+      default:
+        break;
+    }
   };
+
   return (
     <>
       <tr onClick={handleDetails} className="hover:bg-black">

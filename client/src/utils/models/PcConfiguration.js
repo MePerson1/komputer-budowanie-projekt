@@ -11,15 +11,20 @@ import {
 } from "./index";
 
 const PcConfiguration = {
-  case: Case,
-  cpu: Cpu,
-  cpuCooling: CpuCooling,
-  graphicCard: GraphicCard,
-  motherboard: Motherboard,
-  powerSupply: PowerSupply,
-  rams: [Ram],
-  storages: [Storage],
-  waterCooling: WaterCooling,
+  case: null,
+  cpu: null,
+  cpuCooling: null,
+  description: "",
+  fans: [],
+  graphicCard: null,
+  id: "",
+  motherboard: null,
+  name: "",
+  powerSupply: null,
+  rams: [],
+  storages: [],
+  user: null,
+  waterCooling: null,
 };
 
 export default PcConfiguration;

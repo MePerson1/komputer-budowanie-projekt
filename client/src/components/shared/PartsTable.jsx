@@ -1,6 +1,11 @@
 import ComponentRow from "../PartsTable/ComponentRow";
 
-const PartsTable = ({ parts, setPcConfiguration }) => {
+const PartsTable = ({
+  parts,
+  setPcConfiguration,
+  partType,
+  pcConfiguration,
+}) => {
   return (
     <div>
       <table className="table">
@@ -19,9 +24,11 @@ const PartsTable = ({ parts, setPcConfiguration }) => {
             parts.map((part, index) => (
               <ComponentRow
                 part={part}
-                key={index}
+                key={part.id}
+                partType={partType}
                 index={index}
                 setPcConfiguration={setPcConfiguration}
+                pcConfiguration={pcConfiguration}
               />
             ))}
         </tbody>

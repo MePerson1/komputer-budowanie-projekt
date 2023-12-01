@@ -2,8 +2,6 @@ import { useNavigate } from "react-router";
 
 const EmptyComponentView = ({ pcPart }) => {
   const navigate = useNavigate();
-
-  console.log(pcPart);
   function handleChangePart() {
     navigate(`/parts/${pcPart.key}`);
   }
