@@ -1,5 +1,18 @@
-import { useEffect } from "react";
-const Info = ({ configurationInfo }) => {
+import { useEffect, useState } from "react";
+const Info = ({ configurationInfo, totalPrice }) => {
+  const [budget, setBudget] = useState(0);
+
+  const handleBudgetChange = (event) => {
+    const newValue = event.target.value;
+    const newBudget = parseFloat(newValue.replace(".", ","));
+
+    if (!isNaN(newBudget)) {
+      setBudget(newBudget);
+    } else {
+      setBudget(0);
+    }
+  };
+  const inputWidth = `${(budget.toString().length + 1) * 9}px`;
   return (
     <div className="m-5 rounded-md inline-block border-black border-2 shadow-lg shadow-black ">
       <table className="table border-separate p-3 w-full sm:w-96">
@@ -8,13 +21,33 @@ const Info = ({ configurationInfo }) => {
             <td className="text-lg">
               <b>Budżet:</b>
             </td>
-            <td className="text-lg">2000 zł</td>
+            <td className="flex text-lg ">
+              <input
+                type="text"
+                className="bg-transparent"
+                placeholder="0"
+                style={{ width: inputWidth }}
+                value={budget === 0 ? "" : budget}
+                onChange={handleBudgetChange}
+              />
+              <span>
+                <i>zł</i>
+              </span>
+            </td>
           </tr>
           <tr>
             <td className="text-lg">
               <b>Łączna cena:</b>
             </td>
-            <td className="text-lg">661,49 zł</td>
+            <td
+              className={
+                totalPrice > budget
+                  ? "text-lg text-red-300"
+                  : "text-lg text-green-300"
+              }
+            >
+              {totalPrice.toFixed(2).toString().replace(".", ",")} zł
+            </td>
           </tr>
           <tr>
             <td className="text-lg">
