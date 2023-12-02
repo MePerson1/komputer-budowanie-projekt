@@ -5,13 +5,23 @@ const Info = ({ configurationInfo, totalPrice }) => {
   const handleBudgetChange = (event) => {
     const newValue = event.target.value;
     const newBudget = parseFloat(newValue.replace(".", ","));
-
     if (!isNaN(newBudget)) {
       setBudget(newBudget);
+      localStorage.setItem("localBudget", JSON.stringify(budget));
     } else {
       setBudget(0);
     }
   };
+
+  //TODO
+  /*
+    Jeżeli wyświetlam części to te które przekraczają mają dodatkowy wykrzyknik  
+  */
+  useEffect(() => {
+    const localBudget = JSON.parse(localStorage.getItem("localBudget"));
+    if (localBudget !== null) setBudget(localBudget);
+  }, []);
+
   const inputWidth = `${(budget.toString().length + 1) * 9}px`;
   return (
     <div className="m-5 rounded-md inline-block border-black border-2 shadow-lg shadow-black ">

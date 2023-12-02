@@ -23,10 +23,10 @@ function App() {
 
   useEffect(() => {
     console.log(configurationInfo);
-    if (JSON.parse(localStorage.getItem("localConfiugration")) !== null)
-      setPcConfiguration(
-        JSON.parse(localStorage.getItem("localConfiugration"))
-      );
+    const localConfiugration = JSON.parse(
+      localStorage.getItem("localConfiugration")
+    );
+    if (localConfiugration !== null) setPcConfiguration(localConfiugration);
     console.log("localstorage read");
   }, []);
   async function getInfo(pcConfiguration) {
