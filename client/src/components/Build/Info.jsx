@@ -1,4 +1,5 @@
-const Info = () => {
+import { useEffect } from "react";
+const Info = ({ configurationInfo }) => {
   return (
     <div className="m-5 rounded-md inline-block border-black border-2 shadow-lg shadow-black ">
       <table className="table border-separate p-3 w-full sm:w-96">
@@ -27,11 +28,13 @@ const Info = () => {
               <button className="btn btn-primary btn-sm">zapisz</button>
             </td>
           </tr>
-          <tr>
-            <td colSpan="2" className="text-red-600 text-center py-4">
-              Występują problemy ze zgodnością!
-            </td>
-          </tr>
+          {configurationInfo && configurationInfo.problems.length !== 0 && (
+            <tr>
+              <td colSpan="2" className="text-red-600 text-center py-4">
+                Występują problemy ze zgodnością!
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>

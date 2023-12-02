@@ -8,7 +8,7 @@ import Ram from "./Ram";
 import Storage from "./Storage";
 import WaterCooling from "./WaterCooling";
 import PcConfiguration from "./PcConfiguration";
-
+import Toast from "./Toast";
 export {
   Case,
   Cpu,
@@ -20,4 +20,5 @@ export {
   Storage,
   WaterCooling,
   PcConfiguration,
+  Toast,
 };

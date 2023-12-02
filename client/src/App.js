@@ -5,10 +5,11 @@ import PartsTable from "./components/shared/PartsTable";
 import pcParts from "./utils/constants/pcParts";
 import PartDetail from "./components/shared/PartDetail";
 import { useEffect, useState } from "react";
-import { PcConfiguration } from "./utils/models";
+import { PcConfiguration, Toast } from "./utils/models";
 import axios from "axios";
 function App() {
   let [pcConfiguration, setPcConfiguration] = useState(PcConfiguration);
+  let [configurationInfo, setConfigurationInfo] = useState(Toast);
 
   useEffect(() => {
     if (pcConfiguration !== PcConfiguration) {
@@ -21,6 +22,7 @@ function App() {
   }, [pcConfiguration]);
 
   useEffect(() => {
+    console.log(configurationInfo);
     if (JSON.parse(localStorage.getItem("localConfiugration")) !== null)
       setPcConfiguration(
         JSON.parse(localStorage.getItem("localConfiugration"))
@@ -64,6 +66,7 @@ function App() {
       .post("http://localhost:5198/api/compatibility", pcConfigurationIds)
       .then((res) => {
         console.log(res.data);
+        setConfigurationInfo(res.data);
       })
       .catch((err) => console.log(err));
   }
@@ -94,6 +97,7 @@ function App() {
               <Build
                 pcConfiguration={pcConfiguration}
                 setPcConfiguration={setPcConfiguration}
+                configurationInfo={configurationInfo}
               />
             }
           />

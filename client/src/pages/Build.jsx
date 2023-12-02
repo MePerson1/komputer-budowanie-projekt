@@ -5,7 +5,7 @@ import axios from "axios";
 import { PcConfiguration, Motherboard } from "../utils/models/index";
 import ConfigurationInfo from "../components/Build/ConfigurationInfo";
 import pcParts from "../utils/constants/pcParts";
-const Build = ({ pcConfiguration, setPcConfiguration }) => {
+const Build = ({ pcConfiguration, setPcConfiguration, configurationInfo }) => {
   return (
     <>
       <div>
@@ -16,8 +16,8 @@ const Build = ({ pcConfiguration, setPcConfiguration }) => {
             setPcConfiguration={setPcConfiguration}
           />
           <div id="infos">
-            <Info />
-            <ConfigurationInfo />
+            <Info configurationInfo={configurationInfo} />
+            <ConfigurationInfo configurationInfo={configurationInfo} />
           </div>
         </div>
       </div>

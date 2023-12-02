@@ -1,8 +1,5 @@
-﻿using KomputerBudowanieAPI.Database;
-using KomputerBudowanieAPI.Interfaces;
+﻿using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
-using System.Collections.Generic;
-using System.Net.Sockets;
 using System.Text.RegularExpressions;
 
 namespace KomputerBudowanieAPI.Services
@@ -50,7 +47,7 @@ namespace KomputerBudowanieAPI.Services
             }
 
             Cpu_Motherboard(ref toast, configuration); //1 i 2
-            Cpu_Cooling (ref toast, configuration);
+            Cpu_Cooling(ref toast, configuration);
             Cpu_GraphicCard(ref toast, configuration); //3
 
             return toast;
@@ -102,7 +99,7 @@ namespace KomputerBudowanieAPI.Services
 
             Case_CpuCooling(ref toast, configuration);
             Cpu_Cooling(ref toast, configuration);
-            Ram_CpuCooling(ref toast, configuration); 
+            Ram_CpuCooling(ref toast, configuration);
 
             return toast;
         }
@@ -123,7 +120,7 @@ namespace KomputerBudowanieAPI.Services
             return Task.FromResult<Toast?>(toast);
         }
 
-        public async Task<Toast?> StorageCompatibilityCheck(PcConfiguration configuration) 
+        public async Task<Toast?> StorageCompatibilityCheck(PcConfiguration configuration)
         {
             Toast toast = new();
 
@@ -226,7 +223,7 @@ namespace KomputerBudowanieAPI.Services
         //Sprawdzanie ogólne chłodzenia aby ktoś nie dał chłodzenia wodnego i powietrznego jednocześnie
         private static void Cpu_Cooling(ref Toast toast, PcConfiguration configuration)
         {
-            if(configuration.CpuCooling is not null && configuration.WaterCooling is not null)
+            if (configuration.CpuCooling is not null && configuration.WaterCooling is not null)
             {
                 toast.Problems.Add($"Procesor ma 2 chłodzenia! Wodne: {configuration.WaterCooling.Name} i powietrzne: {configuration.CpuCooling.Name}!");
             }
@@ -251,13 +248,13 @@ namespace KomputerBudowanieAPI.Services
             List<string> sockets = ExtractConnectorInfoService.ExtractSocketsFromCpuCooling(configuration.CpuCooling.ProcessorSocket);
             string socket = configuration.Cpu.SocketType.Replace("Socket ", "").Replace("(+)", "").Trim();
 
-            if(!sockets.Contains(socket))
+            if (!sockets.Contains(socket))
             {
                 toast.Problems.Add($"{configuration.CpuCooling.Name} nie wspiera gniazda procesora {socket}!");
             }
         }
 
-        private static void Cpu_WaterCooling(ref Toast toast, PcConfiguration configuration) 
+        private static void Cpu_WaterCooling(ref Toast toast, PcConfiguration configuration)
         {
             //CPU:
             //Intel:
@@ -302,8 +299,8 @@ namespace KomputerBudowanieAPI.Services
         }
 
         // TODO:
-        // - dokończyć, znowu k*^wa trzeba jakąś gimnastykę tu robić
-        private static void Case_WaterCooling(ref Toast toast, PcConfiguration configuration) 
+        // - dokończyć,
+        private static void Case_WaterCooling(ref Toast toast, PcConfiguration configuration)
         {
             //Case:
             //"panelFront": "120 mm/140 mm x2",
@@ -391,7 +388,7 @@ namespace KomputerBudowanieAPI.Services
 
         // WARNING:
         // - brak danych aby sprawdzić czy powersupply wejdzie do obudowy
-        private static void Case_PowerSupply(ref Toast toast, PcConfiguration configuration) 
+        private static void Case_PowerSupply(ref Toast toast, PcConfiguration configuration)
         {
             if (configuration.Case is not null && configuration.PowerSupply is not null)
             {
@@ -414,7 +411,7 @@ namespace KomputerBudowanieAPI.Services
 
         // TODO:
         // - dokończyć, jakoś nie wiem jeszcze jak to dobrze zrobić, być może dobrze się nie da
-        private static void Ram_CpuCooling(ref Toast toast, PcConfiguration configuration) 
+        private static void Ram_CpuCooling(ref Toast toast, PcConfiguration configuration)
         {
             if (configuration.Rams is not null && configuration.CpuCooling is not null)
             {
@@ -498,7 +495,7 @@ namespace KomputerBudowanieAPI.Services
                 return;
             }
 
-            
+
         }
 
         // TODO:
@@ -541,7 +538,7 @@ namespace KomputerBudowanieAPI.Services
 
         // WARNING:
         // - tu by się jeszcze przydało zwrócić warning jak płyta główna ma starszy typ złącza od karty graficznej, problem jest taki że nie ma danych
-        static private void GraphicCard_Motherboard(ref Toast toast, PcConfiguration configuration) 
+        static private void GraphicCard_Motherboard(ref Toast toast, PcConfiguration configuration)
         {
             if (configuration.GraphicCard is not null && configuration.Motherboard is not null)
             {
