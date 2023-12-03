@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-const Info = ({ configurationInfo, totalPrice }) => {
+const Info = ({
+  configurationInfo,
+  totalPrice,
+  savePcConfiguration,
+  pcConfiguration,
+  inputName,
+}) => {
   const [budget, setBudget] = useState(0);
 
   const handleBudgetChange = (event) => {
@@ -68,7 +74,12 @@ const Info = ({ configurationInfo, totalPrice }) => {
 
           <tr>
             <td colSpan="2" className="text-center">
-              <button className="btn btn-primary btn-sm">zapisz</button>
+              <button
+                onClick={() => savePcConfiguration(pcConfiguration, inputName)}
+                className="btn btn-primary btn-sm"
+              >
+                Zapisz
+              </button>
             </td>
           </tr>
           {configurationInfo && configurationInfo.problems.length !== 0 && (
