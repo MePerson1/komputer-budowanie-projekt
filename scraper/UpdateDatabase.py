@@ -1,6 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-import json
 
 
 def get_euro_com_price(producer_code, product_name):
@@ -12,7 +11,7 @@ def get_euro_com_price(producer_code, product_name):
     first_link = soup.find('a', class_="box-medium__link")
     # sprawdzenie czy pierwszy wynik w ogole istnieje
     if not first_link:
-        print("No results for euro com")
+        print("No price results for euro com")
         return {}
 
     first_link = "https://www.euro.com.pl" + first_link.get("href")
@@ -66,7 +65,7 @@ def get_komputronik_price(producer_code):
     first_code = soup.find('div', class_="mb-4 text-xs text-gray-gravel")
     # sprawdzenie czy pierwszy wynik w ogole istnieje
     if not first_code:
-        print("No results for komputronik")
+        print("No price results for komputronik")
         return {}
 
     first_code = first_code.find_all('p')  # znalezienie dwoch p z kodem systemowym i producenta
@@ -91,33 +90,22 @@ def get_komputronik_price(producer_code):
         return {}
 
 
-def get_morele_price():
+def get_morele_prices():
     return {}
-
-
-def update_products(json_data):
-    products_data = json.loads(json_data)
-
-    prod_type = products_data["ProductType"]
-    prods = products_data["Products"]
-    for prod in prods:
-        all_product_prices = get_product_prices(prod["ProducerCode"], prod["Name"])
-
-    # tutaj bedzie wysylanie jsona z produktami (lub pojedynczo) na konkretny endpoint w zaleznosci od prod_type
 
 
 def get_product_prices(producer_code, product_name):
     all_prices = []
 
-    morele = get_morele_price()
     komputronik = get_komputronik_price(producer_code)
     euro_com = get_euro_com_price(producer_code, product_name)
 
-    if morele != {}:
-        all_prices.append(morele)
     if komputronik != {}:
         all_prices.append(komputronik)
     if euro_com != {}:
         all_prices.append(euro_com)
-    all_prices.sort(key=lambda x: x["Price"])
     return all_prices
+
+
+def update_database():
+    pass

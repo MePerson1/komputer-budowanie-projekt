@@ -15,6 +15,7 @@ show_raw_data_in_console = True if config.get('Settings', 'show_raw_data_in_cons
 show_translated_data_in_console = True if config.get('Settings', 'show_translated_data_in_console') == "1" else False
 add_to_database = True if config.get('Settings', 'add_to_database') == "1" else False
 fill_database = True if config.get('Settings', 'fill_database') == "1" else False
+how_many_pages = int(config.get('Settings', 'how_many_pages'))
 
 
 def go_through_route(first_route, second_route):
@@ -39,25 +40,25 @@ def go_through_route(first_route, second_route):
         # usuniecie z listy po kolei linkow do dyskow hdd z demontazu, dyskow ssd z demontazu, pamieci ram z demontazu
         # oraz tunerow TV, FM, kart wideo
         parts_routes = [link for index, link in enumerate(parts_routes) if index not in [1, 3, 11, 15]]
-
-        # przejdz przez parts route
-        html_processors = requests.get(parts_routes[second_route]).text
     elif first_route == 0:
         # usuniecie z listy po kolei linkow do akcesorii chlodzenia wodnego, past termoprzewodzacych i termopadow
         parts_routes = [link for index, link in enumerate(parts_routes) if index not in [1, 3, 4]]
-        # przejdz przez cooling route
-        html_processors = requests.get(parts_routes[second_route]).text
     else:
-        html_processors = ""
+        parts_routes = []
 
-    # wejdz na strone z konkretnymi produktami, zbierz do nich linki
-    soup = BeautifulSoup(html_processors, "lxml")
-    product_links_raw = soup.find_all('a', class_='cat-product-image productLink')
     prod_links = []
 
-    # utworz na tej podstawie linki do kazdego produktu na pierwszej stronie
-    for link in product_links_raw:
-        prod_links.append(link_base + link['href'])
+    if parts_routes:
+        # wejdz na kazda strone z konkretnymi produktami, zbierz do nich linki
+        for page in range(1, how_many_pages+1):
+            # uwaga, jesli liczba page jest za duza, to morele zwraca po prostu strone 1, zamiast dac jakis komunikat o bledzie -.-
+            html_product_search = requests.get(f"{parts_routes[second_route]},,,,,,,,0,,,,/{page}/").text
+            soup = BeautifulSoup(html_product_search, "lxml")
+            product_links_raw = soup.find_all('a', class_='cat-product-image productLink')
+            # utworz na tej podstawie linki do kazdego produktu dla kazdej strony w liczbie okreslonej w how_many_pages
+            for link in product_links_raw:
+                prod_links.append(link_base + link['href'])
+    print(len(prod_links))
     return prod_links
 
 
@@ -107,11 +108,6 @@ def get_product_specs(first_route, second_route, prod_links):
                     print(f"\n(PRZETLUMACZONE) Produkt {i}: {link}")
                     for key, value in translated_product_specs.items():
                         print(key, ':', value)
-
-                # all_product_prices = get_alt_product_prices(translated_product_specs["ProducerCode"], translated_product_specs["Name"], link, translated_product_specs["Price"])
-                # print("Product prices:")
-                # for price in all_product_prices:
-                #     print(price)
 
                 # dodaj speki produktu do listy ze wszystkimi
                 if translated_product_specs != {}:
@@ -163,7 +159,7 @@ def add_products_to_database(first_route, second_route, prods):
             else:
                 print(f"Request failed with status code: {response.status_code}")
                 print(response.json())
-                print(f"Request failed for product: {product}")
+                print(f"for product: {product}")
                 break
             i += 1
 
