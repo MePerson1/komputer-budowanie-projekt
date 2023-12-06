@@ -41,16 +41,18 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   return (
     <div>
       <ReturnButton />
-      <div className="form-control ">
-        <label className="label cursor-pointer">
-          <span className="label-text">Tylko pasujące częsci</span>
-          <input
-            type="checkbox"
-            defaultChecked={filter}
-            onChange={() => setFilter((state) => !state)}
-            className="checkbox"
-          />
-        </label>
+      <div className="flex ml-1 mr-2">
+        <div className=" form-control ">
+          <label className="pl-2 label bg-gray-900 rounded-lg border border-secondary">
+            <span className="label-text">Tylko pasujące częsci</span>
+            <input
+              type="checkbox"
+              defaultChecked={filter}
+              onChange={() => setFilter((state) => !state)}
+              className="checkbox m-5"
+            />
+          </label>
+        </div>
       </div>
 
       <PartsTable
