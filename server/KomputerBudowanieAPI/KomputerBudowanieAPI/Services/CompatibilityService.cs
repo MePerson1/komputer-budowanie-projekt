@@ -509,9 +509,18 @@ namespace KomputerBudowanieAPI.Services
                 //CPU:
                 //"line": "Core i9",
                 //CheckSupportedProcessor
-                if (!configuration.Motherboard.SupportedProcessors.Contains(configuration.Cpu.Line))
+                var line = configuration.Cpu.Line;
+                if (configuration.Cpu.Producer == "AMD")
+                {
+
+                    line = Regex.Match(line, @"^([\w\-]+)").Value;
+
+                }
+
+                if (!configuration.Motherboard.SupportedProcessors.Contains(line))
                 {
                     toast.Problems.Add($"Płyta główna nie wspiera tej procesorów {configuration.Cpu.Line}!");
+
                 }
                 //Motherboard:
                 //"cpuSocket": "Socket 1700",
@@ -529,7 +538,7 @@ namespace KomputerBudowanieAPI.Services
         {
             if (configuration.GraphicCard is not null && configuration.Case is not null)
             {
-                if (configuration.Case.MaxGPULengthCM < configuration.GraphicCard.CardLengthMM * 10)
+                if (configuration.Case.MaxGPULengthCM < configuration.GraphicCard.CardLengthMM / 10)
                 {
                     toast.Problems.Add("Karta graficzna jest za duża dla tej obudowy!");
                 }
