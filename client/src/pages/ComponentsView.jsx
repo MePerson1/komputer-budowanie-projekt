@@ -2,6 +2,7 @@ import PartsTable from "../components/shared/PartsTable";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ReturnButton from "../components/shared/ReturnButton";
+import mapPcPartsToIds from "../utils/mapPcPartsToIds";
 const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   const [parts, setParts] = useState(null);
   const [filter, setFilter] = useState(true);
@@ -24,35 +25,7 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   }
 
   async function getFilteredParts(partType) {
-    var pcConfigurationIds = {
-      name: pcConfiguration.name,
-      description: pcConfiguration.description,
-      motherboadId: pcConfiguration.motherboard
-        ? pcConfiguration.motherboard.id
-        : 0,
-      graphicCardId: pcConfiguration.graphicCard
-        ? pcConfiguration.graphicCard.id
-        : 0,
-      cpuId: pcConfiguration.cpu ? pcConfiguration.cpu.id : 0,
-      cpuCoolingId: pcConfiguration.cpuCooling
-        ? pcConfiguration.cpuCooling.id
-        : 0,
-      waterCoolingId: pcConfiguration.waterCooling
-        ? pcConfiguration.waterCooling.id
-        : 0,
-      caseId: pcConfiguration.case ? pcConfiguration.case.id : 0,
-      powerSuplyId: pcConfiguration.powerSupply
-        ? pcConfiguration.powerSupply.id
-        : 0,
-      userId: 0,
-      storageIds: pcConfiguration.storages
-        ? pcConfiguration.storages.map((storage) => storage.id)
-        : [],
-      ramsIds: pcConfiguration.rams
-        ? pcConfiguration.rams.map((ram) => ram.id)
-        : [],
-      fanIds: [],
-    };
+    var pcConfigurationIds = mapPcPartsToIds(pcConfiguration);
 
     await axios
       .post(
