@@ -3,6 +3,7 @@ using System;
 using KomputerBudowanieAPI.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KomputerBudowanieAPI.Migrations
 {
     [DbContext(typeof(KomBuildDbContext))]
-    partial class KomBuildDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231207230823_QuantityManyToMany")]
+    partial class QuantityManyToMany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

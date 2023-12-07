@@ -42,6 +42,6 @@ namespace KomputerBudowanieAPI.Models
         *  RELACJE
         */
         [JsonIgnore]
-        public ICollection<PcConfiguration> PcConfigurations { get; set; }
+        public ICollection<PcConfigurationStorage>? PcConfigurationStorages { get; set; }
     }
 }
