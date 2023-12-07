@@ -1,0 +1,27 @@
+const CpuCooling = {
+  id: 0,
+  name: "",
+  price: 0,
+  producer: "",
+  producerCode: "",
+  mountingType: "",
+  colorElement: "",
+  heightMM: 0,
+  widthMM: 0,
+  depthMM: 0,
+  weightGrams: 0,
+  processorSocket: "",
+  maxTDPinW: 0,
+  baseMaterial: "",
+  hasLighting: false,
+  heatPipesCount: 0,
+  heatPipeDiameterMM: 0,
+  fanCount: 0,
+  fanDiameterMM: 0,
+  maxFanSpeedPerMin: 0,
+  airflowCFM: 0,
+  maxNoiseLevelinDBA: 0,
+  lifespanHours: 0,
+};
+
+export default CpuCooling;
