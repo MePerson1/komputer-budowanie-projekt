@@ -16,20 +16,52 @@ namespace KomputerBudowanieAPI.Repository
 
         public async Task<IEnumerable<PcConfiguration>> GetAllAsync()
         {
-            return await _context.PcConfigurations.Include(pc => pc.Motherboard)
-            .ToListAsync();
+            return await _context.PcConfigurations
+                .Include(pc => pc.Motherboard)
+                .Include(pc => pc.Case)
+                .Include(pc => pc.Cpu)
+                .Include(pc => pc.CpuCooling)
+                .Include(pc => pc.GraphicCard)
+                .Include(pc => pc.PowerSupply)
+                .Include(pc => pc.WaterCooling)
+                .Include(pc => pc.PcConfigurationRams)
+                    .ThenInclude(ram => ram.Ram)
+                .Include(pc => pc.PcConfigurationStorages)
+                    .ThenInclude(storage => storage.Storage)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<PcConfiguration>> GetAllAsync(int userId)
         {
             return await _context.Set<PcConfiguration>().Where(config => config.User.Id == userId)
+                .Include(pc => pc.Motherboard)
+                .Include(pc => pc.Case)
+                .Include(pc => pc.Cpu)
+                .Include(pc => pc.CpuCooling)
+                .Include(pc => pc.GraphicCard)
+                .Include(pc => pc.PowerSupply)
+                .Include(pc => pc.WaterCooling)
+                .Include(pc => pc.PcConfigurationRams)
+                    .ThenInclude(ram => ram.Ram)
+                .Include(pc => pc.PcConfigurationStorages)
+                    .ThenInclude(storage => storage.Storage)
                 .ToListAsync();
         }
 
         public async Task<PcConfiguration?> GetByIdAsync(Guid id)
         {
-            return await _context.Set<PcConfiguration>().Include(pc => pc.GraphicCard)
-            .FirstOrDefaultAsync(pc => pc.Id == id);
+            return await _context.Set<PcConfiguration>().Include(pc => pc.Motherboard)
+                .Include(pc => pc.Case)
+                .Include(pc => pc.Cpu)
+                .Include(pc => pc.CpuCooling)
+                .Include(pc => pc.GraphicCard)
+                .Include(pc => pc.PowerSupply)
+                .Include(pc => pc.WaterCooling)
+                .Include(pc => pc.PcConfigurationRams)
+                    .ThenInclude(ram => ram.Ram)
+                .Include(pc => pc.PcConfigurationStorages)
+                    .ThenInclude(storage => storage.Storage)
+                .FirstOrDefaultAsync(pc => pc.Id == id);
         }
 
         public async Task<bool> Create(PcConfigurationDto newConfigurationDto)
@@ -97,8 +129,6 @@ namespace KomputerBudowanieAPI.Repository
             var powerSupply = await _context.PowerSupplies.FirstOrDefaultAsync(x => x.Id == dto.PowerSuplyId);
             var waterCooling = await _context.WaterCoolings.FirstOrDefaultAsync(x => x.Id == dto.WaterCoolingId);
 
-            var storageIds = dto.StorageIds ?? new List<int>();
-            var ramIds = dto.RamsIds ?? new List<int>();
 
             var storages = await _context.Storages
                 .Where(x => dto.StorageIds != null && dto.StorageIds.Contains(x.Id))
@@ -108,8 +138,7 @@ namespace KomputerBudowanieAPI.Repository
                 .Where(x => dto.RamsIds != null && dto.RamsIds.Contains(x.Id))
                 .ToListAsync();
 
-            var storageIdCounts = storageIds.GroupBy(id => id).ToDictionary(g => g.Key, g => g.Count());
-            var ramIdCounts = ramIds.GroupBy(id => id).ToDictionary(g => g.Key, g => g.Count());
+
 
             pcConfiguration.Name = dto.Name;
             pcConfiguration.Description = dto.Description;
@@ -121,7 +150,7 @@ namespace KomputerBudowanieAPI.Repository
             pcConfiguration.PowerSupply = powerSupply;
             pcConfiguration.PcConfigurationStorages = storages.Select(storage =>
             {
-                var quantity = storageIdCounts.ContainsKey(storage.Id) ? storageIdCounts[storage.Id] : 1;
+                var quantity = dto.StorageIds.Where(id => id == storage.Id).Count();
                 return new PcConfigurationStorage
                 {
                     PcConfiguration = pcConfiguration,
@@ -134,7 +163,7 @@ namespace KomputerBudowanieAPI.Repository
             {
                 pcConfiguration.PcConfigurationRams = rams.Select(ram =>
                 {
-                    var quantity = ramIdCounts.ContainsKey(ram.Id) ? ramIdCounts[ram.Id] : 1;
+                    var quantity = dto.RamsIds.Where(id => id == ram.Id).Count();
                     return new PcConfigurationRam
                     {
                         PcConfiguration = pcConfiguration,
