@@ -338,24 +338,24 @@ namespace KomputerBudowanieAPI.Services
 
         private static void Case_Storages(ref Toast toast, PcConfiguration configuration)
         {
-            /*if (configuration.Case is not null && configuration.Storages is not null)
+            if (configuration.Case is not null && configuration.PcConfigurationStorages is not null)
             {
                 var internalBaysThreePointFiveInch = configuration.Case.InternalBaysThreePointFiveInch;
                 var internalBaysTwoPointFiveInc = configuration.Case.InternalBaysTwoPointFiveInch;
-                foreach (var storage in configuration.Storages)
+                foreach (var relation in configuration.PcConfigurationStorages)
                 {
-                    if (storage.FormFactor == "3.5 cala")
+                    if (relation.Storage.FormFactor == "3.5 cala")
                     {
                         if (internalBaysThreePointFiveInch == 0) toast.Problems.Add("Ta obudowa nie ma odpowiedniej ilości wnęk 3.5 cala!");
-                        else internalBaysThreePointFiveInch--;
+                        else internalBaysThreePointFiveInch -= relation.Quantity;
                     }
-                    if (storage.FormFactor == "2.5 cala")
+                    if (relation.Storage.FormFactor == "2.5 cala")
                     {
                         if (internalBaysTwoPointFiveInc == 0) toast.Problems.Add("Ta obudowa nie ma odpowiedniej ilości wnęk 2.5 cala!");
-                        else internalBaysTwoPointFiveInc--;
+                        else internalBaysTwoPointFiveInc -= relation.Quantity;
                     }
                 }
-            }*/
+            }
         }
 
         private static void Case_Motherboard(ref Toast toast, PcConfiguration configuration)
@@ -413,87 +413,87 @@ namespace KomputerBudowanieAPI.Services
         // - dokończyć, jakoś nie wiem jeszcze jak to dobrze zrobić, być może dobrze się nie da
         private static void Ram_CpuCooling(ref Toast toast, PcConfiguration configuration)
         {
-            /*if (configuration.Rams is not null && configuration.CpuCooling is not null)
+            if (configuration.PcConfigurationRams is not null && configuration.CpuCooling is not null)
             {
                 //CheckCoolingSize
                 //tutaj sprawdzenie rozmiaru chłodzenia i czy ram jest lowprofile przy tym ale jeszcze nie ma cpucooling kinda
                 if (configuration.CpuCooling is not null)
                 {
-                    foreach (Ram ram in configuration.Rams)
+                    foreach (var relation in configuration.PcConfigurationRams)
                     {
 
                     }
                 }
-            }*/
+            }
         }
 
         static private void Ram_Motherboard(ref Toast toast, PcConfiguration configuration)
         {
-            /* if (configuration.Rams is not null && configuration.Motherboard is not null)
-             {
-                 var ramCount = 0;
-                 foreach (Ram ram in configuration.Rams)
-                 {
-                     ramCount += ram.ModuleCount;
-                     //CheckRamStandard
-                     if (configuration.Motherboard.MemoryStandard != ram.MemoryType)
-                     {
-                         toast.Problems.Add("Płyta główna nie wspiera tego standardu pamięci ram! " + ram.Name);
-                     }
-                     //CheckMRamPinType
-                     if (configuration.Motherboard.MemoryConnectorType != ram.PinType) //zmienić nazwe zmiennych może
-                     {
-                         toast.Problems.Add("Płyta główna ma inne złącze do ramu! " + ram.Name);
-                     }
-                 }
-                 //CheckRamSlotCount
-                 if (configuration.Motherboard.MemorySlotsCount < ramCount)
-                 {
-                     toast.Problems.Add($"Płyta głowna nie pomieści więcej niż {configuration.Motherboard.MemorySlotsCount} kości ram!");
-                 }
-             }*/
+            if (configuration.PcConfigurationRams is not null && configuration.Motherboard is not null)
+            {
+                var ramCount = 0;
+                foreach (PcConfigurationRam relation in configuration.PcConfigurationRams)
+                {
+                    ramCount += relation.Ram.ModuleCount * relation.Quantity;
+                    //CheckRamStandard
+                    if (configuration.Motherboard.MemoryStandard != relation.Ram.MemoryType)
+                    {
+                        toast.Problems.Add("Płyta główna nie wspiera tego standardu pamięci ram! " + relation.Ram.Name);
+                    }
+                    //CheckMRamPinType
+                    if (configuration.Motherboard.MemoryConnectorType != relation.Ram.PinType) //zmienić nazwe zmiennych może
+                    {
+                        toast.Problems.Add("Płyta główna ma inne złącze do ramu! " + relation.Ram.Name);
+                    }
+                }
+                //CheckRamSlotCount
+                if (configuration.Motherboard.MemorySlotsCount < ramCount)
+                {
+                    toast.Problems.Add($"Płyta głowna nie pomieści więcej niż {configuration.Motherboard.MemorySlotsCount} kości ram!");
+                }
+            }
         }
 
         static private void Storage_Motherboard(ref Toast toast, PcConfiguration configuration)
         {
-            /* if (configuration.Storages is not null && configuration.Motherboard is not null)
-             {
-                 Dictionary<string, int> connectors = ExtractConnectorInfoService.FromMotherboard(configuration.Motherboard.DriveConnectors);
-                 foreach (var disc in configuration.Storages)
-                 {
-                     //W dyskach M2
-                     //"interface": "PCI-E x4 Gen4 NVMe", "PCI-E x4 Gen3 NVMe",
-                     // "formFactor": "M.2 2280", 
+            if (configuration.PcConfigurationStorages is not null && configuration.Motherboard is not null)
+            {
+                Dictionary<string, int> connectors = ExtractConnectorInfoService.FromMotherboard(configuration.Motherboard.DriveConnectors);
+                foreach (var disc in configuration.PcConfigurationStorages)
+                {
+                    //W dyskach M2
+                    //"interface": "PCI-E x4 Gen4 NVMe", "PCI-E x4 Gen3 NVMe",
+                    // "formFactor": "M.2 2280", 
 
-                     //W dyskach SATA
-                     //"interface": "SATA 3",
-                     //"formFactor": "2.5 cala",
-                     if (connectors.ContainsKey(disc.Interface))
-                     {
-                         if (connectors[disc.Interface] > 0) connectors[disc.Interface] = connectors[disc.Interface]--;
-                         else toast.Problems.Add($"Niewystarczająca ilość złączy {disc.Interface}!");
-                     }
-                     else if (disc.FormFactor.Contains("M.2"))
-                     {
-                         if (connectors["M.2 slot"] > 0) connectors["M.2 slot"] = connectors["M.2 slot"]--;
-                         else toast.Problems.Add($"Niewystarczająca ilość złączy M2!");
-                     }
-                     else
-                     {
-                         toast.Problems.Add($"Płyta {configuration.Motherboard.Name} nie ma żadnego złącza {disc.Interface} dla dysku {disc.Name}!");
-                     }
-                 }
-             }*/
+                    //W dyskach SATA
+                    //"interface": "SATA 3",
+                    //"formFactor": "2.5 cala",
+                    if (connectors.ContainsKey(disc.Storage.Interface))
+                    {
+                        if (connectors[disc.Storage.Interface] > 0) connectors[disc.Storage.Interface] = connectors[disc.Storage.Interface]--;
+                        else toast.Problems.Add($"Niewystarczająca ilość złączy {disc.Storage.Interface}!");
+                    }
+                    else if (disc.Storage.FormFactor.Contains("M.2"))
+                    {
+                        if (connectors["M.2 slot"] > 0) connectors["M.2 slot"] = connectors["M.2 slot"]--;
+                        else toast.Problems.Add($"Niewystarczająca ilość złączy M2!");
+                    }
+                    else
+                    {
+                        toast.Problems.Add($"Płyta {configuration.Motherboard.Name} nie ma żadnego złącza {disc.Storage.Interface} dla dysku {disc.Storage.Name}!");
+                    }
+                }
+            }
         }
 
         // TODO:
         // - dokończyć
         static private void Storage_PowerSupply(ref Toast toast, PcConfiguration configuration)
         {
-            /* if (configuration.Storages is null || !configuration.Storages.Any() || configuration.PowerSupply is null)
-             {
-                 return;
-             }*/
+            if (configuration.PcConfigurationStorages is null || !configuration.PcConfigurationStorages.Any() || configuration.PowerSupply is null)
+            {
+                return;
+            }
 
 
         }

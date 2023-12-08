@@ -40,25 +40,25 @@ namespace KomputerBudowanieAPI.Services
                     .ToList();
             }
 
-            /* if (configuration.Rams is not null)
-             {
-                 var ramCount = 0; //tutaj jak z tym ram count to trzeba przemyslec xd
-                 foreach (Ram ram in configuration.Rams)
-                 {
-                     motherboards = motherboards
-                         .Where(motherboard => Ram_Motherboard(ram, motherboard))
-                         .ToList();
-                 }
-             }*/
-            /* if (configuration.Storages is not null)
-             {
-                 foreach (var disc in configuration.Storages)
-                 {
-                     motherboards = motherboards
-                         .Where(motherboard => Storage_Motherboard(disc, motherboard))
-                         .ToList();
-                 }
-             }*/
+            if (configuration.PcConfigurationRams is not null)
+            {
+                var ramCount = 0; //tutaj jak z tym ram count to trzeba przemyslec xd
+                foreach (PcConfigurationRam ram in configuration.PcConfigurationRams)
+                {
+                    motherboards = motherboards
+                        .Where(motherboard => Ram_Motherboard(ram.Ram, motherboard))
+                        .ToList();
+                }
+            }
+            if (configuration.PcConfigurationStorages is not null)
+            {
+                foreach (var disc in configuration.PcConfigurationStorages)
+                {
+                    motherboards = motherboards
+                        .Where(motherboard => Storage_Motherboard(disc.Storage, motherboard))
+                        .ToList();
+                }
+            }
         }
 
         // TODO:
@@ -72,10 +72,10 @@ namespace KomputerBudowanieAPI.Services
                     .ToList();
             }
 
-            /* if (configuration.Rams is not null)
-             {
+            if (configuration.PcConfigurationRams is not null)
+            {
 
-             }*/
+            }
         }
 
         // TODO:
@@ -87,10 +87,10 @@ namespace KomputerBudowanieAPI.Services
 
             }
 
-            /* if (configuration.Rams is not null)
-             {
+            if (configuration.PcConfigurationRams is not null)
+            {
 
-             }*/
+            }
         }
 
         public void RamFilter(PcConfiguration configuration, ref IEnumerable<Ram> rams)
@@ -159,13 +159,13 @@ namespace KomputerBudowanieAPI.Services
                 cases = cases.Where(c => Case_CpuCooling(c, configuration.CpuCooling)).ToList();
             }
 
-            /* if (configuration.Storages is not null)
-             {
-                 foreach (var storage in configuration.Storages)
-                 {
-                     cases = cases.Where(c => Case_Storages(c, storage)).ToList();
-                 }
-             }*/
+            if (configuration.PcConfigurationStorages is not null)
+            {
+                foreach (var relation in configuration.PcConfigurationStorages)
+                {
+                    cases = cases.Where(c => Case_Storages(c, relation.Storage)).ToList();
+                }
+            }
 
 
         }
