@@ -1,0 +1,68 @@
+const pcParts = [
+  {
+    key: "cpu",
+    nameENG: "Cpu",
+    namePL: "Procesor",
+    icon: "images/parts/cpu-tower.png",
+    info: "Procesuje",
+    tip: "Nie zapomnij śmiać się z siebie",
+  },
+  {
+    key: "cpu-cooling",
+    nameENG: "Cpu Cooling",
+    namePL: "Chłodzenie procesora",
+    icon: "images/parts/cpu-cooling.png",
+    info: "Chłodzi procesor",
+    tip: "Zapomnij śmiać się z siebie",
+  },
+  {
+    key: "motherboard",
+    nameENG: "Motherboard",
+    namePL: "Płyta główna",
+    icon: "images/parts/motherboard.png",
+    info: "Główno płytuje",
+    tip: "Nie zapomnij śmiać się z siebie",
+  },
+  {
+    key: "graphic-card",
+    nameENG: "Graphic Card",
+    namePL: "Karta graficzna",
+    icon: "images/parts/graphic-card.png",
+    info: "Graficznie kartuje",
+    tip: "Nie zapomnij śmiać się z siebie",
+  },
+  {
+    key: "ram",
+    nameENG: "Memory",
+    namePL: "Pamięć RAM",
+    icon: "images/parts/ram.png",
+    info: "Pamięcio ramuje",
+    tip: "Nie zapomnij śmiać się z siebie",
+  },
+  {
+    key: "storage",
+    nameENG: "Storage",
+    namePL: "Dysk",
+    icon: "images/parts/hard-disk.png",
+    info: "Zapamiętuje",
+    tip: "Nie zapomnij śmiać się z siebie",
+  },
+  {
+    key: "power-supply",
+    nameENG: "Power Supply",
+    namePL: "Zasilacz",
+    icon: "images/parts/power-supply.png",
+    info: "Zasila",
+    tip: "Nie zapomnij śmiać się z siebie",
+  },
+  {
+    key: "case",
+    nameENG: "Case",
+    namePL: "Obudowa",
+    icon: "images/parts/computer-case.png",
+    info: "Obudowuje",
+    tip: "Nie zapomnij śmiać się z siebie",
+  },
+];
+
+export default pcParts;

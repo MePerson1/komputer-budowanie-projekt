@@ -1,0 +1,26 @@
+const WaterCooling = {
+  id: 0,
+  name: "",
+  price: 0,
+  producer: "",
+  producerCode: "",
+  intelCompatibility: "",
+  amdCompatibility: "",
+  lighting: "",
+  weightG: 0,
+  radiatorSizeMM: 0,
+  radiatorLengthMM: 0,
+  radiatorWidthMM: 0,
+  radiatorHeightMM: 0,
+  fanCount: 0,
+  fanDiameterMM: 0,
+  maxFanSpeedRPM: 0,
+  hasPWMControl: false,
+  maxAirflowCFM: 0,
+  maxNoiseLevelDBa: 0,
+  fanConnector: "",
+  pumpConnector: "",
+  ledConnector: "",
+};
+
+export default WaterCooling;

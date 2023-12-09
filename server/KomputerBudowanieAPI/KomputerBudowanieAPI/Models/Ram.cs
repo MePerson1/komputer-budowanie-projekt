@@ -36,6 +36,6 @@ namespace KomputerBudowanieAPI.Models
         *  RELACJE
         */
         [JsonIgnore]
-        public ICollection<PcConfiguration> PcConfigurations { get; set; }
+        public ICollection<PcConfigurationRam>? PcConfigurationRams { get; set; }
     }
 }
