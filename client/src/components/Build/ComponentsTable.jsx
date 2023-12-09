@@ -14,17 +14,24 @@ const ComponentsTable = ({ setPcConfiguration, pcConfiguration, pcParts }) => {
   ];
   const handleSetToNull = (key, partId) => {
     if (key === "rams" || key === "storages") {
-      const updatedParts = pcConfiguration[key].filter(
-        (part) => part.id !== partId
-      );
-      if (updatedParts.length === 0) {
-        updatedParts[key] = [];
-      }
+      const updatedParts = pcConfiguration[key]
+        .map((part) => {
+          if (part.part.id === partId) {
+            const updatedQuantity = part.quantity - 1;
+            return {
+              ...part,
+              quantity: updatedQuantity >= 0 ? updatedQuantity : 0,
+            };
+          }
+          return part;
+        })
+        .filter((part) => part.quantity > 0);
       setPcConfiguration({ ...pcConfiguration, [key]: updatedParts });
     } else {
       setPcConfiguration({ ...pcConfiguration, [key]: null });
     }
   };
+
   return (
     <table className="table table-sm text-xs ">
       <tbody>
@@ -40,7 +47,8 @@ const ComponentsTable = ({ setPcConfiguration, pcConfiguration, pcParts }) => {
                 pcConfiguration[key].map((part, idx) => (
                   <ComponentView
                     key={idx}
-                    pcPart={part}
+                    pcPart={part.part}
+                    quantity={part.quantity}
                     handleSetToNull={handleSetToNull}
                     partKey={key}
                     partType={pcParts[index]}

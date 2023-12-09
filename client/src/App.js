@@ -52,10 +52,10 @@ function App() {
         : 0,
       userId: 0,
       storageIds: pcConfiguration.storages
-        ? pcConfiguration.storages.map((storage) => storage.id)
+        ? pcConfiguration.storages.map((storage) => storage.part.id)
         : [],
       ramsIds: pcConfiguration.rams
-        ? pcConfiguration.rams.map((ram) => ram.id)
+        ? pcConfiguration.rams.map((ram) => ram.part.id)
         : [],
       fanIds: [],
     };
@@ -67,18 +67,6 @@ function App() {
       .then((res) => {
         console.log(res.data);
         setConfigurationInfo(res.data);
-      })
-      .catch((err) => console.log(err));
-  }
-
-  async function getData() {
-    await axios
-      .get(
-        "http://localhost:5198/api/Configuration/97b3af2b-f26d-4052-a408-8ec969716f65"
-      )
-      .then((res) => {
-        console.log(res.data);
-        setPcConfiguration(res.data);
       })
       .catch((err) => console.log(err));
   }
