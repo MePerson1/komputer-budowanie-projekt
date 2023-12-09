@@ -10,7 +10,7 @@ namespace KomputerBudowanieAPI.Controllers
     {
         private readonly KomBuildDbContext _context;
 
-        private readonly string[] tables = { "Cases", "CpuCoolings", "Fans", "Cpus", "GraphicCards", "Storages", "Motherboards", "Rams", "PowerSupplys" };
+        private readonly string[] tables = { "Cases", "CpuCoolings", "Fans", "Cpus", "GraphicCards", "Storages", "Motherboards", "Rams", "PowerSupplys", "PcConfigurations" };
 
         public AdminController(KomBuildDbContext context)
         {
@@ -88,6 +88,12 @@ namespace KomputerBudowanieAPI.Controllers
         public IActionResult DeleteAllPowerSupplys()
         {
             _context.Database.ExecuteSqlRaw($"DELETE FROM \"{tables[8]}\"");
+            return Ok();
+        }
+        [HttpDelete("all-pc-confiugration")]
+        public IActionResult DeleteAllPcConfigurations()
+        {
+            _context.Database.ExecuteSqlRaw($"DELETE FROM \"{tables[9]}\"");
             return Ok();
         }
 
