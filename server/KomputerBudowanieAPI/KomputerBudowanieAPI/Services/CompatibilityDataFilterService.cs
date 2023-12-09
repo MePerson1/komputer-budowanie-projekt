@@ -39,22 +39,23 @@ namespace KomputerBudowanieAPI.Services
                     .Where(motherboard => Case_Motherboard(configuration.Case, motherboard))
                     .ToList();
             }
-            if (configuration.Rams is not null)
+
+            if (configuration.PcConfigurationRams is not null)
             {
                 var ramCount = 0; //tutaj jak z tym ram count to trzeba przemyslec xd
-                foreach (Ram ram in configuration.Rams)
+                foreach (PcConfigurationRam ram in configuration.PcConfigurationRams)
                 {
                     motherboards = motherboards
-                        .Where(motherboard => Ram_Motherboard(ram, motherboard))
+                        .Where(motherboard => Ram_Motherboard(ram.Ram, motherboard))
                         .ToList();
                 }
             }
-            if (configuration.Storages is not null)
+            if (configuration.PcConfigurationStorages is not null)
             {
-                foreach (var disc in configuration.Storages)
+                foreach (var disc in configuration.PcConfigurationStorages)
                 {
                     motherboards = motherboards
-                        .Where(motherboard => Storage_Motherboard(disc, motherboard))
+                        .Where(motherboard => Storage_Motherboard(disc.Storage, motherboard))
                         .ToList();
                 }
             }
@@ -71,7 +72,7 @@ namespace KomputerBudowanieAPI.Services
                     .ToList();
             }
 
-            if (configuration.Rams is not null)
+            if (configuration.PcConfigurationRams is not null)
             {
 
             }
@@ -86,7 +87,7 @@ namespace KomputerBudowanieAPI.Services
 
             }
 
-            if (configuration.Rams is not null)
+            if (configuration.PcConfigurationRams is not null)
             {
 
             }
@@ -158,11 +159,11 @@ namespace KomputerBudowanieAPI.Services
                 cases = cases.Where(c => Case_CpuCooling(c, configuration.CpuCooling)).ToList();
             }
 
-            if (configuration.Storages is not null)
+            if (configuration.PcConfigurationStorages is not null)
             {
-                foreach (var storage in configuration.Storages)
+                foreach (var relation in configuration.PcConfigurationStorages)
                 {
-                    cases = cases.Where(c => Case_Storages(c, storage)).ToList();
+                    cases = cases.Where(c => Case_Storages(c, relation.Storage)).ToList();
                 }
             }
 
