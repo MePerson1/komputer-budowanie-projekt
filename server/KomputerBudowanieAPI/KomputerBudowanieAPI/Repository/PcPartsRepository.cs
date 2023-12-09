@@ -22,9 +22,6 @@ namespace KomputerBudowanieAPI.Repository
             return await _context.Set<TEntity>().Include("Prices").ToListAsync();
         }
 
-        /*
-         * Różne typy id sa
-         */
         public async Task<TEntity?> GetByIdAsync(int id)
         {
             var model = await _context.Set<TEntity>().FindAsync(id);
