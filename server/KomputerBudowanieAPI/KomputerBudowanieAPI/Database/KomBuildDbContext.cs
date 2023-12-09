@@ -20,6 +20,7 @@ namespace KomputerBudowanieAPI.Database
         public DbSet<Case> Cases { get; set; }
         public DbSet<PcConfigurationRam> PcConfigurationRam { get; set; }
         public DbSet<PcConfigurationStorage> PcConfigurationStorage { get; set; }
+        public DbSet<ShopPrice> ShopPrices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
