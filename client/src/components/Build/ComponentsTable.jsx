@@ -14,9 +14,14 @@ const ComponentsTable = ({ setPcConfiguration, pcConfiguration, pcParts }) => {
   ];
   const handleSetToNull = (key, partId) => {
     if (key === "rams" || key === "storages") {
-      const updatedParts = pcConfiguration[key].filter(
-        (part) => part.id !== partId
+      const indexToRemove = pcConfiguration[key].findIndex(
+        (part) => part.id === partId
       );
+      const updatedParts = [...pcConfiguration[key]];
+      if (indexToRemove !== -1) {
+        updatedParts.splice(indexToRemove, 1);
+        setPcConfiguration({ ...pcConfiguration, [key]: updatedParts });
+      }
       if (updatedParts.length === 0) {
         updatedParts[key] = [];
       }
