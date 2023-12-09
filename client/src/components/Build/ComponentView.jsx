@@ -1,12 +1,6 @@
 import { useNavigate } from "react-router";
 
-const ComponentView = ({
-  pcPart,
-  handleSetToNull,
-  partKey,
-  partType,
-  quantity,
-}) => {
+const ComponentView = ({ pcPart, handleSetToNull, partKey, partType }) => {
   const navigate = useNavigate();
   function handleChangePart() {
     navigate(`/parts/${partType.key}`);
@@ -20,28 +14,20 @@ const ComponentView = ({
           alt="cpu"
         />
       </figure>
-      <div className="card-body flex flex-row justify-between">
-        <div>
-          <h2 className="card-title">{pcPart.name}</h2>
-          <div className="flex">
-            <div className="m-2">
-              <p>Producent: {pcPart.producer}</p>
-              {pcPart.price !== undefined && (
-                <p className="font-semibold">
-                  Cena: {pcPart.price.toString().replace(".", ",")} zł
-                </p>
-              )}
-              {pcPart.price === undefined && <p>Cena: N/A</p>}
-            </div>
+      <div className="card-body">
+        <h2 className="card-title">{pcPart.name}</h2>
+        <div className="flex">
+          <div className="m-2">
+            <p>Producent: {pcPart.producer}</p>
+            {pcPart.price !== undefined && (
+              <p className="font-semibold">
+                Cena: {pcPart.price.toString().replace(".", ",")} zł
+              </p>
+            )}
+            {pcPart.price === undefined && <p>Cena: N/A</p>}
           </div>
         </div>
-        <div className="items-center">
-          {(partKey === "rams" || partKey === "storages") && (
-            <div>x{quantity}</div>
-          )}
-        </div>
       </div>
-
       <div className="mr-7 flex flex-col">
         <button onClick={handleChangePart} className="m-2 btn btn-outline">
           Zmień

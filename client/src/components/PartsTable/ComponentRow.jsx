@@ -42,29 +42,8 @@ const ComponentRow = ({
         navigate("/build");
         break;
       case "ram":
-        const existingRamIndex = pcConfiguration.rams.findIndex(
-          (item) => item.part.id === part.id
-        );
-        if (existingRamIndex !== -1) {
-          const updatedRams = [...pcConfiguration.rams];
-          updatedRams[existingRamIndex].quantity += 1;
-          setPcConfiguration({
-            ...pcConfiguration,
-            rams: updatedRams,
-          });
-          console.log(pcConfiguration);
-        } else {
-          const updatedRams = [
-            ...pcConfiguration.rams,
-            { part: part, quantity: 1 },
-          ];
-          setPcConfiguration({
-            ...pcConfiguration,
-            rams: updatedRams,
-          });
-          console.log(pcConfiguration);
-        }
-
+        const updatedRams = [...pcConfiguration.rams, part];
+        setPcConfiguration({ ...pcConfiguration, rams: updatedRams });
         navigate("/build");
         break;
       case "storage":

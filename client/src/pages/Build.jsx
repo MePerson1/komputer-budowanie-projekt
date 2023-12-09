@@ -10,13 +10,11 @@ const Build = ({ pcConfiguration, setPcConfiguration, configurationInfo }) => {
   const [inputName, setInputName] = useState("");
   const [isSaved, setIsSaved] = useState(false);
 
-  //useEffect for loading name
   useEffect(() => {
     const localInputName = JSON.parse(localStorage.getItem("inputName"));
     if (localInputName !== null) setInputName(localInputName);
   }, []);
 
-  //useEffect for updating a price
   useEffect(() => {
     let totalPrice = 0;
 
@@ -24,7 +22,7 @@ const Build = ({ pcConfiguration, setPcConfiguration, configurationInfo }) => {
       if (pcConfiguration[key] && pcConfiguration[key].price !== undefined) {
         totalPrice += pcConfiguration[key].price;
       } else if (key === "rams" || key === "storages") {
-        pcConfiguration[key].map((part) => (totalPrice += part.part.price));
+        pcConfiguration[key].map((part) => (totalPrice += part.price));
       }
     });
 
