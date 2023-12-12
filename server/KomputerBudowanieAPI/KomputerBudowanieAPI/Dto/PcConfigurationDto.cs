@@ -2,8 +2,6 @@
 {
     public class PcConfigurationDto
     {
-        public Guid Id { get; set; }
-        //[Required]
         public string Name { get; set; }
         public string? Description { get; set; }
         public int? MotherboadId { get; set; }

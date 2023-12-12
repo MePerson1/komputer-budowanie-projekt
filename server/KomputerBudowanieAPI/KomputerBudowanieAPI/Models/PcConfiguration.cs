@@ -4,10 +4,7 @@ namespace KomputerBudowanieAPI.Models
 {
     public class PcConfiguration
     {
-        /*
-         * klucze obce danych komponentów (nie wszystkie muszą być dodane i guess)
-         * 
-         */
+
         [Key]
         public Guid Id { get; set; }
 
@@ -24,8 +21,7 @@ namespace KomputerBudowanieAPI.Models
         public WaterCooling? WaterCooling { get; set; }
         public User? User { get; set; } = null;
 
-        public ICollection<Fan>? Fans { get; set; }
-        public ICollection<Storage>? Storages { get; set; }
-        public ICollection<Ram>? Rams { get; set; }
+        public ICollection<PcConfigurationStorage>? PcConfigurationStorages { get; set; }
+        public ICollection<PcConfigurationRam>? PcConfigurationRams { get; set; }
     }
 }

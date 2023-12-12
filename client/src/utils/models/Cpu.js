@@ -1,0 +1,28 @@
+const Cpu = {
+  id: 0,
+  name: "",
+  price: 0,
+  producer: "",
+  producerCode: "",
+  line: "",
+  hasIncludedCooling: false,
+  socketType: "",
+  numberOfCores: 0,
+  numberOfThreads: 0,
+  processorBaseFrequencyGHz: 0,
+  maxTurboFrequencyGHz: 0,
+  integratedGraphics: "",
+  hasUnlockedMultiplier: false,
+  architecture: "",
+  manufacturingProcess: "",
+  processorMicroarchitecture: "",
+  tdPinW: 0,
+  maxOperatingTempC: 0,
+  supportedMemoryTypes: "",
+  l1Cache: "",
+  l2Cache: "",
+  l3Cache: "",
+  addedEquipment: "",
+};
+
+export default Cpu;

@@ -39,22 +39,23 @@ namespace KomputerBudowanieAPI.Services
                     .Where(motherboard => Case_Motherboard(configuration.Case, motherboard))
                     .ToList();
             }
-            if (configuration.Rams is not null)
+
+            if (configuration.PcConfigurationRams is not null)
             {
                 var ramCount = 0; //tutaj jak z tym ram count to trzeba przemyslec xd
-                foreach (Ram ram in configuration.Rams)
+                foreach (PcConfigurationRam ram in configuration.PcConfigurationRams)
                 {
                     motherboards = motherboards
-                        .Where(motherboard => Ram_Motherboard(ram, motherboard))
+                        .Where(motherboard => Ram_Motherboard(ram.Ram, motherboard))
                         .ToList();
                 }
             }
-            if (configuration.Storages is not null)
+            if (configuration.PcConfigurationStorages is not null)
             {
-                foreach (var disc in configuration.Storages)
+                foreach (var disc in configuration.PcConfigurationStorages)
                 {
                     motherboards = motherboards
-                        .Where(motherboard => Storage_Motherboard(disc, motherboard))
+                        .Where(motherboard => Storage_Motherboard(disc.Storage, motherboard))
                         .ToList();
                 }
             }
@@ -67,11 +68,11 @@ namespace KomputerBudowanieAPI.Services
             if (configuration.Case is not null)
             {
                 cpuCoolings = cpuCoolings
-                    .Where(cpuCooling => configuration.Case.MaxCoolingSystemHeightCM < cpuCooling.HeightMM)
+                    .Where(cpuCooling => configuration.Case.MaxCoolingSystemHeightCM < cpuCooling.HeightMM / 10)
                     .ToList();
             }
 
-            if (configuration.Rams is not null)
+            if (configuration.PcConfigurationRams is not null)
             {
 
             }
@@ -83,10 +84,10 @@ namespace KomputerBudowanieAPI.Services
         {
             if (configuration.Case is not null)
             {
-                
+
             }
 
-            if (configuration.Rams is not null)
+            if (configuration.PcConfigurationRams is not null)
             {
 
             }
@@ -142,6 +143,7 @@ namespace KomputerBudowanieAPI.Services
         // - dokończyć
         public void CaseFilter(PcConfiguration configuration, ref IEnumerable<Case> cases)
         {
+
             if (configuration.Motherboard is not null)
             {
                 cases = cases.Where(c => Case_Motherboard(c, configuration.Motherboard)).ToList();
@@ -157,36 +159,39 @@ namespace KomputerBudowanieAPI.Services
                 cases = cases.Where(c => Case_CpuCooling(c, configuration.CpuCooling)).ToList();
             }
 
-            if (configuration.Storages is not null)
+            if (configuration.PcConfigurationStorages is not null)
             {
-                foreach (var storage in configuration.Storages)
+                foreach (var relation in configuration.PcConfigurationStorages)
                 {
-                    cases = cases.Where(c => Case_Storages(c, storage)).ToList();
+                    cases = cases.Where(c => Case_Storages(c, relation.Storage)).ToList();
                 }
             }
+
+
         }
 
         static private bool Case_Motherboard(Case pcCase, Motherboard motherboard) =>
-            (motherboard.BoardStandard == "ATX" && pcCase.Compatibility.Contains(" " + motherboard.BoardStandard + ",")) ||
+            (motherboard.BoardStandard == "ATX" && pcCase.Compatibility.Contains(motherboard.BoardStandard + ",")) ||
             (motherboard.BoardStandard != "ATX" && pcCase.Compatibility.Contains(motherboard.BoardStandard));
         static private bool Cpu_Motherboard(Cpu cpu, Motherboard motherboard) =>
-            motherboard.SupportedProcessors.Contains(cpu.Line)
+            (cpu.Producer != "AMD" && motherboard.SupportedProcessors.Contains(cpu.Line))
+            || (cpu.Producer == "AMD" && motherboard.SupportedProcessors.Contains(Regex.Match(cpu.Line, @"^([\w\-]+)").Value))
             && motherboard.CPUSocket == cpu.SocketType;
 
         static private bool Ram_Motherboard(Ram ram, Motherboard motherboard) =>
-            motherboard.MemoryStandard != ram.MemoryType
-            && motherboard.MemoryConnectorType != ram.PinType
+            motherboard.MemoryStandard == ram.MemoryType
+            && motherboard.MemoryConnectorType == ram.PinType
             && motherboard.MemorySlotsCount >= ram.ModuleCount;
 
         static private bool Case_GraphicCard(Case pcCase, GraphicCard card) =>
             pcCase.MaxGPULengthCM * 10 >= card.CardLengthMM;
 
         static private bool Case_CpuCooling(Case pcCase, CpuCooling cpuCooling) =>
-            pcCase.MaxCoolingSystemHeightCM * 10 >= cpuCooling.HeightMM;
+            (pcCase.MaxCoolingSystemHeightCM * 10) >= cpuCooling.HeightMM;
 
         static private bool Case_Storages(Case pcCase, Storage storage) =>
-            (storage.FormFactor == "3.5 cala" && pcCase.InternalBaysThreePointFiveInch == 0) ||
-            (storage.FormFactor == "2.5 cala" && pcCase.InternalBaysTwoPointFiveInch == 0);
+            (storage.FormFactor == "3.5 cala" && pcCase.InternalBaysThreePointFiveInch > 0) ||
+            (storage.FormFactor == "2.5 cala" && pcCase.InternalBaysTwoPointFiveInch > 0);
 
 
         //pain

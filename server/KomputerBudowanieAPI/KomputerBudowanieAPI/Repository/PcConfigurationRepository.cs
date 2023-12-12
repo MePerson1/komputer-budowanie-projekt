@@ -16,43 +16,52 @@ namespace KomputerBudowanieAPI.Repository
 
         public async Task<IEnumerable<PcConfiguration>> GetAllAsync()
         {
-            return await _context.PcConfigurations.Include(pc => pc.Motherboard)
-            .Include(pc => pc.GraphicCard)
-            .Include(pc => pc.Cpu)
-            .Include(pc => pc.CpuCooling)
-            .Include(pc => pc.Case)
-            .Include(pc => pc.Fans)
-            .Include(pc => pc.PowerSupply)
-            .Include(pc => pc.User)
-            .Include(pc => pc.Storages)
-            .Include(pc => pc.Rams).ToListAsync();
+            return await _context.PcConfigurations
+                .Include(pc => pc.Motherboard)
+                .Include(pc => pc.Case)
+                .Include(pc => pc.Cpu)
+                .Include(pc => pc.CpuCooling)
+                .Include(pc => pc.GraphicCard)
+                .Include(pc => pc.PowerSupply)
+                .Include(pc => pc.WaterCooling)
+                .Include(pc => pc.PcConfigurationRams)
+                    .ThenInclude(ram => ram.Ram)
+                .Include(pc => pc.PcConfigurationStorages)
+                    .ThenInclude(storage => storage.Storage)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<PcConfiguration>> GetAllAsync(int userId)
         {
             return await _context.Set<PcConfiguration>().Where(config => config.User.Id == userId)
+                .Include(pc => pc.Motherboard)
+                .Include(pc => pc.Case)
+                .Include(pc => pc.Cpu)
+                .Include(pc => pc.CpuCooling)
                 .Include(pc => pc.GraphicCard)
-            .Include(pc => pc.Cpu)
-            .Include(pc => pc.CpuCooling)
-            .Include(pc => pc.Case)
-            .Include(pc => pc.Fans)
-            .Include(pc => pc.PowerSupply)
-            .Include(pc => pc.User)
-            .Include(pc => pc.Storages)
-            .Include(pc => pc.Rams).ToListAsync();
+                .Include(pc => pc.PowerSupply)
+                .Include(pc => pc.WaterCooling)
+                .Include(pc => pc.PcConfigurationRams)
+                    .ThenInclude(ram => ram.Ram)
+                .Include(pc => pc.PcConfigurationStorages)
+                    .ThenInclude(storage => storage.Storage)
+                .ToListAsync();
         }
 
         public async Task<PcConfiguration?> GetByIdAsync(Guid id)
         {
-            return await _context.Set<PcConfiguration>().Include(pc => pc.GraphicCard)
-            .Include(pc => pc.Cpu)
-            .Include(pc => pc.CpuCooling)
-            .Include(pc => pc.Case)
-            .Include(pc => pc.Fans)
-            .Include(pc => pc.PowerSupply)
-            .Include(pc => pc.User)
-            .Include(pc => pc.Storages)
-            .Include(pc => pc.Rams).FirstOrDefaultAsync(pc => pc.Id == id);
+            return await _context.Set<PcConfiguration>().Include(pc => pc.Motherboard)
+                .Include(pc => pc.Case)
+                .Include(pc => pc.Cpu)
+                .Include(pc => pc.CpuCooling)
+                .Include(pc => pc.GraphicCard)
+                .Include(pc => pc.PowerSupply)
+                .Include(pc => pc.WaterCooling)
+                .Include(pc => pc.PcConfigurationRams)
+                    .ThenInclude(ram => ram.Ram)
+                .Include(pc => pc.PcConfigurationStorages)
+                    .ThenInclude(storage => storage.Storage)
+                .FirstOrDefaultAsync(pc => pc.Id == id);
         }
 
         public async Task<bool> Create(PcConfigurationDto newConfigurationDto)
@@ -119,6 +128,8 @@ namespace KomputerBudowanieAPI.Repository
             var graphicCard = await _context.GraphicCards.FirstOrDefaultAsync(x => x.Id == dto.GraphicCardId);
             var powerSupply = await _context.PowerSupplies.FirstOrDefaultAsync(x => x.Id == dto.PowerSuplyId);
             var waterCooling = await _context.WaterCoolings.FirstOrDefaultAsync(x => x.Id == dto.WaterCoolingId);
+
+
             var storages = await _context.Storages
                 .Where(x => dto.StorageIds != null && dto.StorageIds.Contains(x.Id))
                 .ToListAsync();
@@ -127,21 +138,46 @@ namespace KomputerBudowanieAPI.Repository
                 .Where(x => dto.RamsIds != null && dto.RamsIds.Contains(x.Id))
                 .ToListAsync();
 
-            var fans = await _context.Fans
-                .Where(x => dto.FanIds != null && dto.FanIds.Contains(x.Id))
-                .ToListAsync();
+
 
             pcConfiguration.Name = dto.Name;
             pcConfiguration.Description = dto.Description;
             pcConfiguration.Case = pcCase;
             pcConfiguration.Cpu = cpu;
             pcConfiguration.CpuCooling = cpuCooling;
-            pcConfiguration.Fans = fans;
             pcConfiguration.Motherboard = motherboard;
             pcConfiguration.GraphicCard = graphicCard;
             pcConfiguration.PowerSupply = powerSupply;
-            pcConfiguration.Storages = storages;
-            pcConfiguration.Rams = rams;
+            pcConfiguration.PcConfigurationStorages = storages.Select(storage =>
+            {
+                var quantity = dto.StorageIds.Where(id => id == storage.Id).Count();
+                return new PcConfigurationStorage
+                {
+                    PcConfiguration = pcConfiguration,
+                    Storage = storage,
+                    Quantity = quantity
+                };
+            }).ToList();
+
+            try
+            {
+                pcConfiguration.PcConfigurationRams = rams.Select(ram =>
+                {
+                    var quantity = dto.RamsIds.Where(id => id == ram.Id).Count();
+                    return new PcConfigurationRam
+                    {
+                        PcConfiguration = pcConfiguration,
+                        Ram = ram,
+                        Quantity = quantity
+                    };
+                }).ToList();
+            }
+            catch (Exception ex)
+            {
+                await Console.Out.WriteLineAsync(ex.Message);
+            }
+
+
             pcConfiguration.WaterCooling = waterCooling;
 
             return pcConfiguration;

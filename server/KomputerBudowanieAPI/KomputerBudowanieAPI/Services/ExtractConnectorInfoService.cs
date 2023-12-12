@@ -79,7 +79,7 @@
 
             foreach (var part in input.Split(separators, StringSplitOptions.RemoveEmptyEntries))
             {
-                sockets.Add(part.Trim());
+                sockets.Add(part.Replace("LGA ", "").Trim());
             }
 
             return sockets;
