@@ -2,7 +2,7 @@ import PartsTable from "../components/shared/PartsTable";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ReturnButton from "../components/shared/ReturnButton";
-import mapPcPartsToIds from "../utils/mapPcPartsToIds";
+import mapPcPartsToIds from "../utils/functions/mapPcPartsToIds";
 const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   const [parts, setParts] = useState(null);
   const [filter, setFilter] = useState(true);

@@ -1,15 +1,8 @@
-// routes.js
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import {
-  Home,
-  Build,
-  NotFound,
-  Parts,
-  ComponentsView,
-  PartDetail,
-} from "./pages";
-import pcParts from "./utils/constants/pcParts";
+import { Home, Build, NotFound, Parts, ComponentsView } from "../pages";
+import PartDetail from "../components/shared/PartDetail";
+import pcParts from "./constants/pcParts";
 
 const AppRoutes = ({
   pcConfiguration,
