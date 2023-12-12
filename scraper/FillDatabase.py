@@ -46,18 +46,44 @@ def go_through_route(first_route, second_route):
     else:
         parts_routes = []
 
+    if parts_routes:
+        return collect_product_links(parts_routes[second_route])
+
+
+def collect_product_links(category_search_link):
     prod_links = []
 
-    if parts_routes:
-        # wejdz na kazda strone z konkretnymi produktami, zbierz do nich linki
-        for page in range(1, how_many_pages+1):
-            # uwaga, jesli liczba page jest za duza, to morele zwraca po prostu strone 1, zamiast dac jakis komunikat o bledzie -.-
-            html_product_search = requests.get(f"{parts_routes[second_route]},,,,,,,,0,,,,/{page}/").text
+    # wyszukiwanie i dodawanie linkow z pierwszej strony
+    html_product_search = requests.get(category_search_link).text
+    soup = BeautifulSoup(html_product_search, "lxml")
+    product_links_raw = soup.find_all('a', class_='cat-product-image productLink')
+    for link in product_links_raw:
+        prod_links.append(link_base + link['href'])
+
+    # ustal ilosc wszystkich stron na podstawie szarego przycisku oznaczajacego ostatnia strone
+    # bo morele nie zwraca bledu jak sie poda nieistniejaca ilosc stron, tylko kurna wywala na pierwsza -.-
+    page_limit = soup.find("div", class_="pagination-btn-nolink-anchor")
+    if page_limit:
+        page_limit = int(page_limit.text)
+    else:
+        page_buttons = soup.find_all("a", class_="pagination-btn")
+        if page_buttons:
+            page_limit = int(page_buttons[-2].text)  # przedostatni, bo ostatni przycisk to strzalka "nastepna strona" ->
+        else:  # jesli ich nie ma znaczy ze jest tylko 1 strona
+            page_limit = 1
+
+    # wejdz na kazda strone z konkretnymi produktami, zbierz do nich linki
+    if page_limit != 1:
+        for page in range(2, how_many_pages+1):
+            html_product_search = requests.get(f"{category_search_link},,,,,,,,0,,,,/{page}/").text
             soup = BeautifulSoup(html_product_search, "lxml")
             product_links_raw = soup.find_all('a', class_='cat-product-image productLink')
             # utworz na tej podstawie linki do kazdego produktu dla kazdej strony w liczbie okreslonej w how_many_pages
             for link in product_links_raw:
                 prod_links.append(link_base + link['href'])
+            if page == page_limit:
+                break
+
     print(len(prod_links))
     return prod_links
 
@@ -149,13 +175,13 @@ def add_products_to_database(first_route, second_route, prods):
     else:
         url = None
 
-    if url is not None:
+    if url:
         i = 1
         for product in prods:
             response = requests.post(url, json=product)
 
             if response.status_code == 200:
-                print(f"Request {i} was successful.")
+                print(f"Request {i} on {url} was successful.")
             else:
                 print(f"Request failed with status code: {response.status_code}")
                 print(response.json())
