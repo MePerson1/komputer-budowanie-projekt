@@ -30,6 +30,7 @@ const ComponentsTable = ({ setPcConfiguration, pcConfiguration, pcParts }) => {
       setPcConfiguration({ ...pcConfiguration, [key]: null });
     }
   };
+
   return (
     <table className="table table-sm text-xs ">
       <tbody>

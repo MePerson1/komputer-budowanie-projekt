@@ -1,6 +1,13 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import { Home, Build, NotFound, Parts, ComponentsView } from "../pages";
+import {
+  Home,
+  Build,
+  NotFound,
+  Parts,
+  ComponentsView,
+  Configurations,
+} from "../pages";
 import PartDetail from "../components/shared/PartDetail";
 import pcParts from "./constants/pcParts";
 
@@ -24,6 +31,7 @@ const AppRoutes = ({
     />
     <Route path="*" exect element={<NotFound />} />
     <Route path="parts" exect element={<Parts />} />
+    <Route path="configurations" exect element={<Configurations />} />
 
     {pcParts.map((part) => (
       <Route
@@ -31,7 +39,7 @@ const AppRoutes = ({
         path={`/parts/${part.key}`}
         element={
           <ComponentsView
-            partType={part.key}
+            partType={part}
             pcConfiguration={pcConfiguration}
             setPcConfiguration={setPcConfiguration}
           />
@@ -43,7 +51,7 @@ const AppRoutes = ({
         path={`/parts/${part.key}/:id`}
         element={
           <PartDetail
-            partType={part.key}
+            partType={part}
             pcConfiguration={pcConfiguration}
             setPcConfiguration={setPcConfiguration}
           />

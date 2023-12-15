@@ -3,33 +3,34 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import ReturnButton from "../components/shared/ReturnButton";
 import mapPcPartsToIds from "../utils/functions/mapPcPartsToIds";
+import Topic from "../components/shared/Topic";
 const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   const [parts, setParts] = useState(null);
   const [filter, setFilter] = useState(true);
 
   useEffect(() => {
     if (filter) {
-      getFilteredParts(partType);
+      getFilteredParts(partType.key);
     } else {
-      getParts(partType);
+      getParts(partType.key);
     }
   }, [partType, filter]);
 
-  async function getParts(partType) {
+  async function getParts(partKey) {
     await axios
-      .get(`http://localhost:5198/api/${partType}`)
+      .get(`http://localhost:5198/api/${partKey}`)
       .then((res) => {
         setParts(res.data);
       })
       .catch((err) => console.log(err));
   }
 
-  async function getFilteredParts(partType) {
+  async function getFilteredParts(partKey) {
     var pcConfigurationIds = mapPcPartsToIds(pcConfiguration);
 
     await axios
       .post(
-        `http://localhost:5198/api/${partType}/compatible`,
+        `http://localhost:5198/api/${partKey}/compatible`,
         pcConfigurationIds
       )
       .then((res) => {
@@ -40,6 +41,7 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
 
   return (
     <div>
+      <Topic title={partType.namePL} />
       <ReturnButton />
       <div className="flex ml-1 mr-2">
         <div className=" form-control ">
@@ -57,7 +59,7 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
 
       <PartsTable
         parts={parts}
-        partType={partType}
+        partType={partType.key}
         setPcConfiguration={setPcConfiguration}
         pcConfiguration={pcConfiguration}
       />

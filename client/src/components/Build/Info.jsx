@@ -66,13 +66,6 @@ const Info = ({
             </td>
           </tr>
           <tr>
-            <td className="text-lg">
-              <b>Szacowana moc:</b>
-            </td>
-            <td className="text-lg">100 W</td>
-          </tr>
-
-          <tr>
             <td colSpan="2" className="text-center">
               <button
                 onClick={() => savePcConfiguration(pcConfiguration, inputName)}
