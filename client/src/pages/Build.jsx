@@ -96,10 +96,14 @@ const Build = ({ pcConfiguration, setPcConfiguration }) => {
     localStorage.setItem("inputName", JSON.stringify(newName));
   };
 
-  async function savePcConfiguration(pcConfiguration, inputName) {
+  async function savePcConfiguration(pcConfiguration, inputName, description) {
     if (pcConfiguration !== null && inputName !== "") {
       setPcConfiguration({ ...pcConfiguration, name: inputName });
+      if (description !== null) {
+        setPcConfiguration({ ...pcConfiguration, description: description });
+      }
       var pcConfigurationIds = mapPcPartsToIds(pcConfiguration);
+      console.log(pcConfigurationIds);
       await axios
         .post("http://localhost:5198/api/configuration", pcConfigurationIds)
         .then((res) => {
