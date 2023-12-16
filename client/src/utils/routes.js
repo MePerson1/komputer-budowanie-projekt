@@ -49,9 +49,11 @@ const AppRoutes = ({
         }
       />
     ))}
+    {/* TODO 
+    Add routes by name and then send id, and give partdeatil item bruh */}
     {pcParts.map((part) => (
       <Route
-        path={`/parts/${part.key}/:name`}
+        path={`/parts/${part.key}/:id`}
         element={
           <PartDetail
             partType={part}

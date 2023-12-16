@@ -3,6 +3,6 @@ import Build from "./Build";
 import NotFound from "./NotFound";
 import Parts from "./Parts";
 import ComponentsView from "./ComponentsView";
-import Configurations from "./Configurations";
+import Configurations from "./PcConfigurations";
 
 export { Home, Build, NotFound, Parts, ComponentsView, Configurations };

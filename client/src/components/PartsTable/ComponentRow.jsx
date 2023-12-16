@@ -60,7 +60,7 @@ const ComponentRow = ({
   return (
     <>
       <tr className="hover:bg-black">
-        <td>Zdjecie</td>
+        <td onClick={handleDetails}>Zdjecie</td>
         <td>{part.name}</td>
         <td>{part.producer}</td>
         <td>

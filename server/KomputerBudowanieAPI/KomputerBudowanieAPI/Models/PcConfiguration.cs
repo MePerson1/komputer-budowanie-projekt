@@ -20,7 +20,7 @@ namespace KomputerBudowanieAPI.Models
         public PowerSupply? PowerSupply { get; set; } = null;
         public WaterCooling? WaterCooling { get; set; }
         public User? User { get; set; } = null;
-
+        //public double TotalPrice { get; set; } = 0;
         public ICollection<PcConfigurationStorage>? PcConfigurationStorages { get; set; }
         public ICollection<PcConfigurationRam>? PcConfigurationRams { get; set; }
     }

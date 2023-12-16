@@ -130,6 +130,7 @@ namespace KomputerBudowanieAPI.Repository
             var waterCooling = await _context.WaterCoolings.FirstOrDefaultAsync(x => x.Id == dto.WaterCoolingId);
 
 
+
             var storages = await _context.Storages
                 .Where(x => dto.StorageIds != null && dto.StorageIds.Contains(x.Id))
                 .ToListAsync();
@@ -138,6 +139,46 @@ namespace KomputerBudowanieAPI.Repository
                 .Where(x => dto.RamsIds != null && dto.RamsIds.Contains(x.Id))
                 .ToListAsync();
 
+            double totalPrice = 0;
+
+            if (pcCase != null)
+                totalPrice += pcCase.Price;
+
+            if (cpu != null)
+                totalPrice += cpu.Price;
+
+            if (cpuCooling != null)
+                totalPrice += cpuCooling.Price;
+
+            if (motherboard != null)
+                totalPrice += motherboard.Price;
+
+            if (graphicCard != null)
+                totalPrice += graphicCard.Price;
+
+            if (powerSupply != null)
+                totalPrice += powerSupply.Price;
+
+            if (waterCooling != null)
+                totalPrice += waterCooling.Price;
+
+            // Add prices of storages
+            if (storages != null && storages.Any())
+            {
+                foreach (var storage in storages)
+                {
+                    totalPrice += storage.Price;
+                }
+            }
+
+            // Add prices of RAMs
+            if (rams != null && rams.Any())
+            {
+                foreach (var ram in rams)
+                {
+                    totalPrice += ram.Price;
+                }
+            }
 
 
             pcConfiguration.Name = dto.Name;
@@ -148,6 +189,7 @@ namespace KomputerBudowanieAPI.Repository
             pcConfiguration.Motherboard = motherboard;
             pcConfiguration.GraphicCard = graphicCard;
             pcConfiguration.PowerSupply = powerSupply;
+            //pcConfiguration.TotalPrice = totalPrice;
             pcConfiguration.PcConfigurationStorages = storages.Select(storage =>
             {
                 var quantity = dto.StorageIds.Where(id => id == storage.Id).Count();
@@ -158,6 +200,7 @@ namespace KomputerBudowanieAPI.Repository
                     Quantity = quantity
                 };
             }).ToList();
+
 
             try
             {
