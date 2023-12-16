@@ -4,6 +4,7 @@ import axios from "axios";
 import ReturnButton from "../components/shared/ReturnButton";
 import mapPcPartsToIds from "../utils/functions/mapPcPartsToIds";
 import Topic from "../components/shared/Topic";
+import Breadcrumbs from "../components/shared/Breadcrumbs";
 const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   const [parts, setParts] = useState(null);
   const [filter, setFilter] = useState(true);
@@ -42,6 +43,7 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   return (
     <div>
       <Topic title={partType.namePL} />
+      <Breadcrumbs />
       <ReturnButton />
       <div className="flex ml-1 mr-2">
         <div className=" form-control ">

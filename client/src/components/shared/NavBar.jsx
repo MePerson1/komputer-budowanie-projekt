@@ -6,7 +6,7 @@ const NavBar = () => {
       <nav className="navbar bg-opacity-25 bg-slate-500">
         <div className="navbar-start">
           <Link to="/" className="btn btn-ghost btn-circle">
-            LOGO
+            <img src="logo.jpg" />
           </Link>
         </div>
         <div className="navbar-center">
@@ -24,9 +24,9 @@ const NavBar = () => {
           </Link>
         </div>
         <div className="navbar-end">
-          <Link to="/login">Logowanie</Link>
+          <Link to="/logowanie">Logowanie</Link>
           <div className="p-2">/</div>
-          <Link to="/register">Rejestracja</Link>
+          <Link to="/rejestracja">Rejestracja</Link>
         </div>
       </nav>
     </>
