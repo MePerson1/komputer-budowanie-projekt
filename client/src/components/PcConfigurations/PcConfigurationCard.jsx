@@ -8,7 +8,7 @@ const PcConfigurationCard = ({ pcConfigration }) => {
         <div className="card-body">
           <h2 className="card-title">{pcConfigration.name}</h2>
           <p>{pcConfigration.description}</p>
-          <p>Łączna cena: 1000zł</p>
+          <p>Cena: {pcConfigration.totalPrice.toFixed(2)} zł</p>
           <div className="card-actions justify-end">
             <button className="btn btn-primary">Szczegóły</button>
           </div>

@@ -4,10 +4,10 @@ const Info = ({
   totalPrice,
   savePcConfiguration,
   pcConfiguration,
-  inputName,
+  setPcConfiguration,
 }) => {
   const [budget, setBudget] = useState(0);
-  const [description, setDescription] = useState("");
+
   const handleBudgetChange = (event) => {
     const newValue = event.target.value;
     const newBudget = parseFloat(newValue.replace(".", ","));
@@ -21,17 +21,13 @@ const Info = ({
 
   const handleDescriptionChange = (event) => {
     const newDescription = event.target.value;
-    setDescription(newDescription);
+    setPcConfiguration({ ...pcConfiguration, description: newDescription });
     localStorage.setItem("localDescription", JSON.stringify(newDescription));
   };
 
   useEffect(() => {
     const localBudget = JSON.parse(localStorage.getItem("localBudget"));
     if (localBudget !== null) setBudget(localBudget);
-    const localDescription = JSON.parse(
-      localStorage.getItem("localDescription")
-    );
-    if (localDescription !== null) setDescription(localDescription);
   }, []);
 
   const inputWidth = `${(budget.toString().length + 1) * 9}px`;
@@ -97,7 +93,7 @@ const Info = ({
                     </div>
                     <textarea
                       onChange={handleDescriptionChange}
-                      value={description}
+                      value={pcConfiguration.description}
                       className="textarea textarea-bordered h-24"
                       placeholder="Opis (opcjonalnie)"
                     ></textarea>
@@ -105,13 +101,7 @@ const Info = ({
                   <div className="modal-action">
                     <div>
                       <button
-                        onClick={() =>
-                          savePcConfiguration(
-                            pcConfiguration,
-                            inputName,
-                            description
-                          )
-                        }
+                        onClick={() => savePcConfiguration(pcConfiguration)}
                         className="btn btn-primary "
                       >
                         Zapisz

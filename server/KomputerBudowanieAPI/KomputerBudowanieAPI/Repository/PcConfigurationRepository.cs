@@ -189,7 +189,7 @@ namespace KomputerBudowanieAPI.Repository
             pcConfiguration.Motherboard = motherboard;
             pcConfiguration.GraphicCard = graphicCard;
             pcConfiguration.PowerSupply = powerSupply;
-            //pcConfiguration.TotalPrice = totalPrice;
+            pcConfiguration.TotalPrice = totalPrice;
             pcConfiguration.PcConfigurationStorages = storages.Select(storage =>
             {
                 var quantity = dto.StorageIds.Where(id => id == storage.Id).Count();
