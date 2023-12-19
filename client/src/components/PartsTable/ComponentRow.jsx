@@ -10,7 +10,6 @@ const ComponentRow = ({
   setPcConfiguration,
 }) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const handleDetails = () => {
     navigate(`${window.location.pathname}/${part.id}`);
   };

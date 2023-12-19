@@ -18,6 +18,7 @@ const Configurations = () => {
       })
       .catch((err) => console.log(err));
   }
+
   return (
     <div className="flex flex-col">
       <Topic title="Konfiguracje" />

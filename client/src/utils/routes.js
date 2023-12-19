@@ -12,6 +12,8 @@ import PartDetail from "../components/shared/PartDetail";
 import pcParts from "./constants/pcParts";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
+import PcConfigurationDetails from "../components/PcConfigurations/PcConfigurationDetails";
+import { PcConfiguration } from "./models";
 
 const AppRoutes = ({
   pcConfiguration,
@@ -34,6 +36,11 @@ const AppRoutes = ({
     <Route path="*" exect element={<NotFound />} />
     <Route path="parts" exect element={<Parts />} />
     <Route path="configurations" exect element={<Configurations />} />
+    <Route
+      path="configurations/:id"
+      exect
+      element={<PcConfigurationDetails />}
+    />
     <Route path="logowanie" exect element={<Login />} />
     <Route path="rejestracja" exect element={<Register />} />
     {pcParts.map((part) => (
