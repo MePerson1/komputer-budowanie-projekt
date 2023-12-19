@@ -6,7 +6,7 @@ import { NavMenu } from "./NavMenu";
 const NavBar = () => {
   return (
     <>
-      <nav class="navbar bg-base-100">
+      <nav class="navbar bg-base-300">
         <div class="navbar-start">
           <Logo />
         </div>

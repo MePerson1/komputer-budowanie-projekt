@@ -20,9 +20,10 @@ const EmptyComponentView = ({ pcPart }) => {
             <h2 className="card-title ">{pcPart.namePL}</h2>
           </div>
 
-          <div className="flex">
+          <div className="resize hidden lg:flex">
             <div className="m-5">{pcPart.info}</div>
           </div>
+          <div></div>
         </div>
         <div className="mr-7">
           <button onClick={handleChangePart} className="btn btn-secondary">

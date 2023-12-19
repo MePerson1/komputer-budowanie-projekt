@@ -107,22 +107,25 @@ const Build = ({ pcConfiguration, setPcConfiguration }) => {
             </div>
           )}
         </div>
-        <div className="flex content-center">
-          <p className="m-5 text-center text-2xl">Ustaw nazwę:</p>
-          <input
-            type="text"
-            className="input input-bordered input-primary input-lg w-3/5"
-            value={pcConfiguration.name}
-            onChange={handleNameChange}
-          />
-        </div>
-        <div className="flex justify-between">
-          <ComponentsTable
-            pcParts={pcParts}
-            pcConfiguration={pcConfiguration}
-            setPcConfiguration={setPcConfiguration}
-          />
-          <div id="infos">
+
+        <div className="flex flex-col md:flex-row justify-center">
+          <div>
+            <div className="flex content-center">
+              <p className="m-5 text-center text-2xl">Ustaw nazwę:</p>
+              <input
+                type="text"
+                className="input input-bordered input-primary input-lg w-3/5"
+                value={pcConfiguration.name}
+                onChange={handleNameChange}
+              />
+            </div>
+            <ComponentsTable
+              pcParts={pcParts}
+              pcConfiguration={pcConfiguration}
+              setPcConfiguration={setPcConfiguration}
+            />
+          </div>
+          <div id="infos" className="flex flex-col mt-4 md:mt-0">
             <Info
               configurationInfo={configurationInfo}
               totalPrice={totalPrice}
