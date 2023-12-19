@@ -216,7 +216,7 @@ namespace KomputerBudowanieAPI.Services
 
             if (configuration.Cpu.IntegratedGraphics is null)
             {
-                toast.Problems.Add("Ten procesor nie ma zintegrowanej karty graficznej! Dodaj kartę graficzną.");
+                toast.Warnings.Add("Ten procesor nie ma zintegrowanej karty graficznej! Dodaj kartę graficzną.");
             }
         }
 
@@ -458,7 +458,7 @@ namespace KomputerBudowanieAPI.Services
         {
             if (configuration.Storages is not null && configuration.Motherboard is not null)
             {
-                Dictionary<string, int> connectors = ExtractConnectorInfoService.FromMotherboard(configuration.Motherboard.DriveConnectors);
+                Dictionary<string, int> connectors = ExtractConnectorInfoService.ExtractsStorageSlotsFromMotherboard(configuration.Motherboard.DriveConnectors);
                 foreach (var disc in configuration.Storages)
                 {
                     //W dyskach M2
@@ -575,7 +575,7 @@ namespace KomputerBudowanieAPI.Services
         {
             if (configuration.GraphicCard is not null && configuration.PowerSupply is not null)
             {
-                List<string> graphicCardConnectors = ExtractConnectorInfoService.FromGraphicCard(configuration.GraphicCard.PowerConnectors);
+                List<string> graphicCardConnectors = ExtractConnectorInfoService.ExtractPowerConnectorsFromGraphicCard(configuration.GraphicCard.PowerConnectors);
 
                 int powerSupply6_plus2pin = configuration.PowerSupply.PCIE8Pin_6Plus2;
                 int powerSupply6pin = configuration.PowerSupply.PCIE6Pin;

@@ -197,7 +197,7 @@ namespace KomputerBudowanieAPI.Services
         static private bool GraphicCard_PowerSupply(GraphicCard graphicCard, PowerSupply powerSupply)
         {
 
-            List<string> graphicCardConnectors = ExtractConnectorInfoService.FromGraphicCard(graphicCard.PowerConnectors);
+            List<string> graphicCardConnectors = ExtractConnectorInfoService.ExtractPowerConnectorsFromGraphicCard(graphicCard.PowerConnectors);
 
             int powerSupply6_plus2pin = powerSupply.PCIE8Pin_6Plus2;
             int powerSupply6pin = powerSupply.PCIE6Pin;
@@ -257,7 +257,7 @@ namespace KomputerBudowanieAPI.Services
         static private bool Storage_Motherboard(Storage storage, Motherboard motherboard)
         {
 
-            Dictionary<string, int> connectors = ExtractConnectorInfoService.FromMotherboard(motherboard.DriveConnectors);
+            Dictionary<string, int> connectors = ExtractConnectorInfoService.ExtractsStorageSlotsFromMotherboard(motherboard.DriveConnectors);
 
             //W dyskach M2
             //"interface": "PCI-E x4 Gen4 NVMe", "PCI-E x4 Gen3 NVMe",
