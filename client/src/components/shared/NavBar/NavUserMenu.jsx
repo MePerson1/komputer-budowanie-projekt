@@ -1,9 +1,26 @@
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
 export const NavUserMenu = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleMenuToggle = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleMenuItemClick = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
-    <details className="dropdown dropdown-bottom dropdown-end dropdown-hover">
-      <summary className="m1 btn">
+    <div className="dropdown">
+      <summary
+        tabIndex="0"
+        role="button"
+        className="btn btn-ghost flex"
+        onClick={handleMenuToggle}
+      >
+        Konto
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -16,14 +33,24 @@ export const NavUserMenu = () => {
           />
         </svg>
       </summary>
-      <ul className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52">
-        <li>
-          <NavLink to="/logowanie">Logowanie</NavLink>
-        </li>
-        <li>
-          <NavLink to="/rejestracja">Rejestracja</NavLink>
-        </li>
-      </ul>
-    </details>
+
+      {isMenuOpen && (
+        <ul
+          tabIndex="0"
+          className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-max"
+        >
+          <li>
+            <NavLink to="/logowanie" onClick={handleMenuItemClick}>
+              Logowanie
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/rejestracja" onClick={handleMenuItemClick}>
+              Rejestracja
+            </NavLink>
+          </li>
+        </ul>
+      )}
+    </div>
   );
 };
