@@ -5,17 +5,23 @@ import axios from "axios";
 import { PcConfiguration, Motherboard } from "../utils/models/index";
 import ConfigurationInfo from "../components/Build/ConfigurationInfo";
 import pcParts from "../utils/constants/pcParts";
-const Build = ({ pcConfiguration, setPcConfiguration, configurationInfo }) => {
+import mapPcPartsToIds from "../utils/functions/mapPcPartsToIds";
+import { Toast } from "../utils/models";
+import Topic from "../components/shared/Topic";
+const Build = ({ pcConfiguration, setPcConfiguration }) => {
   const [totalPrice, setTotalPrice] = useState(0.0);
-  const [inputName, setInputName] = useState("");
   const [isSaved, setIsSaved] = useState(false);
+  let [configurationInfo, setConfigurationInfo] = useState(Toast);
+  const [description, setDescription] = useState("");
 
   useEffect(() => {
-    const localInputName = JSON.parse(localStorage.getItem("inputName"));
-    if (localInputName !== null) setInputName(localInputName);
-  }, []);
+    if (pcConfiguration !== PcConfiguration) {
+      localStorage.setItem(
+        "localConfiugration",
+        JSON.stringify(pcConfiguration)
+      );
+    }
 
-  useEffect(() => {
     let totalPrice = 0;
 
     Object.keys(pcConfiguration).forEach((key) => {
@@ -29,51 +35,49 @@ const Build = ({ pcConfiguration, setPcConfiguration, configurationInfo }) => {
     setTotalPrice(totalPrice);
   }, [pcConfiguration]);
 
+  useEffect(() => {
+    const localConfiugration = JSON.parse(
+      localStorage.getItem("localConfiugration")
+    );
+    if (localConfiugration !== null) setPcConfiguration(localConfiugration);
+  }, []);
+
+  async function getInfo(pcConfiguration) {
+    var pcConfigurationIds = mapPcPartsToIds(pcConfiguration);
+
+    await axios
+      .post("http://localhost:5198/api/compatibility", pcConfigurationIds)
+      .then((res) => {
+        console.log(res.data);
+        setConfigurationInfo(res.data);
+      })
+      .catch((err) => console.log(err));
+  }
+
+  useEffect(() => {
+    if (pcConfiguration !== PcConfiguration) {
+      getInfo(pcConfiguration);
+    }
+  }, []);
+
   const handleNameChange = (event) => {
     const newName = event.target.value;
-    setInputName(newName);
-    localStorage.setItem("inputName", JSON.stringify(newName));
+    setPcConfiguration({ ...pcConfiguration, name: newName });
   };
 
-  async function savePcConfiguration(pcConfiguration, inputName) {
-    if (pcConfiguration !== null && inputName !== "") {
-      var pcConfigurationIds = {
-        name: inputName,
-        description: pcConfiguration.description,
-        motherboadId: pcConfiguration.motherboard
-          ? pcConfiguration.motherboard.id
-          : 0,
-        graphicCardId: pcConfiguration.graphicCard
-          ? pcConfiguration.graphicCard.id
-          : 0,
-        cpuId: pcConfiguration.cpu ? pcConfiguration.cpu.id : 0,
-        cpuCoolingId: pcConfiguration.cpuCooling
-          ? pcConfiguration.cpuCooling.id
-          : 0,
-        waterCoolingId: pcConfiguration.waterCooling
-          ? pcConfiguration.waterCooling.id
-          : 0,
-        caseId: pcConfiguration.case ? pcConfiguration.case.id : 0,
-        powerSuplyId: pcConfiguration.powerSupply
-          ? pcConfiguration.powerSupply.id
-          : 0,
-        userId: 0,
-        storageIds: pcConfiguration.storages
-          ? pcConfiguration.storages.map((storage) => storage.id)
-          : [],
-        ramsIds: pcConfiguration.rams
-          ? pcConfiguration.rams.map((ram) => ram.id)
-          : [],
-        fanIds: [],
-      };
+  async function savePcConfiguration(pcConfiguration) {
+    if (pcConfiguration !== null && pcConfiguration.name !== "") {
+      console.log(pcConfiguration);
+      var pcConfigurationIds = mapPcPartsToIds(pcConfiguration);
+      console.log(pcConfigurationIds);
       await axios
         .post("http://localhost:5198/api/configuration", pcConfigurationIds)
         .then((res) => {
           console.log(res.data);
+          //ToDo do poprawy
           localStorage.clear();
           window.location.reload(false);
-
-          setIsSaved(true); //tu źle poprawić
+          setIsSaved(true);
         })
         .catch((err) => console.log(err));
     }
@@ -82,6 +86,7 @@ const Build = ({ pcConfiguration, setPcConfiguration, configurationInfo }) => {
   return (
     <>
       <div>
+        <Topic title="Budowanie" />
         <div>
           {isSaved && (
             <div role="alert" className="alert alert-info">
@@ -107,7 +112,7 @@ const Build = ({ pcConfiguration, setPcConfiguration, configurationInfo }) => {
           <input
             type="text"
             className="input input-bordered input-primary input-lg w-3/5"
-            value={inputName}
+            value={pcConfiguration.name}
             onChange={handleNameChange}
           />
         </div>
@@ -122,8 +127,10 @@ const Build = ({ pcConfiguration, setPcConfiguration, configurationInfo }) => {
               configurationInfo={configurationInfo}
               totalPrice={totalPrice}
               savePcConfiguration={savePcConfiguration}
-              inputName={inputName}
               pcConfiguration={pcConfiguration}
+              description={description}
+              setDescription={setDescription}
+              setPcConfiguration={setPcConfiguration}
             />
             <ConfigurationInfo configurationInfo={configurationInfo} />
           </div>

@@ -1,4 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
+import PartPrices from "../shared/PartPrices";
 
 const ComponentRow = ({
   part,
@@ -9,7 +10,6 @@ const ComponentRow = ({
   setPcConfiguration,
 }) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const handleDetails = () => {
     navigate(`${window.location.pathname}/${part.id}`);
   };
@@ -58,11 +58,13 @@ const ComponentRow = ({
 
   return (
     <>
-      <tr onClick={handleDetails} className="hover:bg-black">
-        <td>Zdjecie</td>
+      <tr className="hover:bg-black">
+        <td onClick={handleDetails}>Zdjecie</td>
         <td>{part.name}</td>
         <td>{part.producer}</td>
-        <td>{part.price} zł</td>
+        <td>
+          <PartPrices price={part.price} />
+        </td>
         <td>
           <button onClick={handleAddPart} className="btn btn-primary">
             +

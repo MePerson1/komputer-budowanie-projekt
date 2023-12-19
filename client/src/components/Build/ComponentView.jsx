@@ -7,13 +7,7 @@ const ComponentView = ({ pcPart, handleSetToNull, partKey, partType }) => {
   }
   return (
     <div className="card card-bordered card-side bg-base-200 shadow-xl m-5 flex justify-between items-center">
-      <figure>
-        <img
-          className="m-3 w-20 border"
-          src="images/pcParts/CpuPodgladowe.png"
-          alt="cpu"
-        />
-      </figure>
+      <figure className="m-10">Zdjecie</figure>
       <div className="card-body">
         <h2 className="card-title">{pcPart.name}</h2>
         <div className="flex">
