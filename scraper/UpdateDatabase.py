@@ -62,21 +62,22 @@ def get_komputronik_price(producer_code):
     html_komputronik = requests.get(f"https://www.komputronik.pl/search/category/1?query={producer_code_query}").text
     soup = BeautifulSoup(html_komputronik, "lxml")
 
-    first_code = soup.find('div', class_="mb-4 text-xs text-gray-gravel")
+    first_codes = soup.find('div', class_="mb-4 text-xs text-gray-gravel")
     # sprawdzenie czy pierwszy wynik w ogole istnieje
-    if not first_code:
+    if not first_codes:
         print("No price results for komputronik")
         return {}
 
-    first_code = first_code.find_all('p')  # znalezienie dwoch p z kodem systemowym i producenta
+    first_codes = first_codes.find_all('p')  # znalezienie dwoch p z kodem systemowym i producenta
     # powinien byc kod systemowy i kod producenta. Jesli dlugosc jest mniejsza niz 2 znaczy ze nie ma kodu producenta, wiec to moze nawet nie byc czesc
-    if len(first_code) < 2:
+    if len(first_codes) < 2:
         return {}
 
-    first_code = first_code[1].text  # wyluskanie "Kod producenta: [kod]"
+    first_code = first_codes[1].text  # wyluskanie "Kod producenta: [kod]"
     first_code = first_code.split('[')[-1].split("]")[0]  # usuniecie wszystkiego przed [ i za ]
 
-    # jesli kody producenta z morele i z pierwszego wyniku wyszukiwania z komputronika sie pokrywaja znaczy ze taka rzecz jest na tej stronie i mozna porownywac ich ceny
+    # jesli kody producenta z morele i z pierwszego wyniku wyszukiwania z komputronika sie pokrywaja
+    # znaczy ze taka rzecz jest na tej stronie i mozna porownywac ich ceny
     if producer_code == first_code:
         first_link = soup.find('h2', class_="font-headline text-lg font-bold leading-6 line-clamp-3 md:text-xl md:leading-8").a.get("href")
         first_price = float(soup.find('div', class_="text-3xl font-bold leading-8").text.replace(" zł", "").replace("\xa0", "").replace(",", "."))

@@ -1,60 +1,5 @@
-def parse_cooling(second_route, specs):
-    if second_route == 0:  # chlodzenie CPU
-        translated = {
-            "Name": specs["Nazwa"],
-            "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
-            "Producer": specs["Producent"],
-            "ProducerCode": specs["Kod producenta"],
-            "MountingType": specs["Sposób montażu"].replace("\n", ""),
-            "ColorElement": specs["Element kolorystyczny"],
-            "HeightMM": float(specs["Wysokość [mm]"]),
-            "WidthMM": float(specs["Szerokość [mm]"]),
-            "DepthMM": float(specs["Głębokość [mm]"]),
-            "WeightGrams": int(specs["Waga [g]"]),
-            "ProcessorSocket": specs["Socket procesora"].replace("\n", ""),
-            "MaxTDPinW": int(specs["Maksymalne TDP"].split()[0]) if specs["Maksymalne TDP"] != "Brak danych" else None,
-            "BaseMaterial": specs["Materiał podstawy"],
-            "HasLighting": True if specs["Podświetlenie"] == "Tak" else False,
-            "HeatPipesCount": int(specs["Ilość ciepłowodów"]),
-            "HeatPipeDiameterMM": int(specs["Średnica ciepłowodów"].split()[0]),
-            "FanCount": int(specs["Ilość wentylatorów"]),
-            "FanDiameterMM": int(specs["Średnica wentylatora"].split()[0]),
-            "MaxFanSpeedPerMin": int(specs["Maksymalna prędkość obrotowa"].split()[0]) if specs["Maksymalna prędkość obrotowa"] != "Brak danych" else None,
-            "MaxNoiseLevelinDBA": float(specs["Maksymalny poziom hałasu"].split()[0]) if specs["Maksymalny poziom hałasu"] != "Brak danych" else None,
-            "AirflowCFM": float(specs["Przepływ powietrza [CFM]"]) if specs["Przepływ powietrza [CFM]"] != "Brak danych" else None,
-            "LifespanHours": int(specs["Żywotność"].split()[0]) if specs["Żywotność"] != "Brak danych" else None,
-        }
-    elif second_route == 1:
-        translated = {
-            "Name": specs["Nazwa"],
-            "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
-            "Producer": specs["Producent"],
-            "ProducerCode": specs["Kod producenta"],
-            "IntelCompatibility": specs["Kompatybilność z procesorami Intel"].replace("\n", ""),
-            "AMDCompatibility": specs["Kompatybilność z procesorami AMD"].replace("\n", ""),
-            "Lighting": specs["Podświetlenie"] if specs["Podświetlenie"] != "Brak" else None,
-            "WeightG": int(specs["Waga [g]"]) if specs["Waga [g]"] != "Brak danych" else None,
-            "RadiatorSizeMM": float(specs["Rozmiar chłodnicy"].split()[0]),
-            "RadiatorLengthMM": float(specs["Długość chłodnicy [mm]"]),
-            "RadiatorWidthMM": float(specs["Szerokość chłodnicy [mm]"]),
-            "RadiatorHeightMM": float(specs["Wysokość chłodnicy [mm]"]),
-            "FanCount": int(specs["Liczba wentylatorów"]),
-            "FanDiameterMM": int(specs["Średnica wentylatora"].split()[0]),
-            "MaxFanSpeedRPM": int(specs["Maksymalna prędkość obrotowa"].split()[0]),
-            "HasPWMControl": True if specs["Regulacja obrotów PWM"] == "Tak" else False,
-            "MaxAirflowCFM": float(specs["Maksymalny przepływ powietrza"].split()[0]) if specs["Maksymalny przepływ powietrza"] != "Brak danych" else None,
-            "MaxNoiseLevelDBa": float(specs["Maksymalny poziom hałasu"].split()[0]) if specs["Maksymalny poziom hałasu"] != "Brak danych" else None,
-            "FanConnector": specs["Złącze wentylatora"],
-            "PumpConnector": specs["Złącze pompy"] if specs["Złącze pompy"] != "Brak danych" else None,
-            "LEDConnector": specs["Złącze podświetlenia LED"] if specs["Złącze podświetlenia LED"] not in ["Brak danych", "Nie dotyczy"] else None
-        }
-    else:
-        translated = specs
-    return translated
-
-
-def parse_parts(second_route, specs):
-    if second_route == 0:  # dyski HDD
+def parse_parts(chosen_cat, specs):
+    if chosen_cat == "storage-hdd":
         translated = {
             "Name": specs["Nazwa"].replace('"', " cala"),
             "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
@@ -72,7 +17,7 @@ def parse_parts(second_route, specs):
             "RotatingSpeedRPM": int(specs["Prędkość obrotowa"].split()[0]),
             "WeightG": float(specs["Waga [g]"]) if specs["Waga [g]"] != "Brak danych" else None
         }
-    elif second_route == 1:  # dyski SSD
+    elif chosen_cat == "storage-ssd":
         translated = {
             "Name": specs["Nazwa"].replace('"', " cala"),
             "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
@@ -98,7 +43,7 @@ def parse_parts(second_route, specs):
             "Controler": specs["Kontroler"] if specs["Kontroler"] != "Brak danych" else None,
             "HardwareEncryption": True if specs["Szyfrowanie sprzętowe"] == "Tak" else False
         }
-    elif second_route == 3:  # karty graficzne
+    elif chosen_cat == "graphic-card":
         translated = {
             "Name": specs["Nazwa"],
             "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
@@ -135,7 +80,7 @@ def parse_parts(second_route, specs):
             "PowerConnectors": specs["Złącza zasilania"],
             "Description": None
         }
-    elif second_route == 6:  # obudowy
+    elif chosen_cat == "case":
         translated = {
             "Name": specs["Nazwa"],
             "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
@@ -176,7 +121,7 @@ def parse_parts(second_route, specs):
             "PowerSupplyPower": specs["Moc zasilacza"] if specs["Moc zasilacza"] != "Brak zasilacza" else None,
             "Description": None
         }
-    elif second_route == 8:  # pamięci RAM
+    elif chosen_cat == "ram":
         translated = {
             "Name": specs["Nazwa"],
             "Price": float(specs["Cena"].replace("zł", "").replace(",", ".").replace(" ", "")),
@@ -196,7 +141,7 @@ def parse_parts(second_route, specs):
             "Color": specs["Kolor"],
             "HasLighting": True if specs["Podświetlenie"] == "Tak" else False
         }
-    elif second_route == 9:  # płyty główne
+    elif chosen_cat == "motherboard":
         translated = {
             "Name": specs["Nazwa"],
             "Price": float(specs["Cena"].replace("zł", "").replace(",", ".").replace(" ", "")),
@@ -229,7 +174,7 @@ def parse_parts(second_route, specs):
             "RearPanelConnectors": specs["Panel tylny"].replace("\n", ""),
             "IncludedAccessories": specs["Załączone wyposażenie"].replace("\n", "") if specs.get("Załączone wyposażenie") is not None else None,
         }
-    elif second_route == 11:  # procesory
+    elif chosen_cat == "cpu":
         translated = {
             "Name": specs["Nazwa"],
             "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
@@ -241,7 +186,7 @@ def parse_parts(second_route, specs):
             "NumberOfCores": int(specs["Liczba rdzeni"]),
             "NumberOfThreads": int(specs["Liczba wątków"]),
             "ProcessorBaseFrequencyGHz": float(specs["Częstotliwość taktowania procesora"].replace(" GHz", "")),
-            "MaxTurboFrequencyGHz": float(specs["Częstotliwość maksymalna Turbo"].replace(" GHz", "")),
+            "MaxTurboFrequencyGHz": float(specs["Częstotliwość maksymalna Turbo"].replace(" GHz", "")) if specs["Częstotliwość maksymalna Turbo"] != "Nie dotyczy" else None,  # ZMIANA na nullable
             "IntegratedGraphics": None if specs["Zintegrowany układ graficzny"] == "Nie posiada" else specs["Zintegrowany układ graficzny"],
             "HasUnlockedMultiplier": True if specs["Odblokowany mnożnik"] == "Tak" else False,
             "Architecture": specs["Architektura"],
@@ -255,7 +200,7 @@ def parse_parts(second_route, specs):
             "L3Cache": specs["Pamięć podręczna L3"],
             "AddedEquipment": specs.get("Załączone wyposażenie")
         }
-    elif second_route == 12:  # zasilacze
+    elif chosen_cat == "power-supply":
         translated = {
             "Name": specs["Nazwa"],
             "Price": float(specs["Cena"].replace("zł", "").replace(" ", "").replace(",", ".")),
@@ -284,6 +229,55 @@ def parse_parts(second_route, specs):
             "WidthMM": int(specs["Szerokość [mm]"]),
             "DepthMM": int(specs["Głębokość [mm]"]),
             "HasLighting": True if specs["Podświetlenie"] == "Tak" else False
+        }
+    elif chosen_cat == "cpu-cooling":
+        translated = {
+            "Name": specs["Nazwa"],
+            "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
+            "Producer": specs["Producent"],
+            "ProducerCode": specs["Kod producenta"],
+            "MountingType": specs["Sposób montażu"].replace("\n", ""),
+            "ColorElement": specs["Element kolorystyczny"],
+            "HeightMM": float(specs["Wysokość [mm]"]),
+            "WidthMM": float(specs["Szerokość [mm]"]),
+            "DepthMM": float(specs["Głębokość [mm]"]),
+            "WeightGrams": int(specs["Waga [g]"]) if specs["Waga [g]"] != "Brak danych" else None,  # ZMIANA, na nullable
+            "ProcessorSocket": specs["Socket procesora"].replace("\n", ""),
+            "MaxTDPinW": int(specs["Maksymalne TDP"].split()[0]) if specs["Maksymalne TDP"] != "Brak danych" else None,
+            "BaseMaterial": specs["Materiał podstawy"],
+            "HasLighting": True if specs["Podświetlenie"] == "Tak" else False,
+            "HeatPipesCount": int(specs["Ilość ciepłowodów"]) if specs["Ilość ciepłowodów"] != "Nie posiada" else 0,
+            "HeatPipeDiameterMM": int(specs["Średnica ciepłowodów"].split()[0]),
+            "FanCount": int(specs["Ilość wentylatorów"]),
+            "FanDiameterMM": int(specs["Średnica wentylatora"].split()[0]),
+            "MaxFanSpeedPerMin": int(specs["Maksymalna prędkość obrotowa"].split()[0]) if specs["Maksymalna prędkość obrotowa"] != "Brak danych" else None,
+            "MaxNoiseLevelinDBA": float(specs["Maksymalny poziom hałasu"].split()[0]) if specs["Maksymalny poziom hałasu"] != "Brak danych" else None,
+            "AirflowCFM": float(specs["Przepływ powietrza [CFM]"]) if specs["Przepływ powietrza [CFM]"] != "Brak danych" else None,
+            "LifespanHours": int(specs["Żywotność"].split()[0]) if specs["Żywotność"] != "Brak danych" else None,
+        }
+    elif chosen_cat == "water-cooling":
+        translated = {
+            "Name": specs["Nazwa"],
+            "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
+            "Producer": specs["Producent"],
+            "ProducerCode": specs["Kod producenta"],
+            "IntelCompatibility": specs["Kompatybilność z procesorami Intel"].replace("\n", ""),
+            "AMDCompatibility": specs["Kompatybilność z procesorami AMD"].replace("\n", ""),
+            "Lighting": specs["Podświetlenie"] if specs["Podświetlenie"] != "Brak" else None,
+            "WeightG": int(specs["Waga [g]"]) if specs["Waga [g]"] != "Brak danych" else None,
+            "RadiatorSizeMM": float(specs["Rozmiar chłodnicy"].split()[0]),
+            "RadiatorLengthMM": float(specs["Długość chłodnicy [mm]"]),
+            "RadiatorWidthMM": float(specs["Szerokość chłodnicy [mm]"]),
+            "RadiatorHeightMM": float(specs["Wysokość chłodnicy [mm]"]),
+            "FanCount": int(specs["Liczba wentylatorów"]),
+            "FanDiameterMM": int(specs["Średnica wentylatora"].split()[0]),
+            "MaxFanSpeedRPM": int(specs["Maksymalna prędkość obrotowa"].split()[0]),
+            "HasPWMControl": True if specs["Regulacja obrotów PWM"] == "Tak" else False,
+            "MaxAirflowCFM": float(specs["Maksymalny przepływ powietrza"].split()[0]) if specs["Maksymalny przepływ powietrza"] != "Brak danych" else None,
+            "MaxNoiseLevelDBa": float(specs["Maksymalny poziom hałasu"].split()[0]) if specs["Maksymalny poziom hałasu"] != "Brak danych" else None,
+            "FanConnector": specs["Złącze wentylatora"],
+            "PumpConnector": specs["Złącze pompy"] if specs["Złącze pompy"] != "Brak danych" else None,
+            "LEDConnector": specs["Złącze podświetlenia LED"] if specs["Złącze podświetlenia LED"] not in ["Brak danych", "Nie dotyczy"] else None
         }
     else:
         translated = specs
