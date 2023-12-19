@@ -23,7 +23,7 @@ const NavBar = () => {
             <li>
               <NavLink
                 to="/build"
-                className="text-xl font-bold border border-white"
+                className="text-xl font-bold border border-white mr-2 ml-2"
               >
                 BUDUJ
                 <svg
