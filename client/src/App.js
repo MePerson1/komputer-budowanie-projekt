@@ -1,4 +1,4 @@
-import NavBar from "./components/shared/NavBar";
+import NavBar from "./components/shared/NavBar/NavBar";
 import AppRoutes from "./utils/routes";
 import { useEffect, useState } from "react";
 import { PcConfiguration, Toast } from "./utils/models";
