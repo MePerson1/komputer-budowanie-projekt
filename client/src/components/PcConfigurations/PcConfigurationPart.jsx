@@ -1,11 +1,4 @@
-import { useNavigate } from "react-router";
-
-const ComponentView = ({ pcPart, handleSetToNull, partKey, partType }) => {
-  const navigate = useNavigate();
-  function handleChangePart() {
-    navigate(`/parts/${partType.key}`);
-  }
-
+const PcConfigurationPart = ({ pcPart }) => {
   return (
     <div className="card card-bordered card-side bg-base-200 shadow-xl m-5 flex justify-between items-center">
       <figure className="m-10">Zdjecie</figure>
@@ -23,19 +16,8 @@ const ComponentView = ({ pcPart, handleSetToNull, partKey, partType }) => {
           </div>
         </div>
       </div>
-      <div className="mr-7 flex flex-col">
-        <button onClick={handleChangePart} className="m-2 btn btn-outline">
-          Zmień
-        </button>
-        <button
-          onClick={() => handleSetToNull(partKey, pcPart.id)}
-          className="m-2 btn btn-sm bg-red-600 hover:bg-opacity-80 hover:bg-red-950"
-        >
-          Usuń
-        </button>
-      </div>
     </div>
   );
 };
 
-export default ComponentView;
+export default PcConfigurationPart;

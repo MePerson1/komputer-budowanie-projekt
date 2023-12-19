@@ -4,6 +4,7 @@ import { PcConfiguration } from "../../utils/models";
 import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
+import PcConfigurationPart from "./PcConfigurationPart";
 
 const PcConfigurationDetails = () => {
   const location = useLocation();
@@ -42,10 +43,37 @@ const PcConfigurationDetails = () => {
     <div>
       {pcConfigurationById !== undefined && pcConfigurationById !== null ? (
         <>
-          <h1>{pcConfigurationById.name}</h1>
+          <h1 className="text-5xl m-5">{pcConfigurationById.name}</h1>
           <div>
             <table className="table table-sm text-xs ">
-              <tbody></tbody>
+              <tbody>
+                {componentKeys.map((key, index) => (
+                  <tr key={index} id={key}>
+                    {pcConfigurationById[key] !== undefined &&
+                      pcConfigurationById[key] !== null &&
+                      !(
+                        Array.isArray(pcConfigurationById[key]) &&
+                        pcConfigurationById[key].length === 0
+                      ) &&
+                      (key === "rams" || key === "storages" ? (
+                        pcConfigurationById[key].map((part, idx) => (
+                          <PcConfigurationPart
+                            key={idx}
+                            pcPart={part}
+                            partKey={key}
+                            partType={pcParts[index]}
+                          />
+                        ))
+                      ) : (
+                        <PcConfigurationPart
+                          pcPart={pcConfigurationById[key]}
+                          partKey={key}
+                          partType={pcParts[index]}
+                        />
+                      ))}
+                  </tr>
+                ))}
+              </tbody>
             </table>
             <h2>{pcConfigurationById.description}</h2>
           </div>
