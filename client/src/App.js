@@ -9,7 +9,7 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header sticky top-0">
+      <header className="App-header top-0">
         <NavBar />
       </header>
       <main>
