@@ -8,7 +8,11 @@ import pcParts from "../utils/constants/pcParts";
 import mapPcPartsToIds from "../utils/functions/mapPcPartsToIds";
 import { Toast } from "../utils/models";
 import Topic from "../components/shared/Topic";
+import { Alert } from "../components/shared/Alert";
+import { NameInput } from "../components/Build/NameInput";
+import { Navigate, useNavigate } from "react-router-dom";
 const Build = ({ pcConfiguration, setPcConfiguration }) => {
+  const navigate = useNavigate();
   const [totalPrice, setTotalPrice] = useState(0.0);
   const [isSaved, setIsSaved] = useState(false);
   let [configurationInfo, setConfigurationInfo] = useState(Toast);
@@ -74,10 +78,9 @@ const Build = ({ pcConfiguration, setPcConfiguration }) => {
         .post("http://localhost:5198/api/configuration", pcConfigurationIds)
         .then((res) => {
           console.log(res.data);
-          //ToDo do poprawy
-          localStorage.clear();
-          window.location.reload(false);
+          localStorage.removeItem("localConfiugration");
           setIsSaved(true);
+          navigate("/");
         })
         .catch((err) => console.log(err));
     }
@@ -89,36 +92,16 @@ const Build = ({ pcConfiguration, setPcConfiguration }) => {
         <Topic title="Budowanie" />
         <div>
           {isSaved && (
-            <div role="alert" className="alert alert-info">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                className="stroke-current shrink-0 w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                ></path>
-              </svg>
-              <span>Twoja konfiguracja została zapisana!</span>
-            </div>
+            <Alert alertInfo={"Twoja konfiguracja została zapisana!"} />
           )}
         </div>
 
         <div className="flex flex-col md:flex-row justify-center">
           <div>
-            <div className="flex content-center">
-              <p className="m-5 text-center text-2xl">Ustaw nazwę:</p>
-              <input
-                type="text"
-                className="input input-bordered input-primary input-lg w-3/5"
-                value={pcConfiguration.name}
-                onChange={handleNameChange}
-              />
-            </div>
+            <NameInput
+              name={pcConfiguration.name}
+              handleNameChange={handleNameChange}
+            />
             <ComponentsTable
               pcParts={pcParts}
               pcConfiguration={pcConfiguration}
