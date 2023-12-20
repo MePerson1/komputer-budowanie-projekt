@@ -36,7 +36,7 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(_mapper.Map<IEnumerable<GraphicCardDto>>(graphicCards));
         }
 
-        [HttpGet("scrapper")]
+        [HttpGet("scraper")]
         public async Task<IActionResult> GetAllGraphicCardsScraper()
         {
             var cases = await _graphicCardRepository.GetAllAsync();

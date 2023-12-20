@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+from config import product_categories_and_links
 
 
 def get_euro_com_price(producer_code, product_name):
@@ -11,7 +12,7 @@ def get_euro_com_price(producer_code, product_name):
     first_link = soup.find('a', class_="box-medium__link")
     # sprawdzenie czy pierwszy wynik w ogole istnieje
     if not first_link:
-        print("No price results for euro com")
+        print("No valid results from euro com")
         return {}
 
     first_link = "https://www.euro.com.pl" + first_link.get("href")
@@ -47,12 +48,14 @@ def get_euro_com_price(producer_code, product_name):
         first_price = soup.find("span", class_="price-template__large--total").text
         first_price += "." + soup.find("span", class_="price-template__large--decimal").text
         euro_com = {
-            "Site": "Euro.com.pl",
-            "Link": first_link,
-            "Price": first_price
+            "id": 0,
+            "shopName": "Euro.com.pl",
+            "link": first_link,
+            "price": first_price
         }
         return euro_com
     else:
+        print("No valid results from euro com")
         return {}
 
 
@@ -65,12 +68,13 @@ def get_komputronik_price(producer_code):
     first_codes = soup.find('div', class_="mb-4 text-xs text-gray-gravel")
     # sprawdzenie czy pierwszy wynik w ogole istnieje
     if not first_codes:
-        print("No price results for komputronik")
+        print("No valid results from komputronik")
         return {}
 
     first_codes = first_codes.find_all('p')  # znalezienie dwoch p z kodem systemowym i producenta
     # powinien byc kod systemowy i kod producenta. Jesli dlugosc jest mniejsza niz 2 znaczy ze nie ma kodu producenta, wiec to moze nawet nie byc czesc
     if len(first_codes) < 2:
+        print("No valid results from komputronik")
         return {}
 
     first_code = first_codes[1].text  # wyluskanie "Kod producenta: [kod]"
@@ -82,12 +86,14 @@ def get_komputronik_price(producer_code):
         first_link = soup.find('h2', class_="font-headline text-lg font-bold leading-6 line-clamp-3 md:text-xl md:leading-8").a.get("href")
         first_price = float(soup.find('div', class_="text-3xl font-bold leading-8").text.replace(" zł", "").replace("\xa0", "").replace(",", "."))
         komputronik = {
-            "Site": "Komputronik.pl",
-            "Link": first_link,
-            "Price": first_price
+            "id": 0,
+            "shopName": "Komputronik.pl",
+            "link": first_link,
+            "price": first_price
         }
         return komputronik
     else:
+        print("No valid results from komputronik")
         return {}
 
 
@@ -95,18 +101,43 @@ def get_morele_prices():
     return {}
 
 
-def get_product_prices(producer_code, product_name):
-    all_prices = []
-
-    komputronik = get_komputronik_price(producer_code)
-    euro_com = get_euro_com_price(producer_code, product_name)
-
-    if komputronik != {}:
-        all_prices.append(komputronik)
-    if euro_com != {}:
-        all_prices.append(euro_com)
-    return all_prices
-
-
 def update_database():
-    pass
+    for category in product_categories_and_links:
+        category_data_link = f"http://localhost:5198/api/{category}/scraper"
+        category_record_update_link = f"http://localhost:5198/api/{category}/price"
+
+        response = requests.get(category_data_link)
+        category_data = response.json()
+
+        for product in category_data:
+            komputronik_price = get_komputronik_price(product["producerCode"])
+            euro_com_price = get_euro_com_price(product["producerCode"], product["name"])
+
+            # Dodawanie dwoch latwiejszych (po wyszukiwaniu) cen
+            if not product["prices"]:
+                if komputronik_price:
+                    product["prices"].append(komputronik_price)
+                if euro_com_price:
+                    product["prices"].append(euro_com_price)
+            else:
+                for shop_price in product["prices"]:
+                    if shop_price["shopName"] == komputronik_price.get("shopName") and shop_price["price"] != komputronik_price.get("price"):
+                        print(f"Changed price for product {shop_price['name']}, shop {shop_price['shopName']}, from {shop_price['price']} to {komputronik_price['price']}")
+                        shop_price["price"] = komputronik_price["price"]
+                        shop_price["link"] = komputronik_price["link"]
+                    if shop_price["shopName"] == euro_com_price.get("shopName") and shop_price["price"] != euro_com_price.get("price"):
+                        print(f"Changed price for product {shop_price['name']}, shop {shop_price['shopName']}, from {shop_price['price']} to {euro_com_price['price']}")
+                        shop_price["price"] = euro_com_price["price"]
+                        shop_price["link"] = euro_com_price["link"]
+
+            response = requests.put(category_record_update_link, json=product)
+
+            if response.status_code == 200:
+                print(f"Request on {category_record_update_link} was successful.")
+            else:
+                print(f"Request failed with status code: {response.status_code}")
+                print(response.json())
+                print(f"for product: {product}")
+
+
+update_database()

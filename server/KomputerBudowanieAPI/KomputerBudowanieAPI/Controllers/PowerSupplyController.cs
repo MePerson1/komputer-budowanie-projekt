@@ -36,7 +36,7 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(_mapper.Map<IEnumerable<PowerSupplyDto>>(powerSupplies));
         }
 
-        [HttpGet("scrapper")]
+        [HttpGet("scraper")]
         public async Task<IActionResult> GetAllCpusCoolingsScraper()
         {
             var cases = await _powerSupplyRepository.GetAllAsync();

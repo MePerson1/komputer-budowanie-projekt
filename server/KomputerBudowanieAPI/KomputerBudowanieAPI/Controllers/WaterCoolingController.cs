@@ -36,7 +36,7 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(_mapper.Map<IEnumerable<WaterCoolingDto>>(fans));
         }
 
-        [HttpGet("scrapper")]
+        [HttpGet("scraper")]
         public async Task<IActionResult> GetAllCpusCoolingsScraper()
         {
             var cases = await _waterCoolingRepository.GetAllAsync();

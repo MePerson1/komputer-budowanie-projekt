@@ -36,7 +36,7 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(_mapper.Map<IEnumerable<RamDto>>(rams));
         }
 
-        [HttpGet("scrapper")]
+        [HttpGet("scraper")]
         public async Task<IActionResult> GetAllRamsScraper()
         {
             var cases = await _ramRepository.GetAllAsync();

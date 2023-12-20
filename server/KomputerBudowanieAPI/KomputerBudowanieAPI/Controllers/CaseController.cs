@@ -48,7 +48,7 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(_mapper.Map<CaseDto>(pcCase));
         }
 
-        [HttpGet("scrapper")]
+        [HttpGet("scraper")]
         public async Task<IActionResult> GetAllCasesScraper()
         {
             var cases = await _caseRepository.GetAllAsync();

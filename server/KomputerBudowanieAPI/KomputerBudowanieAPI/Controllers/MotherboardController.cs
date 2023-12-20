@@ -36,7 +36,7 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(_mapper.Map<IEnumerable<MotherboardDto>>(motherboards));
         }
 
-        [HttpGet("scrapper")]
+        [HttpGet("scraper")]
         public async Task<IActionResult> GetAllMotherboardScraper()
         {
             var cases = await _motherboardRepository.GetAllAsync();

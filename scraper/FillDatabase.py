@@ -128,7 +128,7 @@ def add_products_to_database(chosen_cat, prods):
 
 def scrape_all_categories():
     for prod_cat, cat_link in product_categories_and_links.items():
-        print(f"Now scraping {how_many_pages} pages of {chosen_product_category}...")
+        print(f"Now scraping {how_many_pages} pages of {prod_cat}...")
         prod_links = collect_product_links(cat_link)
         prods = get_product_specs(prod_cat, prod_links)
         if add_to_database:

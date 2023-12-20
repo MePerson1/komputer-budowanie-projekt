@@ -80,7 +80,7 @@ def parse_parts(chosen_cat, specs):
             "MemoryBusWidthBits": int(specs["Szyna danych"].split()[0]),
             "MemoryClockMHz": int(specs["Taktowanie pamięci"].split()[0]),
             "CoolingType": specs["Typ chłodzenia"],
-            "FanCount": int(specs["Ilość wentylatorów"]) if specs["Ilość wentylatorów"] not in typical_problems else 0,
+            "FanCount": int(specs["Ilość wentylatorów"]) if specs["Ilość wentylatorów"] not in typical_problems and specs["Ilość wentylatorów"] != "Brak" else 0,
             "DSub": int(specs["D-Sub"]) if specs["D-Sub"] != "Brak" else 0,
             "DisplayPortCount": int(specs["DisplayPort"]) if "DisplayPort" in specs and specs.get("DisplayPort") != "Brak" else 0,
             "MiniDisplayPort": int(specs["MiniDisplayPort"]) if specs["MiniDisplayPort"] != "Brak" else 0,
@@ -157,7 +157,6 @@ def parse_parts(chosen_cat, specs):
     elif chosen_cat == "motherboard":
         translated = {
             "Name": specs["Nazwa"],
-            "Price": float(specs["Cena"].replace("zł", "").replace(",", ".").replace(" ", "")),
             "Producer": specs["Producent"],
             "ProducerCode": specs["Kod producenta"],
             "BoardStandard": specs["Standard płyty"],
@@ -190,7 +189,6 @@ def parse_parts(chosen_cat, specs):
     elif chosen_cat == "cpu":
         translated = {
             "Name": specs["Nazwa"],
-            "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
             "Producer": specs["Producent"],
             "ProducerCode": specs["Kod producenta"],
             "Line": specs["Linia"],
@@ -216,7 +214,6 @@ def parse_parts(chosen_cat, specs):
     elif chosen_cat == "power-supply":
         translated = {
             "Name": specs["Nazwa"],
-            "Price": float(specs["Cena"].replace("zł", "").replace(" ", "").replace(",", ".")),
             "Producer": specs["Producent"],
             "ProducerCode": specs["Kod producenta"],
             "FormFactor": specs["Standard/Format"],
@@ -246,7 +243,6 @@ def parse_parts(chosen_cat, specs):
     elif chosen_cat == "cpu-cooling":
         translated = {
             "Name": specs["Nazwa"],
-            "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
             "Producer": specs["Producent"],
             "ProducerCode": specs["Kod producenta"],
             "MountingType": specs["Sposób montażu"].replace("\n", ""),
@@ -271,7 +267,6 @@ def parse_parts(chosen_cat, specs):
     elif chosen_cat == "water-cooling":
         translated = {
             "Name": specs["Nazwa"],
-            "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
             "Producer": specs["Producent"],
             "ProducerCode": specs["Kod producenta"],
             "IntelCompatibility": specs["Kompatybilność z procesorami Intel"].replace("\n", ""),
