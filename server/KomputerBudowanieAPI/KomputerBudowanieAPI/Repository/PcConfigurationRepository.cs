@@ -141,44 +141,48 @@ namespace KomputerBudowanieAPI.Repository
 
             double totalPrice = 0;
 
-            /* if (pcCase != null)
-                 totalPrice += pcCase.Price;
+            if (pcCase != null && pcCase.Prices.Any())
+                totalPrice += pcCase.Prices.Min(p => p.Price);
 
-             if (cpu != null)
-                 totalPrice += cpu.Price;
+            if (cpu != null && cpu.Prices.Any())
+                totalPrice += cpu.Prices.Min(p => p.Price);
 
-             if (cpuCooling != null)
-                 totalPrice += cpuCooling.Price;
 
-             if (motherboard != null)
-                 totalPrice += motherboard.Price;
+            if (cpuCooling != null && cpuCooling.Prices.Any())
+                totalPrice += cpuCooling.Prices.Min(p => p.Price);
 
-             if (graphicCard != null)
-                 totalPrice += graphicCard.Price;
+            if (motherboard != null && motherboard.Prices.Any())
+                totalPrice += motherboard.Prices.Min(p => p.Price);
 
-             if (powerSupply != null)
-                 totalPrice += powerSupply.Price;
+            if (graphicCard != null && graphicCard.Prices.Any())
+                totalPrice += graphicCard.Prices.Min(p => p.Price);
 
-             if (waterCooling != null)
-                 totalPrice += waterCooling.Price;
+            if (powerSupply != null && powerSupply.Prices.Any())
+                totalPrice += powerSupply.Prices.Min(p => p.Price);
 
-             // Add prices of storages
-             if (storages != null && storages.Any())
-             {
-                 foreach (var storage in storages)
-                 {
-                     totalPrice += storage.Price;
-                 }
-             }
+            if (waterCooling != null && waterCooling.Prices.Any())
+                totalPrice += waterCooling.Prices.Min(p => p.Price);
 
-             // Add prices of RAMs
-             if (rams != null && rams.Any())
-             {
-                 foreach (var ram in rams)
-                 {
-                     totalPrice += ram.Price;
-                 }
-             }*/
+
+            // Add prices of storages
+            if (storages != null && storages.Any())
+            {
+                foreach (var storage in storages)
+                {
+                    if (storage.Prices.Any())
+                        totalPrice += storage.Prices.Min(p => p.Price);
+                }
+            }
+
+            // Add prices of RAMs
+            if (rams != null && rams.Any())
+            {
+                foreach (var ram in rams)
+                {
+                    if (ram.Prices.Any())
+                        totalPrice += ram.Prices.Min(p => p.Price);
+                }
+            }
 
 
             pcConfiguration.Name = dto.Name;
