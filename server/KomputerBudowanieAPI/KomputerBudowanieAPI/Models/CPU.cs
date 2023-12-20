@@ -32,9 +32,6 @@ namespace KomputerBudowanieAPI.Models
         public string L3Cache { get; set; }
         public string? AddedEquipment { get; set; }
 
-        /*
-        *  RELACJE
-        */
         [JsonIgnore]
         public ICollection<PcConfiguration> Configurations { get; set; }
     }
