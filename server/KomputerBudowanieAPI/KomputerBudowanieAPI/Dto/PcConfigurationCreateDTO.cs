@@ -17,6 +17,5 @@
         public ICollection<int>? MemoryIds { get; set; }
         public ICollection<int>? RamsIds { get; set; }
 
-        public ICollection<int>? FansId { get; set; }
     }
 }

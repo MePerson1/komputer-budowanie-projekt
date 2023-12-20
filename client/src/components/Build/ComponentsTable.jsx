@@ -1,17 +1,8 @@
+import { componentKeys } from "../../utils/constants/componentKeys";
 import ComponentView from "../Build/ComponentView";
 import EmptyComponentView from "./EmptyComponentView";
 
 const ComponentsTable = ({ setPcConfiguration, pcConfiguration, pcParts }) => {
-  const componentKeys = [
-    "cpu",
-    "cpuCooling",
-    "motherboard",
-    "graphicCard",
-    "rams",
-    "storages",
-    "powerSupply",
-    "case",
-  ];
   const handleSetToNull = (key, partId) => {
     if (key === "rams" || key === "storages") {
       const indexToRemove = pcConfiguration[key].findIndex(

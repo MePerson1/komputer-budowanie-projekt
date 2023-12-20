@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const PcConfigurationCard = ({ pcConfigration }) => {
   const navigate = useNavigate();
   const handleDetails = () => {

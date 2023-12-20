@@ -64,7 +64,7 @@ namespace KomputerBudowanieAPI.Repository
                 .FirstOrDefaultAsync(pc => pc.Id == id);
         }
 
-        public async Task<bool> Create(PcConfigurationDto newConfigurationDto)
+        public async Task<PcConfiguration> Create(PcConfigurationDto newConfigurationDto)
         {
             try
             {
@@ -74,14 +74,18 @@ namespace KomputerBudowanieAPI.Repository
                 await _context.AddAsync(pcConfiguration);
 
                 await SaveChanges();
-                return true;
-
+                return pcConfiguration;
+            }
+            catch (DbUpdateException ex) // Catch specific database update exceptions if using Entity Framework
+            {
+                throw new Exception("Failed to update the database. Please check your data.");
             }
             catch (Exception ex)
             {
-                return false;
+                throw new Exception($"Failed to create PC configuration: {ex.Message}");
             }
         }
+
 
         public async Task Delete(PcConfiguration entity)
         {
@@ -94,26 +98,32 @@ namespace KomputerBudowanieAPI.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> Update(Guid id, PcConfigurationDto dto)
+        public async Task<PcConfiguration> Update(Guid id, PcConfigurationDto newConfigurationDto)
         {
 
             var configuration = await GetByIdAsync(id);
 
             if (configuration == null)
             {
-                return false;
+                throw new Exception("Pc Configuration with that id doesn't exists!");
             }
+
             try
             {
-                configuration = await GetDataFromIds(dto, configuration);
+                PcConfiguration pcConfiguration = new PcConfiguration();
+
+                pcConfiguration = await GetDataFromIds(newConfigurationDto, configuration);
 
                 await SaveChanges();
-
-                return true;
+                return configuration;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new Exception("Failed to update the database. Please check your data.");
             }
             catch (Exception ex)
             {
-                return false;
+                throw new Exception($"Failed to create PC configuration: {ex.Message}");
             }
 
 

@@ -7,7 +7,7 @@ const Login = () => {
   const [remember, setRemember] = useState(false);
   return (
     <>
-      <div class="relative flex flex-col justify-center h-screen overflow-hidden ">
+      <div class="flex flex-col justify-center h-screen ">
         <Topic title="Logowanie" />
         <div class="w-full p-6 m-auto  rounded-md shadow-md lg:max-w-lg border border-secondary bg-base-200">
           <h1 class="text-3xl font-semibold text-center ">Witaj z powrotem!</h1>

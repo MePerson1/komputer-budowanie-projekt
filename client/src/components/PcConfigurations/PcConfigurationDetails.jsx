@@ -1,13 +1,11 @@
-import ComponentView from "../Build/ComponentView";
 import pcParts from "../../utils/constants/pcParts";
-import { PcConfiguration } from "../../utils/models";
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import PcConfigurationPart from "./PcConfigurationPart";
+import { componentKeys } from "../../utils/constants/componentKeys";
 
 const PcConfigurationDetails = () => {
-  const location = useLocation();
   const { id } = useParams();
   const [pcConfigurationById, setPcConfigurationById] = useState();
   useEffect(() => {
@@ -27,17 +25,6 @@ const PcConfigurationDetails = () => {
       console.log(error);
     }
   }
-
-  const componentKeys = [
-    "cpu",
-    "cpuCooling",
-    "motherboard",
-    "graphicCard",
-    "pcConfigurationRams",
-    "pcConfigurationStorages",
-    "powerSupply",
-    "case",
-  ];
 
   return (
     <div>
