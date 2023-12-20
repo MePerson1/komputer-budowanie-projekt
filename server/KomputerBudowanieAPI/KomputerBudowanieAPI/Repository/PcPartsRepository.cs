@@ -19,16 +19,13 @@ namespace KomputerBudowanieAPI.Repository
 
         public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            return await _context.Set<TEntity>().Include("Prices").ToListAsync();
+            return await _context.Set<TEntity>().ToListAsync();
         }
 
         public async Task<TEntity?> GetByIdAsync(int id)
         {
             var model = await _context.Set<TEntity>().FindAsync(id);
-            if (model != null && _context.Entry(model).Collections.Any(c => c.Metadata.Name == "Prices"))
-            {
-                _context.Entry(model).Collection("Prices").Load();
-            }
+
             return model;
         }
 
