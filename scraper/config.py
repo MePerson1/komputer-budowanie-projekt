@@ -1,6 +1,6 @@
 # Slownik zawierajacy pary
 # nazwa kategorii podzespolow: link do pierwszej strony ze wszystkimi wynikami
-# nazwy kategorii w kluczu sa takie jak te w api uzywane do dodawania produktu
+# nazwy kategorii w kluczu sa takie jak endpointy w api uzywane do dodawania produktu
 product_categories_and_links = {
     "case": "https://www.morele.net/kategoria/obudowy-33/",
     "cpu": "https://www.morele.net/kategoria/procesory-45/",
@@ -15,20 +15,21 @@ product_categories_and_links = {
 }
 
 # Opcja wyboru kategorii produktu do zescrapowania ze slownika powyzej. Musi byc taka sama jak nazwa klucza
-chosen_product_category = "case"
+chosen_product_category = "motherboard"
 
 # Opcja (jesli jest na True) sprawia, ze wszystkie produkty z kazdej kategorii zostaja zescrapowane i ew dodane do bazy w zaleznosci od add_to_database.
 # Jesli jest na False, zostanie wykonane wyszukiwanie dla tylko jednej kategorii produktu
-fill_database = True
+choose_all_product_categories = False
+
+# Opcja do ustawiania, ile stron produktów z morele ma być maksymalnie dodane do bazy.
+# Kazda strona przeklada sie na maksymalnie 30 odpowiednich produktow do dodania do bazy (jesli czegos im nie brakuje)
+# Podawanie wyzszego numeru stron dla komponentu niz ich jest w samym sklepie sprawia, ze zostana zescrapowane po prostu wszystkie ktore sa
+# Minimalna ilosc zescrapowanych stron to 1
+how_many_pages = 3
 
 # Opcja do dodawania zescrappowanych rekordow do bazy danych. Dostepne opcje to True lub False
 add_to_database = False
 
 # Opcje do wyswietlania rekordow podczas ich przetwarzania. Dostepne opcje to True lub False
 show_raw_data_in_console = False
-show_translated_data_in_console = False
-
-# Opcja do ustawiania, ile stron produktów z morele ma być maksymalnie dodane do bazy.
-# Kazda strona przeklada sie na maksymalnie 30 odpowiednich produktow do dodania do bazy (jesli czegos im nie brakuje)
-# Podawanie wyzszego numeru stron dla komponentu niz ich jest w samym sklepie sprawia, ze zostana zescrapowane po prostu wszystkie ktore sa
-how_many_pages = 5
+show_translated_data_in_console = True

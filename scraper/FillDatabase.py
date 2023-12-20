@@ -17,7 +17,7 @@ def collect_product_links(cat_link):
         prod_links.append(link_base + link['href'])
 
     # ustal ilosc wszystkich stron na podstawie szarego przycisku oznaczajacego ostatnia strone
-    # bo morele nie zwraca bledu jak sie poda nieistniejaca ilosc stron, tylko kurna wywala na pierwsza -.-
+    # bo morele nie zwraca bledu jak sie poda nieistniejaca ilosc stron, tylko wywala na pierwsza -.-
     page_limit = soup.find("div", class_="pagination-btn-nolink-anchor")
     if page_limit:
         page_limit = int(page_limit.text)
@@ -28,18 +28,19 @@ def collect_product_links(cat_link):
         else:  # jesli ich nie ma znaczy ze jest tylko 1 strona
             page_limit = 1
 
-    # wejdz na kazda strone z konkretnymi produktami, zbierz do nich linki
-    if page_limit != 1:
-        for page in range(2, how_many_pages+1):
-            html_product_search = requests.get(f"{cat_link},,,,,,,,0,,,,/{page}/").text
-            soup = BeautifulSoup(html_product_search, "lxml")
-            product_links_raw = soup.find_all('a', class_='cat-product-image productLink')
-            # utworz na tej podstawie linki do kazdego produktu dla kazdej strony w liczbie okreslonej w how_many_pages
-            for link in product_links_raw:
-                prod_links.append(link_base + link['href'])
-            if page == page_limit:
-                break
+    if page_limit == 1:
+        return prod_links
 
+    # wejdz na kazda nastepna strone z konkretnymi produktami, zbierz do nich linki
+    for page in range(2, how_many_pages+1):
+        html_product_search = requests.get(f"{cat_link},,,,,,,,0,,,,/{page}/").text
+        soup = BeautifulSoup(html_product_search, "lxml")
+        product_links_raw = soup.find_all('a', class_='cat-product-image productLink')
+        # utworz na tej podstawie linki do kazdego produktu dla kazdej strony w liczbie okreslonej w how_many_pages
+        for link in product_links_raw:
+            prod_links.append(link_base + link['href'])
+        if page == page_limit:
+            break
     return prod_links
 
 
@@ -53,10 +54,9 @@ def get_product_specs(chosen_cat, prod_links):
             soup = BeautifulSoup(html_product, "lxml")
 
             # sprawdz czy jest dostepny zanim w ogole zacznie sie jakas obrobka
-            availabile = soup.find('div', class_='prod-available-items')
-            if not availabile:
-                print(f"Product {link} is not availabile")
-                continue
+            available = soup.find('div', class_='prod-available-items')
+            if not available:
+                raise ParseProduct.ProductNotAvailable
 
             # zgarnij wszystkie speci
             name = soup.find('h1', class_='prod-name').text
@@ -72,8 +72,7 @@ def get_product_specs(chosen_cat, prod_links):
                 product_specs[spec_name] = spec_value
 
             if "Kod producenta" not in product_specs:
-                print(f"Product {link} does not have ProducerCode")
-                continue
+                raise ParseProduct.ProducerCodeNotAvailable
 
             # wyswietl rzeczy przed tlumaczeniem
             if show_raw_data_in_console:
@@ -90,20 +89,26 @@ def get_product_specs(chosen_cat, prod_links):
                     print(key, ':', value)
 
             # dodaj speki produktu do listy ze wszystkimi
-            if translated_product_specs != {}:
-                all_products.append(translated_product_specs)
+            all_products.append(translated_product_specs)
             i += 1
         except exceptions.RequestException as req_error:
-            print(f"\n\nRequest error for link {link}: {req_error}\n\n")
+            print(f"Request error for link {link}: {req_error}")
+        except ParseProduct.ProductNotAvailable:
+            print(f"Product {link} is not available")
+        except ParseProduct.ProducerCodeNotAvailable:
+            print(f"Product {link} does not have ProducerCode")
+        except ParseProduct.GraphicCardLengthNotAvailable:
+            print(f"Graphic Card {link} does not have valid CardLengthMM parameter")
         except Exception as e:
             print(f"\n\nAn unexpected error occurred for link {link}: {e}\n\n")
-    print(len(all_products))
+    print(f"Proper records after parsing: {len(all_products)}")
     return all_products
 
 
 def add_products_to_database(chosen_cat, prods):
     url = "http://localhost:5198/api/"
 
+    # w aplikacji nie ma podzialu na dyski ssd i hdd
     if 'storage' in chosen_cat:
         url += 'storage'
     else:
@@ -123,19 +128,23 @@ def add_products_to_database(chosen_cat, prods):
         i += 1
 
 
-def load_up_database():
+def scrape_all_categories():
     for prod_cat, cat_link in product_categories_and_links.items():
+        print(f"Now scraping {how_many_pages} pages of {chosen_product_category}...")
         prod_links = collect_product_links(cat_link)
         prods = get_product_specs(prod_cat, prod_links)
         if add_to_database:
             add_products_to_database(prod_cat, prods)
 
 
-if fill_database:
-    load_up_database()
+if choose_all_product_categories:
+    scrape_all_categories()
 else:
-    if chosen_product_category in product_categories_and_links.keys():
+    if chosen_product_category in product_categories_and_links:
+        print(f"Now scraping {how_many_pages} pages of {chosen_product_category}...")
         product_links = collect_product_links(product_categories_and_links[chosen_product_category])
         products = get_product_specs(chosen_product_category, product_links)
         if add_to_database:
             add_products_to_database(chosen_product_category, products)
+    else:
+        print("Variable chosen_product_category in config.py is not equal to any product_categories_and_links key")
