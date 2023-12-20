@@ -1,6 +1,5 @@
 ﻿using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Interfaces;
-using KomputerBudowanieAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -77,17 +76,31 @@ namespace KomputerBudowanieAPI.Controllers
                 return BadRequest();
             }
 
-            var done = await _pcConfigurationRepository.Create(newConfigurationDetails);
-
-            return done == false ? BadRequest("Something went wrong") : Ok("New configuration created successfuly!");
+            try
+            {
+                var pcConfiguration = await _pcConfigurationRepository.Create(newConfigurationDetails);
+                return Ok(pcConfiguration);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT api/<ConfigurationController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(Guid id, [FromBody] PcConfigurationDto editingConfigurationDetails)
+        public async Task<IActionResult> Put(Guid id, [FromBody] PcConfigurationDto editedConfigurationDto)
         {
-            var done = await _pcConfigurationRepository.Update(id, editingConfigurationDetails);
-            return done == false ? BadRequest("Something went wrong.") : Ok("Configuration updated successfuly!");
+            try
+            {
+                var pcConfiguration = await _pcConfigurationRepository.Update(id, editedConfigurationDto);
+                return Ok(pcConfiguration);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
         // DELETE api/<ConfigurationController>/5

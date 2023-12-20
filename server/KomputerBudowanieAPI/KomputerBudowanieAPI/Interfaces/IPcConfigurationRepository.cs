@@ -10,7 +10,7 @@ namespace KomputerBudowanieAPI.Interfaces
 
         Task<PcConfiguration?> GetByIdAsync(Guid id);
         Task<PcConfiguration> Create(PcConfigurationDto newConfigurationDto);
-        Task<bool> Update(Guid id, PcConfigurationDto entity);
+        Task<PcConfiguration> Update(Guid id, PcConfigurationDto entity);
         Task Delete(PcConfiguration entity);
         Task SaveChanges();
         Task<PcConfiguration?> GetDataFromIds(PcConfigurationDto dto, PcConfiguration pcConfiguration);

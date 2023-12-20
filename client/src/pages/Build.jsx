@@ -77,10 +77,10 @@ const Build = ({ pcConfiguration, setPcConfiguration }) => {
       await axios
         .post("http://localhost:5198/api/configuration", pcConfigurationIds)
         .then((res) => {
-          console.log(res.data);
+          var data = res.data;
           localStorage.removeItem("localConfiugration");
           setIsSaved(true);
-          navigate("/");
+          navigate(`/configurations/${data.id}`);
         })
         .catch((err) => console.log(err));
     }
