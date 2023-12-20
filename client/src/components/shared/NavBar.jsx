@@ -6,22 +6,9 @@ const NavBar = () => {
       <nav className="navbar bg-opacity-25 bg-slate-500">
         <div className="navbar-start">
           <Link to="/" className="btn btn-ghost btn-circle">
-            LOGO
+            <img src="logo.jpg" />
           </Link>
         </div>
-
-        <div className="navbar-end">
-          <div class="form-control">
-            <input
-              type="text"
-              placeholder="Search"
-              class="input input-bordered w-24 md:w-auto"
-            />
-          </div>
-          <Link to="/login">Zaloguj</Link>
-        </div>
-      </nav>
-      <nav className="navbar bg-opacity-25 bg-slate-500">
         <div className="navbar-center">
           <Link to="parts" className="pr-5">
             Części
@@ -35,6 +22,11 @@ const NavBar = () => {
           <Link to="configurations" className="pl-5">
             Konfiguracje
           </Link>
+        </div>
+        <div className="navbar-end">
+          <Link to="/logowanie">Logowanie</Link>
+          <div className="p-2">/</div>
+          <Link to="/rejestracja">Rejestracja</Link>
         </div>
       </nav>
     </>

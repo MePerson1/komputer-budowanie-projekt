@@ -3,6 +3,7 @@ using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace KomputerBudowanieAPI.Controllers
 {
@@ -10,15 +11,15 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/storage")]
     public class StorageController : Controller
     {
-        private readonly IGenericRepository<Storage> _memoryRepository;
+        private readonly IGenericRepository<Storage> _storageRepository;
         private readonly IMapper _mapper;
 
         private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
 
-        public StorageController(IGenericRepository<Storage> memoryRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
+        public StorageController(IGenericRepository<Storage> storageRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
-            _memoryRepository = memoryRepository;
+            _storageRepository = storageRepository;
             _mapper = mapper;
             _compatibilityDataFilterService = compatibilityDataFilterService;
             _pcConfigurationRepository = pcConfigurationRepository;
@@ -27,7 +28,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllMemories()
         {
-            var memories = await _memoryRepository.GetAllAsync();
+            var memories = await _storageRepository.GetAllAsync();
             if (memories is null || !memories.Any())
             {
                 return NotFound();
@@ -38,10 +39,20 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetMemoryById(int id)
         {
-            var memory = await _memoryRepository.GetByIdAsync(id);
+            var memory = await _storageRepository.GetByIdAsync(id);
             if (memory is null)
                 return NotFound();
             return Ok(_mapper.Map<StorageDto>(memory));
+        }
+        [HttpGet("scrapper")]
+        public async Task<IActionResult> GetAllStoragesScraper()
+        {
+            var cases = await _storageRepository.GetAllAsync();
+            if (cases is null || !cases.Any())
+            {
+                return NotFound();
+            }
+            return Ok(_mapper.Map<ICollection<ProductDto>>(cases));
         }
 
         [HttpPost("compatible")]
@@ -49,7 +60,7 @@ namespace KomputerBudowanieAPI.Controllers
         {
             try
             {
-                var storages = await _memoryRepository.GetAllAsync();
+                var storages = await _storageRepository.GetAllAsync();
                 if (storages is null || !storages.Any())
                 {
                     return NotFound();
@@ -73,7 +84,7 @@ namespace KomputerBudowanieAPI.Controllers
             var newMemory = _mapper.Map<Storage>(memory);
             try
             {
-                await _memoryRepository.Create(newMemory);
+                await _storageRepository.Create(newMemory);
                 return Ok();
             }
             catch (Exception ex) { return BadRequest(ex.Message); }
@@ -85,21 +96,68 @@ namespace KomputerBudowanieAPI.Controllers
             var newMemory = _mapper.Map<Storage>(memory);
             try
             {
-                await _memoryRepository.Update(newMemory);
+                await _storageRepository.Update(newMemory);
                 return Ok();
             }
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
+        [HttpPut("price")]
+        public async Task<IActionResult> UpdatePrice([FromBody] ProductDto newPrices)
+        {
+            try
+            {
+                if (newPrices == null || newPrices.Prices == null)
+                {
+                    return BadRequest("Invalid or empty price data.");
+                }
+
+                Storage storage = await _storageRepository.GetByIdAsync(newPrices.Id);
+
+                if (storage is null)
+                {
+                    return BadRequest("Case with this ID does not exist.");
+                }
+
+                foreach (var price in newPrices.Prices)
+                {
+                    var existingPrice = storage.Prices.FirstOrDefault(p => p.Id == price.Id);
+
+                    if (existingPrice != null)
+                    {
+                        existingPrice.ShopName = price.ShopName;
+                        existingPrice.Link = price.Link;
+                        existingPrice.Price = price.Price;
+                    }
+                    else
+                    {
+                        storage.Prices.Add(price);
+                    }
+                }
+
+                await _storageRepository.Update(storage);
+
+                return Ok(storage);
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest("Error updating prices. Please try again later.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteMemory(int id)
         {
-            var memory = await _memoryRepository.GetByIdAsync(id);
+            var memory = await _storageRepository.GetByIdAsync(id);
             if (memory is null)
                 return NotFound();
             try
             {
-                await _memoryRepository.Delete(memory);
+                await _storageRepository.Delete(memory);
                 return Ok();
             }
             catch (Exception ex) { return BadRequest(ex.Message); }

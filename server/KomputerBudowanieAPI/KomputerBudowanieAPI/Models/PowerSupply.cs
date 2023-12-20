@@ -22,7 +22,7 @@ namespace KomputerBudowanieAPI.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
-        public float Price { get; set; }
+        public ICollection<ShopPrice> Prices { get; set; }
         public string Producer { get; set; }
         public string? Description { get; set; }
 
@@ -56,7 +56,7 @@ namespace KomputerBudowanieAPI.Models
         public int HeightMM { get; set; }
         public int WidthMM { get; set; }
         public int DepthMM { get; set; }
-        public bool HasLighting { get; set; } 
+        public bool HasLighting { get; set; }
 
         /*
         *  RELACJE

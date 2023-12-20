@@ -4,7 +4,7 @@ const Info = ({
   totalPrice,
   savePcConfiguration,
   pcConfiguration,
-  inputName,
+  setPcConfiguration,
 }) => {
   const [budget, setBudget] = useState(0);
 
@@ -19,10 +19,12 @@ const Info = ({
     }
   };
 
-  //TODO
-  /*
-    Jeżeli wyświetlam części to te które przekraczają mają dodatkowy wykrzyknik  
-  */
+  const handleDescriptionChange = (event) => {
+    const newDescription = event.target.value;
+    setPcConfiguration({ ...pcConfiguration, description: newDescription });
+    localStorage.setItem("localDescription", JSON.stringify(newDescription));
+  };
+
   useEffect(() => {
     const localBudget = JSON.parse(localStorage.getItem("localBudget"));
     if (localBudget !== null) setBudget(localBudget);
@@ -66,20 +68,51 @@ const Info = ({
             </td>
           </tr>
           <tr>
-            <td className="text-lg">
-              <b>Szacowana moc:</b>
-            </td>
-            <td className="text-lg">100 W</td>
-          </tr>
-
-          <tr>
             <td colSpan="2" className="text-center">
               <button
-                onClick={() => savePcConfiguration(pcConfiguration, inputName)}
                 className="btn btn-primary btn-sm"
+                onClick={() =>
+                  document.getElementById("my_modal_5").showModal()
+                }
               >
                 Zapisz
               </button>
+              <dialog
+                id="my_modal_5"
+                className="modal modal-bottom sm:modal-middle"
+              >
+                <div className="modal-box">
+                  <h3 className="font-bold text-lg">
+                    Czy na pewno chcesz zapisac?
+                  </h3>
+                  <label className="form-control">
+                    <div className="label">
+                      <span className="label-text">
+                        Opowiedz coś o zestawie
+                      </span>
+                    </div>
+                    <textarea
+                      onChange={handleDescriptionChange}
+                      value={pcConfiguration.description}
+                      className="textarea textarea-bordered h-24"
+                      placeholder="Opis (opcjonalnie)"
+                    ></textarea>
+                  </label>
+                  <div className="modal-action">
+                    <div>
+                      <button
+                        onClick={() => savePcConfiguration(pcConfiguration)}
+                        className="btn btn-primary "
+                      >
+                        Zapisz
+                      </button>
+                    </div>
+                    <form method="dialog">
+                      <button className="btn">Anuluj</button>
+                    </form>
+                  </div>
+                </div>
+              </dialog>
             </td>
           </tr>
           {configurationInfo && configurationInfo.problems.length !== 0 && (

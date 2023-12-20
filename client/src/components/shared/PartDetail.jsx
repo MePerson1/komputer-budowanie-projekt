@@ -14,22 +14,21 @@ const PartDetail = () => {
     .replace("/", "");
 
   useEffect(() => {
-    async function getPart(partType, id) {
-      try {
-        const response = await axios.get(
-          `http://localhost:5198/api/${partType}/${id}`
-        );
-        setPart(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
     if (id) {
       getPart(partType, id);
     }
   }, [id, partType]);
 
+  async function getPart(partType, id) {
+    try {
+      const response = await axios.get(
+        `http://localhost:5198/api/${partType}/${id}`
+      );
+      setPart(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   const renderSpecifications = () => {
     const specifications = Object.entries(part).map(([key, value]) => {
       if (typeof value === "boolean") {

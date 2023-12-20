@@ -3,6 +3,7 @@ using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace KomputerBudowanieAPI.Controllers
 {
@@ -33,6 +34,17 @@ namespace KomputerBudowanieAPI.Controllers
                 return NotFound();
             }
             return Ok(_mapper.Map<IEnumerable<MotherboardDto>>(motherboards));
+        }
+
+        [HttpGet("scrapper")]
+        public async Task<IActionResult> GetAllMotherboardScraper()
+        {
+            var cases = await _motherboardRepository.GetAllAsync();
+            if (cases is null || !cases.Any())
+            {
+                return NotFound();
+            }
+            return Ok(_mapper.Map<ICollection<ProductDto>>(cases));
         }
 
         [HttpGet("{id:int}")]
@@ -89,6 +101,53 @@ namespace KomputerBudowanieAPI.Controllers
                 return Ok();
             }
             catch (Exception ex) { return BadRequest(ex.Message); }
+        }
+
+        [HttpPut("price")]
+        public async Task<IActionResult> UpdatePrice([FromBody] ProductDto newPrices)
+        {
+            try
+            {
+                if (newPrices == null || newPrices.Prices == null)
+                {
+                    return BadRequest("Invalid or empty price data.");
+                }
+
+                Motherboard motherboard = await _motherboardRepository.GetByIdAsync(newPrices.Id);
+
+                if (motherboard is null)
+                {
+                    return BadRequest("Case with this ID does not exist.");
+                }
+
+                foreach (var price in newPrices.Prices)
+                {
+                    var existingPrice = motherboard.Prices.FirstOrDefault(p => p.Id == price.Id);
+
+                    if (existingPrice != null)
+                    {
+                        existingPrice.ShopName = price.ShopName;
+                        existingPrice.Link = price.Link;
+                        existingPrice.Price = price.Price;
+                    }
+                    else
+                    {
+                        motherboard.Prices.Add(price);
+                    }
+                }
+
+                await _motherboardRepository.Update(motherboard);
+
+                return Ok(motherboard);
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest("Error updating prices. Please try again later.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id:int}")]

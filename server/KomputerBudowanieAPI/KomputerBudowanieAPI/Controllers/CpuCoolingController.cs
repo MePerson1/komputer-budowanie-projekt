@@ -3,6 +3,7 @@ using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace KomputerBudowanieAPI.Controllers
 {
@@ -33,6 +34,17 @@ namespace KomputerBudowanieAPI.Controllers
                 return NotFound();
             }
             return Ok(_mapper.Map<IEnumerable<CpuCoolingDto>>(cpuCoolings));
+        }
+
+        [HttpGet("scrapper")]
+        public async Task<IActionResult> GetAllCpusCoolingsScraper()
+        {
+            var cases = await _cpuCoolingRepository.GetAllAsync();
+            if (cases is null || !cases.Any())
+            {
+                return NotFound();
+            }
+            return Ok(_mapper.Map<ICollection<ProductDto>>(cases));
         }
 
         [HttpGet("{id:int}")]
@@ -111,6 +123,53 @@ namespace KomputerBudowanieAPI.Controllers
                 var newCpuCooling = _mapper.Map<CpuCooling>(cpuCooling);
                 await _cpuCoolingRepository.Update(newCpuCooling);
                 return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("price")]
+        public async Task<IActionResult> UpdatePrice([FromBody] ProductDto newPrices)
+        {
+            try
+            {
+                if (newPrices == null || newPrices.Prices == null)
+                {
+                    return BadRequest("Invalid or empty price data.");
+                }
+
+                CpuCooling cpuCooling = await _cpuCoolingRepository.GetByIdAsync(newPrices.Id);
+
+                if (cpuCooling is null)
+                {
+                    return BadRequest("Case with this ID does not exist.");
+                }
+
+                foreach (var price in newPrices.Prices)
+                {
+                    var existingPrice = cpuCooling.Prices.FirstOrDefault(p => p.Id == price.Id);
+
+                    if (existingPrice != null)
+                    {
+                        existingPrice.ShopName = price.ShopName;
+                        existingPrice.Link = price.Link;
+                        existingPrice.Price = price.Price;
+                    }
+                    else
+                    {
+                        cpuCooling.Prices.Add(price);
+                    }
+                }
+
+                await _cpuCoolingRepository.Update(cpuCooling);
+
+                return Ok(cpuCooling);
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest("Error updating prices. Please try again later.");
             }
             catch (Exception ex)
             {

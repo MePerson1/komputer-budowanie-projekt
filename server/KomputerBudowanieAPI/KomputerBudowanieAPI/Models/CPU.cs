@@ -8,7 +8,7 @@ namespace KomputerBudowanieAPI.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
-        public float Price { get; set; }
+        public ICollection<ShopPrice> Prices { get; set; }
         public string Producer { get; set; }
         public string ProducerCode { get; set; }
         public string Line { get; set; }
@@ -31,9 +31,6 @@ namespace KomputerBudowanieAPI.Models
         public string L3Cache { get; set; }
         public string? AddedEquipment { get; set; }
 
-        /*
-        *  RELACJE
-        */
         [JsonIgnore]
         public ICollection<PcConfiguration> Configurations { get; set; }
     }
