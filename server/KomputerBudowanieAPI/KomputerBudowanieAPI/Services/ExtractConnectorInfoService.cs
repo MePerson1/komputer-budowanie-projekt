@@ -2,7 +2,7 @@
 {
     public static class ExtractConnectorInfoService
     {
-        static public Dictionary<string, int> FromMotherboard(string input)
+        static public Dictionary<string, int> ExtractsStorageSlotsFromMotherboard(string input)
         {
             // "M.2 slot x2, SATA 3 x4"
             // "M.2 slot x3, SATA 3 x6"
@@ -40,7 +40,7 @@
             return result;
         }
 
-        static public List<string> FromGraphicCard(string input)
+        static public List<string> ExtractPowerConnectorsFromGraphicCard(string input)
         {
             List<string> connectors = new();
 
