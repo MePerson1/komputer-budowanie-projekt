@@ -14,7 +14,7 @@ namespace KomputerBudowanieAPI.Database
         public DbSet<CpuCooling> CpuCoolings { get; set; }
         public DbSet<WaterCooling> WaterCoolings { get; set; }
         public DbSet<Storage> Storages { get; set; }
-        public DbSet<Memory> Rams { get; set; }
+        public DbSet<Ram> Rams { get; set; }
         public DbSet<Motherboard> Motherboards { get; set; }
         public DbSet<PowerSupply> PowerSupplies { get; set; }
         public DbSet<Case> Cases { get; set; }

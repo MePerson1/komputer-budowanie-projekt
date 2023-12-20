@@ -32,10 +32,10 @@ namespace KomputerBudowanieAPI.Helpers
             CreateMap<PowerSupply, PowerSupplyDto>();
             CreateMap<PowerSupplyDto, PowerSupply>();
 
-            CreateMap<Memory, RamDto>();
-            CreateMap<RamDto, Memory>();
+            CreateMap<Ram, RamDto>();
+            CreateMap<RamDto, Ram>();
 
-            CreateMap<Memory, ProductDto>();
+            CreateMap<Ram, ProductDto>();
             CreateMap<Case, ProductDto>();
             CreateMap<CpuCooling, ProductDto>();
             CreateMap<Cpu, ProductDto>();

@@ -93,7 +93,7 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
-        public void RamFilter(PcConfiguration configuration, ref IEnumerable<Memory> rams)
+        public void RamFilter(PcConfiguration configuration, ref IEnumerable<Ram> rams)
         {
             if (configuration.Motherboard is not null)
             {
@@ -178,7 +178,7 @@ namespace KomputerBudowanieAPI.Services
             || (cpu.Producer == "AMD" && motherboard.SupportedProcessors.Contains(Regex.Match(cpu.Line, @"^([\w\-]+)").Value))
             && motherboard.CPUSocket == cpu.SocketType;
 
-        static private bool Ram_Motherboard(Memory ram, Motherboard motherboard) =>
+        static private bool Ram_Motherboard(Ram ram, Motherboard motherboard) =>
             motherboard.MemoryStandard == ram.MemoryType
             && motherboard.MemoryConnectorType == ram.PinType
             && motherboard.MemorySlotsCount >= ram.ModuleCount;

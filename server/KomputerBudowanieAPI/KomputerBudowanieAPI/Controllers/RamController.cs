@@ -11,13 +11,13 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/ram")]
     public class RamController : Controller
     {
-        private readonly IGenericRepository<Memory> _ramRepository;
+        private readonly IGenericRepository<Ram> _ramRepository;
         private readonly IMapper _mapper;
 
         private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
 
-        public RamController(IGenericRepository<Memory> ramRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
+        public RamController(IGenericRepository<Ram> ramRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _ramRepository = ramRepository;
             _mapper = mapper;
@@ -82,7 +82,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRam([FromBody] RamDto ram)
         {
-            var newRam = _mapper.Map<Memory>(ram);
+            var newRam = _mapper.Map<Ram>(ram);
             try
             {
                 await _ramRepository.Create(newRam);
@@ -94,7 +94,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateRam([FromBody] RamDto ram)
         {
-            var newRam = _mapper.Map<Memory>(ram);
+            var newRam = _mapper.Map<Ram>(ram);
             try
             {
                 await _ramRepository.Update(newRam);
@@ -113,7 +113,7 @@ namespace KomputerBudowanieAPI.Controllers
                     return BadRequest("Invalid or empty price data.");
                 }
 
-                Memory ram = await _ramRepository.GetByIdAsync(newPrices.Id);
+                Ram ram = await _ramRepository.GetByIdAsync(newPrices.Id);
 
                 if (ram is null)
                 {

@@ -10,7 +10,7 @@ namespace KomputerBudowanieAPI.Models
         public int RamsId { get; set; }
         [JsonIgnore]
         public PcConfiguration PcConfiguration { get; set; } = null!;
-        public Memory Ram { get; set; } = null!;
+        public Ram Ram { get; set; } = null!;
 
         public int Quantity { get; set; }
     }

@@ -8,7 +8,6 @@ namespace KomputerBudowanieAPI.Models
         public int Id { get; set; }
         public string ShopName { get; set; }
         public string Link { get; set; }
-
         public double Price { get; set; }
 
     }
