@@ -8,7 +8,7 @@ namespace KomputerBudowanieAPI.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
-        public ICollection<ShopPrice> Prices { get; set; }
+        public ICollection<ShopPrice>? Prices { get; set; }
         public string Producer { get; set; }
         public string ProducerCode { get; set; }
         public string? Description { get; set; }
@@ -28,8 +28,8 @@ namespace KomputerBudowanieAPI.Models
         //ssd only
         public bool? Radiator { get; set; } = null;
         public string? MemoryChipType { get; set; } = null; // rodzaj kości pamięci
-        public int? ReadSpeedMBs { get; set; } = null;
-        public int? WriteSpeedMBs { get; set; } = null;
+        public float? ReadSpeedMBs { get; set; } = null;
+        public float? WriteSpeedMBs { get; set; } = null;
         public int? ReadRandomIOPS { get; set; } = null;
         public int? WriteRandomIOPS { get; set; } = null;
         public string? Longevity { get; set; } = null;

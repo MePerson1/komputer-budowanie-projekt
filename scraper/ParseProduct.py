@@ -1,12 +1,8 @@
-class GraphicCardLengthNotAvailable(Exception):
-    pass
-
-
 class ProductNotAvailable(Exception):
     pass
 
 
-class ProducerCodeNotAvailable(Exception):
+class ImportantSpecNotFound(Exception):
     pass
 
 
@@ -16,7 +12,6 @@ def parse_parts(chosen_cat, specs):
     if chosen_cat == "storage-hdd":
         translated = {
             "Name": specs["Nazwa"].replace('"', " cala"),
-            "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
             "Producer": specs["Producent"],
             "ProducerCode": specs["Kod producenta"],
             "Description": None,
@@ -34,7 +29,6 @@ def parse_parts(chosen_cat, specs):
     elif chosen_cat == "storage-ssd":
         translated = {
             "Name": specs["Nazwa"].replace('"', " cala"),
-            "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
             "Producer": specs["Producent"],
             "ProducerCode": specs["Kod producenta"],
             "Description": None,
@@ -59,11 +53,10 @@ def parse_parts(chosen_cat, specs):
         }
     elif chosen_cat == "graphic-card":
         if specs["Długość karty"] in typical_problems:
-            raise GraphicCardLengthNotAvailable()
+            raise ImportantSpecNotFound("GraphicCard: CardLengthMM not found")
 
         translated = {
             "Name": specs["Nazwa"],
-            "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
             "Producer": specs["Producent"],
             "ProducerCode": specs["Kod producenta"],
             "ChipsetProducer": specs["Producent chipsetu"],
@@ -98,9 +91,13 @@ def parse_parts(chosen_cat, specs):
             "Description": None
         }
     elif chosen_cat == "case":
+        if specs["Maksymalna długość karty graficznej [cm]"] in typical_problems:
+            raise ImportantSpecNotFound("Case: MaxGPULengthCM not found")
+        if specs["Maksymalna wysokość układu chłodzenia CPU [cm]"] in typical_problems:
+            raise ImportantSpecNotFound("Case: MaxCoolingSystemHeightCM not found")
+
         translated = {
             "Name": specs["Nazwa"],
-            "Price": float(specs["Cena"].replace(" ", "").replace("zł", "").replace(",", ".")),
             "Producer": specs["Producent"],
             "ProducerCode": specs["Kod producenta"],
             "Color": specs["Kolor"],
@@ -108,13 +105,13 @@ def parse_parts(chosen_cat, specs):
             "HeightCM": float(specs["Wysokość [cm]"]),
             "LengthCM": float(specs["Głębokość [cm]"]),
             "WidthCM": float(specs["Szerokość [cm]"]),
-            "WeightKG": float(specs["Waga [kg]"]) if specs["Waga [kg]"] not in typical_problems else -1,
+            "WeightKG": float(specs["Waga [kg]"]) if specs["Waga [kg]"] not in typical_problems else None,
             "CaseType": specs["Typ obudowy"],
             "Compatibility": specs["Kompatybilność"].replace("\n", ""),
             "HasWindow": True if specs["Okno"] == "Tak" else False,
             "IsMuted": True if specs["Wyciszona"] == "Tak" else False,
-            "MaxGPULengthCM": float(specs["Maksymalna długość karty graficznej [cm]"]) if specs["Maksymalna długość karty graficznej [cm]"] not in typical_problems else -1,
-            "MaxCoolingSystemHeightCM": float(specs["Maksymalna wysokość układu chłodzenia CPU [cm]"]) if specs["Maksymalna wysokość układu chłodzenia CPU [cm]"] not in typical_problems else -1,
+            "MaxGPULengthCM": float(specs["Maksymalna długość karty graficznej [cm]"]),
+            "MaxCoolingSystemHeightCM": float(specs["Maksymalna wysokość układu chłodzenia CPU [cm]"]),
             "USBTwoCount": int(specs["USB 2.0"]) if specs["USB 2.0"] != "Brak" else 0,
             "USBThreeCount": int(specs["USB 3.0"]) if specs["USB 3.0"] != "Brak" else 0,
             "USBThreePointOneCount": int(specs["USB 3.1"]) if specs["USB 3.1"] != "Brak" else 0,
@@ -135,13 +132,12 @@ def parse_parts(chosen_cat, specs):
             "PanelBottom": specs["Panel dolny"] if specs["Panel dolny"] != "Nie" else None,
             "PanelTop": specs["Panel górny"] if specs["Panel górny"] != "Nie" else None,
             "PowerSupply": specs["Zasilacz"] if specs["Zasilacz"] != "Nie" else None,
-            "PowerSupplyPower": specs["Moc zasilacza"] if specs["Moc zasilacza"] != "Brak zasilacza" else None,
+            "PowerSupplyPower": specs["Moc zasilacza"].split()[0] if specs["Moc zasilacza"] != "Brak zasilacza" else None,
             "Description": None
         }
     elif chosen_cat == "ram":
         translated = {
             "Name": specs["Nazwa"],
-            "Price": float(specs["Cena"].replace("zł", "").replace(",", ".").replace(" ", "")),
             "Producer": specs["Producent"],
             "ProducerCode": specs["Kod producenta"],
             "Description": None,

@@ -8,28 +8,27 @@ namespace KomputerBudowanieAPI.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
-        public ICollection<ShopPrice> Prices { get; set; }
+        public ICollection<ShopPrice>? Prices { get; set; }
         public string Producer { get; set; }
         public string ProducerCode { get; set; }
-
-        public string MountingType { get; set; } // Sposób montażu
-        public string ColorElement { get; set; } // Element kolorystyczny
+        public string MountingType { get; set; }
+        public string ColorElement { get; set; }
         public float HeightMM { get; set; }
         public float WidthMM { get; set; }
         public float DepthMM { get; set; }
-        public int WeightGrams { get; set; }
-        public string ProcessorSocket { get; set; } // Socket procesora
-        public int? MaxTDPinW { get; set; } // Maksymalne TDP
-        public string BaseMaterial { get; set; } // Materiał podstawy
-        public bool HasLighting { get; set; } // Podświetlenie
-        public int HeatPipesCount { get; set; } // Ilość ciepłowodów
-        public int HeatPipeDiameterMM { get; set; } // Średnica ciepłowodów
-        public int FanCount { get; set; } // Ilość wentylatorów
-        public int FanDiameterMM { get; set; }
-        public int? MaxFanSpeedPerMin { get; set; } // Maksymalna prędkość obrotowa
-        public float? AirflowCFM { get; set; } // Przepływ powietrza [CFM]
-        public float? MaxNoiseLevelinDBA { get; set; } // Maksymalny poziom hałasu
-        public int? LifespanHours { get; set; } // Żywotność
+        public float? WeightGrams { get; set; }
+        public string ProcessorSocket { get; set; }
+        public int? MaxTDPinW { get; set; }
+        public string BaseMaterial { get; set; }
+        public bool HasLighting { get; set; }
+        public int HeatPipesCount { get; set; }
+        public int? HeatPipeDiameterMM { get; set; }
+        public int FanCount { get; set; }
+        public int? FanDiameterMM { get; set; }
+        public int? MaxFanSpeedPerMin { get; set; }
+        public float? MaxNoiseLevelinDBA { get; set; }
+        public float? AirflowCFM { get; set; }
+        public int? LifespanHours { get; set; }
 
         /*
         *  RELACJE

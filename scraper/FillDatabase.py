@@ -72,7 +72,7 @@ def get_product_specs(chosen_cat, prod_links):
                 product_specs[spec_name] = spec_value
 
             if "Kod producenta" not in product_specs:
-                raise ParseProduct.ProducerCodeNotAvailable
+                raise ParseProduct.ImportantSpecNotFound("ProducerCode not found")
 
             # wyswietl rzeczy przed tlumaczeniem
             if show_raw_data_in_console:
@@ -95,10 +95,8 @@ def get_product_specs(chosen_cat, prod_links):
             print(f"Request error for link {link}: {req_error}")
         except ParseProduct.ProductNotAvailable:
             print(f"Product {link} is not available")
-        except ParseProduct.ProducerCodeNotAvailable:
-            print(f"Product {link} does not have ProducerCode")
-        except ParseProduct.GraphicCardLengthNotAvailable:
-            print(f"Graphic Card {link} does not have valid CardLengthMM parameter")
+        except ParseProduct.ImportantSpecNotFound as e:
+            print(f"Product {link} is missing crucial atribute. {e}")
         except Exception as e:
             print(f"\n\nAn unexpected error occurred for link {link}: {e}\n\n")
     print(f"Proper records after parsing: {len(all_products)}")

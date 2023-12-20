@@ -19,17 +19,17 @@ chosen_product_category = "motherboard"
 
 # Opcja (jesli jest na True) sprawia, ze wszystkie produkty z kazdej kategorii zostaja zescrapowane i ew dodane do bazy w zaleznosci od add_to_database.
 # Jesli jest na False, zostanie wykonane wyszukiwanie dla tylko jednej kategorii produktu
-choose_all_product_categories = False
+choose_all_product_categories = True
 
 # Opcja do ustawiania, ile stron produktów z morele ma być maksymalnie dodane do bazy.
 # Kazda strona przeklada sie na maksymalnie 30 odpowiednich produktow do dodania do bazy (jesli czegos im nie brakuje)
 # Podawanie wyzszego numeru stron dla komponentu niz ich jest w samym sklepie sprawia, ze zostana zescrapowane po prostu wszystkie ktore sa
 # Minimalna ilosc zescrapowanych stron to 1
-how_many_pages = 3
+how_many_pages = 4
 
 # Opcja do dodawania zescrappowanych rekordow do bazy danych. Dostepne opcje to True lub False
-add_to_database = False
+add_to_database = True
 
 # Opcje do wyswietlania rekordow podczas ich przetwarzania. Dostepne opcje to True lub False
 show_raw_data_in_console = False
-show_translated_data_in_console = True
+show_translated_data_in_console = False
