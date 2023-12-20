@@ -141,44 +141,44 @@ namespace KomputerBudowanieAPI.Repository
 
             double totalPrice = 0;
 
-            if (pcCase != null)
-                totalPrice += pcCase.Price;
+            /* if (pcCase != null)
+                 totalPrice += pcCase.Price;
 
-            if (cpu != null)
-                totalPrice += cpu.Price;
+             if (cpu != null)
+                 totalPrice += cpu.Price;
 
-            if (cpuCooling != null)
-                totalPrice += cpuCooling.Price;
+             if (cpuCooling != null)
+                 totalPrice += cpuCooling.Price;
 
-            if (motherboard != null)
-                totalPrice += motherboard.Price;
+             if (motherboard != null)
+                 totalPrice += motherboard.Price;
 
-            if (graphicCard != null)
-                totalPrice += graphicCard.Price;
+             if (graphicCard != null)
+                 totalPrice += graphicCard.Price;
 
-            if (powerSupply != null)
-                totalPrice += powerSupply.Price;
+             if (powerSupply != null)
+                 totalPrice += powerSupply.Price;
 
-            if (waterCooling != null)
-                totalPrice += waterCooling.Price;
+             if (waterCooling != null)
+                 totalPrice += waterCooling.Price;
 
-            // Add prices of storages
-            if (storages != null && storages.Any())
-            {
-                foreach (var storage in storages)
-                {
-                    totalPrice += storage.Price;
-                }
-            }
+             // Add prices of storages
+             if (storages != null && storages.Any())
+             {
+                 foreach (var storage in storages)
+                 {
+                     totalPrice += storage.Price;
+                 }
+             }
 
-            // Add prices of RAMs
-            if (rams != null && rams.Any())
-            {
-                foreach (var ram in rams)
-                {
-                    totalPrice += ram.Price;
-                }
-            }
+             // Add prices of RAMs
+             if (rams != null && rams.Any())
+             {
+                 foreach (var ram in rams)
+                 {
+                     totalPrice += ram.Price;
+                 }
+             }*/
 
 
             pcConfiguration.Name = dto.Name;

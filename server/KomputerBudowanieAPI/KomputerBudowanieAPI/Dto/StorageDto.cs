@@ -1,10 +1,12 @@
-﻿namespace KomputerBudowanieAPI.Dto
+﻿using KomputerBudowanieAPI.Models;
+
+namespace KomputerBudowanieAPI.Dto
 {
     public class StorageDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public double Price { get; set; }
+        public ICollection<ShopPrice> Prices { get; set; }
         public string Producer { get; set; }
         public string ProducerCode { get; set; }
         public string? Description { get; set; }

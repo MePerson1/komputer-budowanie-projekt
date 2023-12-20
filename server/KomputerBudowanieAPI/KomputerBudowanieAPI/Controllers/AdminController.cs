@@ -10,7 +10,7 @@ namespace KomputerBudowanieAPI.Controllers
     {
         private readonly KomBuildDbContext _context;
 
-        private readonly string[] tables = { "Cases", "CpuCoolings", "Fans", "Cpus", "GraphicCards", "Storages", "Motherboards", "Rams", "PowerSupplys", "PcConfigurations" };
+        private readonly string[] tables = { "ShopPrices", "PcConfigurations", "Cases", "CpuCoolings", "Cpus", "GraphicCards", "Storages", "Motherboards", "Rams", "PowerSupplies", "PcConfigurations" };
 
         public AdminController(KomBuildDbContext context)
         {
