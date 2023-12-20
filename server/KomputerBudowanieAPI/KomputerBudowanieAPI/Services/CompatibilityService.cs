@@ -458,6 +458,7 @@ namespace KomputerBudowanieAPI.Services
         {
             if (configuration.Storages is not null && configuration.Motherboard is not null)
             {
+                //connectors: "M.2 slot or Sata 3
                 Dictionary<string, int> connectors = ExtractConnectorInfoService.ExtractsStorageSlotsFromMotherboard(configuration.Motherboard.DriveConnectors);
                 foreach (var disc in configuration.Storages)
                 {
@@ -468,14 +469,17 @@ namespace KomputerBudowanieAPI.Services
                     //W dyskach SATA
                     //"interface": "SATA 3",
                     //"formFactor": "2.5 cala",
+
+                    //Wszystkie dyski sata:
                     if (connectors.ContainsKey(disc.Interface))
                     {
-                        if (connectors[disc.Interface] > 0) connectors[disc.Interface] = connectors[disc.Interface]--;
+                        if (connectors[disc.Interface] > 0) connectors[disc.Interface] = connectors[disc.Interface] - 1;
                         else toast.Problems.Add($"Niewystarczająca ilość złączy {disc.Interface}!");
                     }
-                    else if (disc.FormFactor.Contains("M.2"))
+                    //Wszystkie dyski M2:
+                    else if (disc.FormFactor.Contains("M.2") && connectors.ContainsKey("M.2 slot"))
                     {
-                        if (connectors["M.2 slot"] > 0) connectors["M.2 slot"] = connectors["M.2 slot"]--;
+                        if (connectors["M.2 slot"] > 0) connectors["M.2 slot"] = connectors["M.2 slot"] - 1;
                         else toast.Problems.Add($"Niewystarczająca ilość złączy M2!");
                     }
                     else
@@ -512,9 +516,7 @@ namespace KomputerBudowanieAPI.Services
                 var line = configuration.Cpu.Line;
                 if (configuration.Cpu.Producer == "AMD")
                 {
-
                     line = Regex.Match(line, @"^([\w\-]+)").Value;
-
                 }
 
                 if (!configuration.Motherboard.SupportedProcessors.Contains(line))
@@ -538,7 +540,7 @@ namespace KomputerBudowanieAPI.Services
         {
             if (configuration.GraphicCard is not null && configuration.Case is not null)
             {
-                if (configuration.Case.MaxGPULengthCM < configuration.GraphicCard.CardLengthMM / 10)
+                if (configuration.Case.MaxGPULengthCM * 10 < configuration.GraphicCard.CardLengthMM)
                 {
                     toast.Problems.Add("Karta graficzna jest za duża dla tej obudowy!");
                 }
@@ -546,7 +548,7 @@ namespace KomputerBudowanieAPI.Services
         }
 
         // WARNING:
-        // - tu by się jeszcze przydało zwrócić warning jak płyta główna ma starszy typ złącza od karty graficznej, problem jest taki że nie ma danych
+        // - tu by się jeszcze przydało zwrócić warning jak płyta główna ma starszy typ złącza od karty graficznej, problem jest taki że nie ma danych aby to zrobić
         static private void GraphicCard_Motherboard(ref Toast toast, PcConfiguration configuration)
         {
             if (configuration.GraphicCard is not null && configuration.Motherboard is not null)

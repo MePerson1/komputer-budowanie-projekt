@@ -7,9 +7,13 @@ namespace Tests.Services
         [Fact]
         public void Given_IntelCpuSocketString_When_ExtractSocketsFromCpuCooling_Then_ReturnCpuSocketList()
         {
+            // Arrange (Given)
             string processorSocketIntelString = "LGA 1366, LGA 2011/2011-3, LGA 2066, LGA 1150/1151/1155/1156/1200, LGA 1700";
+
+            // Act (When)
             List<string> processorSockets = ExtractConnectorInfoService.ExtractSocketsFromCpuCooling(processorSocketIntelString);
 
+            // Assert (Then)
             Assert.Contains("1366", processorSockets);
             Assert.Contains("2011", processorSockets);
             Assert.Contains("2011-3", processorSockets);
@@ -37,13 +41,16 @@ namespace Tests.Services
             Assert.Contains("AM5", processorSockets);
         }
 
-
         [Fact]
         public void Given_AmdAndIntelCpuCoolingSocketString_When_ExtractSocketsFromCpuCooling_Then_ReturnCpuSocketList()
         {
+            // Arrange (Given)
             string processorSocketIntelString = "1150/1151/1155/1156/1200, 1366, 1700, 2011/2011-3, 2066, 775, AM3(+)/AM2(+)/FM2(+)/FM1, AM4/AM5";
+
+            // Act (When)
             List<string> processorSockets = ExtractConnectorInfoService.ExtractSocketsFromCpuCooling(processorSocketIntelString);
 
+            // Assert (Then)
             Assert.Contains("1150", processorSockets);
             Assert.Contains("1155", processorSockets);
             Assert.Contains("1200", processorSockets);
