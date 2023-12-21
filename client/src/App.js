@@ -8,17 +8,17 @@ function App() {
   let [pcConfiguration, setPcConfiguration] = useState(PcConfiguration);
 
   return (
-    <div className="App">
-      <header className="App-header top-0">
+    <div className="flex flex-col h-screen">
+      <header className="top-0">
         <NavBar />
       </header>
-      <main>
+      <main className="flex-grow">
         <AppRoutes
           pcConfiguration={pcConfiguration}
           setPcConfiguration={setPcConfiguration}
         />
-        <Footer />
       </main>
+      <Footer />
     </div>
   );
 }

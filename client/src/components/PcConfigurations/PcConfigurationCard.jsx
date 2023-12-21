@@ -6,7 +6,7 @@ const PcConfigurationCard = ({ pcConfigration }) => {
   };
   return (
     <div className="p-5">
-      <div className="card lg:card-side bg-base-100 shadow-xl">
+      <div className="bg-base-100 shadow-xl ">
         <figure>
           <img src="images/parts/computer.png" className="w-64" alt="Album" />
         </figure>
