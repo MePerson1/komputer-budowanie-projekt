@@ -131,53 +131,56 @@ namespace KomputerBudowanieAPI.Repository
 
         public async Task<PcConfiguration?> GetDataFromIds(PcConfigurationDto dto, PcConfiguration pcConfiguration)
         {
-            var pcCase = await _context.Set<Case>().FindAsync(dto.CaseId);
-            var cpu = await _context.Cpus.FirstOrDefaultAsync(x => x.Id == dto.CpuId);
-            var cpuCooling = await _context.CpuCoolings.FirstOrDefaultAsync(x => x.Id == dto.CpuCoolingId);
-            var motherboard = await _context.Motherboards.FirstOrDefaultAsync(x => x.Id == dto.MotherboadId);
-            var graphicCard = await _context.GraphicCards.FirstOrDefaultAsync(x => x.Id == dto.GraphicCardId);
-            var powerSupply = await _context.PowerSupplies.FirstOrDefaultAsync(x => x.Id == dto.PowerSuplyId);
-            var waterCooling = await _context.WaterCoolings.FirstOrDefaultAsync(x => x.Id == dto.WaterCoolingId);
+            var pcCase = await _context.Cases.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.CpuId);
+            var cpu = await _context.Cpus.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.CpuId);
+            var cpuCooling = await _context.CpuCoolings.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.CpuCoolingId);
+            var motherboard = await _context.Motherboards.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.MotherboadId);
+            var graphicCard = await _context.GraphicCards.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.GraphicCardId);
+            var powerSupply = await _context.PowerSupplies.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.PowerSuplyId);
+            var waterCooling = await _context.WaterCoolings.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.WaterCoolingId);
 
 
 
-            var storages = await _context.Storages
+            var storages = await _context.Storages.Include(s => s.Prices)
                 .Where(x => dto.StorageIds != null && dto.StorageIds.Contains(x.Id))
                 .ToListAsync();
 
-            var rams = await _context.Rams
+            var rams = await _context.Rams.Include(s => s.Prices)
                 .Where(x => dto.RamsIds != null && dto.RamsIds.Contains(x.Id))
                 .ToListAsync();
 
             double totalPrice = 0;
 
-            if (pcCase != null)
-                totalPrice += pcCase.Price;
+            if (pcCase != null && pcCase.Prices.Any() && pcCase.Prices is not null)
+                totalPrice += pcCase.Prices.Min(p => p.Price);
 
-            if (cpu != null)
-                totalPrice += cpu.Price;
+            if (cpu != null && cpu.Prices.Any() && cpu.Prices is not null)
+                totalPrice += cpu.Prices.Min(p => p.Price);
 
-            if (cpuCooling != null)
-                totalPrice += cpuCooling.Price;
 
-            if (motherboard != null)
-                totalPrice += motherboard.Price;
+            if (cpuCooling != null && cpuCooling.Prices.Any() && cpuCooling.Prices is not null)
+                totalPrice += cpuCooling.Prices.Min(p => p.Price);
 
-            if (graphicCard != null)
-                totalPrice += graphicCard.Price;
+            if (motherboard != null && motherboard.Prices.Any() && motherboard.Prices is not null)
+                totalPrice += motherboard.Prices.Min(p => p.Price);
 
-            if (powerSupply != null)
-                totalPrice += powerSupply.Price;
+            if (graphicCard != null && graphicCard.Prices.Any() && graphicCard.Prices is not null)
+                totalPrice += graphicCard.Prices.Min(p => p.Price);
 
-            if (waterCooling != null)
-                totalPrice += waterCooling.Price;
+            if (powerSupply != null && powerSupply.Prices.Any() && powerSupply.Prices is not null)
+                totalPrice += powerSupply.Prices.Min(p => p.Price);
+
+            if (waterCooling != null && waterCooling.Prices.Any() && waterCooling.Prices is not null)
+                totalPrice += waterCooling.Prices.Min(p => p.Price);
+
 
             // Add prices of storages
             if (storages != null && storages.Any())
             {
                 foreach (var storage in storages)
                 {
-                    totalPrice += storage.Price;
+                    if (storage.Prices is not null)
+                        totalPrice += storage.Prices.Min(p => p.Price);
                 }
             }
 
@@ -186,7 +189,8 @@ namespace KomputerBudowanieAPI.Repository
             {
                 foreach (var ram in rams)
                 {
-                    totalPrice += ram.Price;
+                    if (ram.Prices is not null)
+                        totalPrice += ram.Prices.Min(p => p.Price);
                 }
             }
 
