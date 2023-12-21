@@ -63,7 +63,7 @@ const ComponentRow = ({
         <td>{part.name}</td>
         <td>{part.producer}</td>
         <td>
-          <PartPrices price={part.price} />
+          <PartPrices prices={part.prices} />
         </td>
         <td>
           <button onClick={handleAddPart} className="btn btn-primary">

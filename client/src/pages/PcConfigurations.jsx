@@ -22,7 +22,7 @@ const Configurations = () => {
   return (
     <>
       <Topic title="Konfiguracje" />
-      <div className="flex flex-col justify-center min-h-screen items-center p-4">
+      <div className="flex flex-col justify-center items-center p-4">
         <div className="flex flex-row justify-between mb-4 w-full items-start">
           <button className="btn mb-2 sm:mb-0">Sortuj</button>
           <div className="w-full sm:w-auto flex">

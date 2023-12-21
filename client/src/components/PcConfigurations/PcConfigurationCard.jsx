@@ -6,10 +6,14 @@ const PcConfigurationCard = ({ pcConfiguration }) => {
   };
 
   return (
-    <div className="p-5 m-2 border rounded-lg">
+    <div className="p-5 m-2 border rounded-lg justify-center">
       <div className="shadow-lg p-4">
-        <figure>
-          <img src="images/parts/computer.png" className="w-64" alt="Album" />
+        <figure className="">
+          <img
+            src="images/parts/computer.png"
+            className="w-64 dark:invert items"
+            alt="Album"
+          />
         </figure>
         <div className="mt-4">
           <h2 className="text-lg font-bold">{pcConfiguration.name}</h2>
