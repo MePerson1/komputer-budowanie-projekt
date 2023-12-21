@@ -103,28 +103,29 @@ def get_komputronik_price(producer_code):
         return {}
 
 
-def get_morele_prices():
-    return {}
+def get_morele_prices(category, link, category_products):
+    pass
 
 
 def update_database():
-    product_categories = list(product_categories_and_links)
-    # product_categories.remove("storage-hdd")
-    # product_categories.remove("storage-ssd")
-    # product_categories.append("storage")
+    # dostowanie slownika z configu do wygladu bardziej odpowiadajacego bazie danych
+    database_categories_and_links = product_categories_and_links
+    database_categories_and_links["storage"] = [product_categories_and_links["storage-hdd"], product_categories_and_links["storage-ssd"]]
+    database_categories_and_links.pop("storage-hdd")
+    database_categories_and_links.pop("storage-ssd")
 
-    for category in product_categories:
-        category_data_link = f"http://localhost:5198/api/{category}/scraper"
+    for category in database_categories_and_links:
+        category_products_link = f"http://localhost:5198/api/{category}/scraper"
         category_record_update_link = f"http://localhost:5198/api/{category}/price"
 
-        response = requests.get(category_data_link)
-        category_data = response.json()
+        response_data = requests.get(category_products_link)
+        category_products = response_data.json()
 
-        for product in category_data:
+        for product in category_products:
             print(f"Scraping prices for {product['name']}...")
             komputronik_price = get_komputronik_price(product["producerCode"])
             euro_com_price = get_euro_com_price(product["producerCode"], product["name"])
-            time.sleep(2)
+            time.sleep(1)
 
             # Dodawanie dwoch latwiejszych (po wyszukiwaniu) cen
             if not product["prices"]:
@@ -143,13 +144,13 @@ def update_database():
                         shop_price["price"] = euro_com_price["price"]
                         shop_price["link"] = euro_com_price["link"]
 
-            response = requests.put(category_record_update_link, json=product)
+            response_update = requests.put(category_record_update_link, json=product)
 
-            if response.status_code == 200:
+            if response_update.status_code == 200:
                 print(f"Request for {product['name']} on {category_record_update_link} was successful.\n")
             else:
-                print(f"Request failed with status code: {response.status_code}")
-                print(response.json())
+                print(f"Request failed with status code: {response_update.status_code}")
+                print(response_update.json())
                 print(f"for product: {product}")
 
 
