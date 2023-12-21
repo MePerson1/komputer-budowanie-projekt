@@ -1,9 +1,10 @@
 ﻿using KomputerBudowanieAPI.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace KomputerBudowanieAPI.Database
 {
-    public class KomBuildDbContext : DbContext
+    public class KomBuildDbContext : IdentityDbContext<ApplicationUser>
     {
         public KomBuildDbContext(DbContextOptions<KomBuildDbContext> options) : base(options) { }
 
@@ -24,6 +25,8 @@ namespace KomputerBudowanieAPI.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<PcConfigurationRam>()
                     .HasKey(pc => new { pc.PcConfigurationsId, pc.RamsId });
             modelBuilder.Entity<PcConfigurationRam>()

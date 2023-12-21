@@ -44,7 +44,7 @@ namespace KomputerBudowanieAPI.Controllers
         // GET api/users/5/configurations
         [Route("users/{userId}")]
         [HttpGet]
-        public async Task<IActionResult> Get(int userId)
+        public async Task<IActionResult> Get(string userId)
         {
             var configs = await _pcConfigurationRepository.GetAllAsync(userId);
             if (configs is null || !configs.Any())
