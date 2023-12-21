@@ -7,7 +7,7 @@ namespace KomputerBudowanieAPI.Database
     {
         public KomBuildDbContext(DbContextOptions<KomBuildDbContext> options) : base(options) { }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<ApplicationUser> Users { get; set; }
         public DbSet<PcConfiguration> PcConfigurations { get; set; }
         public DbSet<GraphicCard> GraphicCards { get; set; }
         public DbSet<Cpu> Cpus { get; set; }

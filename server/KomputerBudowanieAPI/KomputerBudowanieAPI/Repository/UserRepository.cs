@@ -5,7 +5,7 @@ namespace KomputerBudowanieAPI.Repository
 {
     public class UserRepository : IUserRepository
     {
-        public int Create(User cpu)
+        public int Create(ApplicationUser cpu)
         {
             throw new NotImplementedException();
         }
@@ -15,17 +15,17 @@ namespace KomputerBudowanieAPI.Repository
             throw new NotImplementedException();
         }
 
-        public ICollection<User> GetAll()
+        public ICollection<ApplicationUser> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public User? GetById(int id)
+        public ApplicationUser? GetById(int id)
         {
             throw new NotImplementedException();
         }
 
-        public bool Update(int id, User cpu)
+        public bool Update(int id, ApplicationUser cpu)
         {
             throw new NotImplementedException();
         }

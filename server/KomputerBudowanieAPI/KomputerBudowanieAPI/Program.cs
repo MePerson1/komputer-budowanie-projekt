@@ -1,7 +1,9 @@
 using KomputerBudowanieAPI.Database;
 using KomputerBudowanieAPI.Interfaces;
+using KomputerBudowanieAPI.Models;
 using KomputerBudowanieAPI.Repository;
 using KomputerBudowanieAPI.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +16,10 @@ builder.Services.AddDbContext<KomBuildDbContext>(opt => opt.UseNpgsql(builder.Co
 builder.Services.AddControllers();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+        .AddEntityFrameworkStores<KomBuildDbContext>()
+        .AddDefaultTokenProviders();
 
 //builder.Services.AddScoped<ICaseRepository, CaseRepository>();
 //builder.Services.AddScoped<ICpuCoolingRepository, CpuCoolingRepository>();

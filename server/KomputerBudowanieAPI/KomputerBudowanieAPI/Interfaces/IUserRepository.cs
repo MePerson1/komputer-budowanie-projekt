@@ -4,12 +4,12 @@ namespace KomputerBudowanieAPI.Interfaces
 {
     public interface IUserRepository
     {
-        ICollection<User> GetAll();
-        User? GetById(int id);
+        ICollection<ApplicationUser> GetAll();
+        ApplicationUser? GetById(int id);
 
-        int Create(User cpu);
+        int Create(ApplicationUser cpu);
 
-        bool Update(int id, User cpu);
+        bool Update(int id, ApplicationUser cpu);
         bool Delete(int id);
     }
 }
