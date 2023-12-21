@@ -8,16 +8,16 @@ namespace KomputerBudowanieAPI.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
-        public float Price { get; set; }
+        public ICollection<ShopPrice>? Prices { get; set; }
         public string Producer { get; set; }
         public string ProducerCode { get; set; }
         public string ChipsetProducer { get; set; }
         public string ChipsetType { get; set; }
-        public int CoreClockMHz { get; set; }
-        public int BoostClockMHz { get; set; }
-        public int StreamProcessors { get; set; }
-        public int ROPUnits { get; set; }
-        public int TextureUnits { get; set; }
+        public int? CoreClockMHz { get; set; }
+        public int? BoostClockMHz { get; set; }
+        public int? StreamProcessors { get; set; }
+        public int? ROPUnits { get; set; }
+        public int? TextureUnits { get; set; }
         public int RTCores { get; set; }
         public int TensorCores { get; set; }
         public bool HasDLSS3Support { get; set; }

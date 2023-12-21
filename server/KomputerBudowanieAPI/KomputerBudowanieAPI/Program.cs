@@ -31,7 +31,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 //builder.Services.AddScoped<IPowerSupplyRepository, PowerSupplyRepository>();
 //builder.Services.AddScoped<IRamRepository, RamRepository>();
 //builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(PcPartsRepository<>));
 builder.Services.AddScoped<IPcConfigurationRepository, PcConfigurationRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICompatibilityService, CompatibilityService>();

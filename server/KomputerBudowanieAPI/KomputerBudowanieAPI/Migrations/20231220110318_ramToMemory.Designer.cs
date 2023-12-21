@@ -3,6 +3,7 @@ using System;
 using KomputerBudowanieAPI.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KomputerBudowanieAPI.Migrations
 {
     [DbContext(typeof(KomBuildDbContext))]
-    partial class KomBuildDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231220110318_ramToMemory")]
+    partial class ramToMemory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,7 +144,7 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Property<int>("USBTypeCCount")
                         .HasColumnType("integer");
 
-                    b.Property<float?>("WeightKG")
+                    b.Property<float>("WeightKG")
                         .HasColumnType("real");
 
                     b.Property<float>("WidthCM")
@@ -199,7 +202,7 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Property<int?>("MaxOperatingTempC")
                         .HasColumnType("integer");
 
-                    b.Property<float?>("MaxTurboFrequencyGHz")
+                    b.Property<float>("MaxTurboFrequencyGHz")
                         .HasColumnType("real");
 
                     b.Property<string>("Name")
@@ -267,13 +270,13 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Property<int>("FanCount")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("FanDiameterMM")
+                    b.Property<int>("FanDiameterMM")
                         .HasColumnType("integer");
 
                     b.Property<bool>("HasLighting")
                         .HasColumnType("boolean");
 
-                    b.Property<int?>("HeatPipeDiameterMM")
+                    b.Property<int>("HeatPipeDiameterMM")
                         .HasColumnType("integer");
 
                     b.Property<int>("HeatPipesCount")
@@ -314,8 +317,8 @@ namespace KomputerBudowanieAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<float?>("WeightGrams")
-                        .HasColumnType("real");
+                    b.Property<int>("WeightGrams")
+                        .HasColumnType("integer");
 
                     b.Property<float>("WidthMM")
                         .HasColumnType("real");
@@ -333,7 +336,7 @@ namespace KomputerBudowanieAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("BoostClockMHz")
+                    b.Property<int>("BoostClockMHz")
                         .HasColumnType("integer");
 
                     b.Property<int>("CardLengthMM")
@@ -358,7 +361,7 @@ namespace KomputerBudowanieAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("CoreClockMHz")
+                    b.Property<int>("CoreClockMHz")
                         .HasColumnType("integer");
 
                     b.Property<int>("DSub")
@@ -417,7 +420,7 @@ namespace KomputerBudowanieAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("ROPUnits")
+                    b.Property<int>("ROPUnits")
                         .HasColumnType("integer");
 
                     b.Property<int>("RTCores")
@@ -430,13 +433,13 @@ namespace KomputerBudowanieAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("StreamProcessors")
+                    b.Property<int>("StreamProcessors")
                         .HasColumnType("integer");
 
                     b.Property<int>("TensorCores")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("TextureUnits")
+                    b.Property<int>("TextureUnits")
                         .HasColumnType("integer");
 
                     b.Property<int>("USBC")
@@ -490,6 +493,7 @@ namespace KomputerBudowanieAPI.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("GraphicsChipset")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("HasIntegratedGraphicsSupport")
@@ -683,19 +687,24 @@ namespace KomputerBudowanieAPI.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Certificate")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Cooling")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<float?>("DepthMM")
-                        .HasColumnType("real");
+                    b.Property<int>("DepthMM")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("EfficiencyRating")
+                    b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<int?>("FanDiameterMM")
+                    b.Property<string>("EfficiencyRating")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("FanDiameterMM")
                         .HasColumnType("integer");
 
                     b.Property<string>("FormFactor")
@@ -705,8 +714,8 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Property<bool>("HasLighting")
                         .HasColumnType("boolean");
 
-                    b.Property<float?>("HeightMM")
-                        .HasColumnType("real");
+                    b.Property<int>("HeightMM")
+                        .HasColumnType("integer");
 
                     b.Property<string>("ModularCabling")
                         .HasColumnType("text");
@@ -749,10 +758,11 @@ namespace KomputerBudowanieAPI.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Security")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<float?>("WidthMM")
-                        .HasColumnType("real");
+                    b.Property<int>("WidthMM")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -805,6 +815,7 @@ namespace KomputerBudowanieAPI.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("OverclockingProfile")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PinType")
@@ -819,7 +830,7 @@ namespace KomputerBudowanieAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<float?>("VoltageV")
+                    b.Property<float>("VoltageV")
                         .HasColumnType("real");
 
                     b.HasKey("Id");
@@ -962,8 +973,8 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Property<int?>("ReadRandomIOPS")
                         .HasColumnType("integer");
 
-                    b.Property<float?>("ReadSpeedMBs")
-                        .HasColumnType("real");
+                    b.Property<int?>("ReadSpeedMBs")
+                        .HasColumnType("integer");
 
                     b.Property<int?>("RotatingSpeedRPM")
                         .HasColumnType("integer");
@@ -984,8 +995,8 @@ namespace KomputerBudowanieAPI.Migrations
                     b.Property<int?>("WriteRandomIOPS")
                         .HasColumnType("integer");
 
-                    b.Property<float?>("WriteSpeedMBs")
-                        .HasColumnType("real");
+                    b.Property<int?>("WriteSpeedMBs")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

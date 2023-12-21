@@ -3,6 +3,7 @@ using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace KomputerBudowanieAPI.Controllers
 {
@@ -33,6 +34,17 @@ namespace KomputerBudowanieAPI.Controllers
                 return NotFound();
             }
             return Ok(_mapper.Map<IEnumerable<WaterCoolingDto>>(fans));
+        }
+
+        [HttpGet("scraper")]
+        public async Task<IActionResult> GetAllCpusCoolingsScraper()
+        {
+            var cases = await _waterCoolingRepository.GetAllAsync();
+            if (cases is null || !cases.Any())
+            {
+                return NotFound();
+            }
+            return Ok(_mapper.Map<ICollection<ProductDto>>(cases));
         }
 
         [HttpGet("{id:int}")]
@@ -89,6 +101,53 @@ namespace KomputerBudowanieAPI.Controllers
                 return Ok();
             }
             catch (Exception ex) { return BadRequest(ex.Message); }
+        }
+
+        [HttpPut("price")]
+        public async Task<IActionResult> UpdatePrice([FromBody] ProductDto newPrices)
+        {
+            try
+            {
+                if (newPrices == null || newPrices.Prices == null)
+                {
+                    return BadRequest("Invalid or empty price data.");
+                }
+
+                WaterCooling waterCooling = await _waterCoolingRepository.GetByIdAsync(newPrices.Id);
+
+                if (waterCooling is null)
+                {
+                    return BadRequest("Case with this ID does not exist.");
+                }
+
+                foreach (var price in newPrices.Prices)
+                {
+                    var existingPrice = waterCooling.Prices.FirstOrDefault(p => p.Id == price.Id);
+
+                    if (existingPrice != null)
+                    {
+                        existingPrice.ShopName = price.ShopName;
+                        existingPrice.Link = price.Link;
+                        existingPrice.Price = price.Price;
+                    }
+                    else
+                    {
+                        waterCooling.Prices.Add(price);
+                    }
+                }
+
+                await _waterCoolingRepository.Update(waterCooling);
+
+                return Ok(waterCooling);
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest("Error updating prices. Please try again later.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id:int}")]

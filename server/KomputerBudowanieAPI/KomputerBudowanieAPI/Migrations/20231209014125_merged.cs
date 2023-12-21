@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KomputerBudowanieAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class afterMergeMigration2 : Migration
+    public partial class merged : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,7 +19,6 @@ namespace KomputerBudowanieAPI.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Price = table.Column<float>(type: "real", nullable: false),
                     Producer = table.Column<string>(type: "text", nullable: false),
                     ProducerCode = table.Column<string>(type: "text", nullable: false),
                     Color = table.Column<string>(type: "text", nullable: false),
@@ -69,7 +68,6 @@ namespace KomputerBudowanieAPI.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Price = table.Column<float>(type: "real", nullable: false),
                     Producer = table.Column<string>(type: "text", nullable: false),
                     ProducerCode = table.Column<string>(type: "text", nullable: false),
                     MountingType = table.Column<string>(type: "text", nullable: false),
@@ -103,7 +101,6 @@ namespace KomputerBudowanieAPI.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Price = table.Column<float>(type: "real", nullable: false),
                     Producer = table.Column<string>(type: "text", nullable: false),
                     ProducerCode = table.Column<string>(type: "text", nullable: false),
                     Line = table.Column<string>(type: "text", nullable: false),
@@ -129,28 +126,6 @@ namespace KomputerBudowanieAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Cpus", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Fans",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Producer = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    Price = table.Column<double>(type: "double precision", nullable: false),
-                    ProducerCode = table.Column<string>(type: "text", nullable: false),
-                    Speed = table.Column<int>(type: "integer", nullable: false),
-                    Voltatge = table.Column<int>(type: "integer", nullable: false),
-                    Height = table.Column<float>(type: "real", nullable: false),
-                    Width = table.Column<float>(type: "real", nullable: false),
-                    Lenght = table.Column<float>(type: "real", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Fans", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -206,7 +181,6 @@ namespace KomputerBudowanieAPI.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Price = table.Column<float>(type: "real", nullable: false),
                     Producer = table.Column<string>(type: "text", nullable: false),
                     ProducerCode = table.Column<string>(type: "text", nullable: false),
                     BoardStandard = table.Column<string>(type: "text", nullable: false),
@@ -248,7 +222,6 @@ namespace KomputerBudowanieAPI.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Price = table.Column<float>(type: "real", nullable: false),
                     Producer = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     ProducerCode = table.Column<string>(type: "text", nullable: false),
@@ -288,7 +261,6 @@ namespace KomputerBudowanieAPI.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Price = table.Column<double>(type: "double precision", nullable: false),
                     Producer = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     ProducerCode = table.Column<string>(type: "text", nullable: false),
@@ -317,7 +289,6 @@ namespace KomputerBudowanieAPI.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Price = table.Column<double>(type: "double precision", nullable: false),
                     Producer = table.Column<string>(type: "text", nullable: false),
                     ProducerCode = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
@@ -397,6 +368,63 @@ namespace KomputerBudowanieAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ShopPrices",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ShopName = table.Column<string>(type: "text", nullable: false),
+                    Link = table.Column<string>(type: "text", nullable: false),
+                    Price = table.Column<double>(type: "double precision", nullable: false),
+                    CaseId = table.Column<int>(type: "integer", nullable: true),
+                    CpuCoolingId = table.Column<int>(type: "integer", nullable: true),
+                    CpuId = table.Column<int>(type: "integer", nullable: true),
+                    MotherboardId = table.Column<int>(type: "integer", nullable: true),
+                    PowerSupplyId = table.Column<int>(type: "integer", nullable: true),
+                    RamId = table.Column<int>(type: "integer", nullable: true),
+                    StorageId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShopPrices", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ShopPrices_Cases_CaseId",
+                        column: x => x.CaseId,
+                        principalTable: "Cases",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ShopPrices_CpuCoolings_CpuCoolingId",
+                        column: x => x.CpuCoolingId,
+                        principalTable: "CpuCoolings",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ShopPrices_Cpus_CpuId",
+                        column: x => x.CpuId,
+                        principalTable: "Cpus",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ShopPrices_Motherboards_MotherboardId",
+                        column: x => x.MotherboardId,
+                        principalTable: "Motherboards",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ShopPrices_PowerSupplies_PowerSupplyId",
+                        column: x => x.PowerSupplyId,
+                        principalTable: "PowerSupplies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ShopPrices_Rams_RamId",
+                        column: x => x.RamId,
+                        principalTable: "Rams",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ShopPrices_Storages_StorageId",
+                        column: x => x.StorageId,
+                        principalTable: "Storages",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PcConfigurations",
                 columns: table => new
                 {
@@ -406,7 +434,7 @@ namespace KomputerBudowanieAPI.Migrations
                     MotherboardId = table.Column<int>(type: "integer", nullable: true),
                     GraphicCardId = table.Column<int>(type: "integer", nullable: true),
                     CpuId = table.Column<int>(type: "integer", nullable: true),
-                    CPU_CoolingId = table.Column<int>(type: "integer", nullable: true),
+                    CpuCoolingId = table.Column<int>(type: "integer", nullable: true),
                     CaseId = table.Column<int>(type: "integer", nullable: true),
                     PowerSupplyId = table.Column<int>(type: "integer", nullable: true),
                     WaterCoolingId = table.Column<int>(type: "integer", nullable: true),
@@ -421,8 +449,8 @@ namespace KomputerBudowanieAPI.Migrations
                         principalTable: "Cases",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_PcConfigurations_CpuCoolings_CPU_CoolingId",
-                        column: x => x.CPU_CoolingId,
+                        name: "FK_PcConfigurations_CpuCoolings_CpuCoolingId",
+                        column: x => x.CpuCoolingId,
                         principalTable: "CpuCoolings",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -458,35 +486,12 @@ namespace KomputerBudowanieAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FanPcConfiguration",
-                columns: table => new
-                {
-                    FansId = table.Column<int>(type: "integer", nullable: false),
-                    PcConfigurationsId = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FanPcConfiguration", x => new { x.FansId, x.PcConfigurationsId });
-                    table.ForeignKey(
-                        name: "FK_FanPcConfiguration_Fans_FansId",
-                        column: x => x.FansId,
-                        principalTable: "Fans",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_FanPcConfiguration_PcConfigurations_PcConfigurationsId",
-                        column: x => x.PcConfigurationsId,
-                        principalTable: "PcConfigurations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PcConfigurationRam",
                 columns: table => new
                 {
                     PcConfigurationsId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RamsId = table.Column<int>(type: "integer", nullable: false)
+                    RamsId = table.Column<int>(type: "integer", nullable: false),
+                    Quantity = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -510,7 +515,8 @@ namespace KomputerBudowanieAPI.Migrations
                 columns: table => new
                 {
                     PcConfigurationsId = table.Column<Guid>(type: "uuid", nullable: false),
-                    StoragesId = table.Column<int>(type: "integer", nullable: false)
+                    StoragesId = table.Column<int>(type: "integer", nullable: false),
+                    Quantity = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -530,11 +536,6 @@ namespace KomputerBudowanieAPI.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_FanPcConfiguration_PcConfigurationsId",
-                table: "FanPcConfiguration",
-                column: "PcConfigurationsId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_PcConfigurationRam_RamsId",
                 table: "PcConfigurationRam",
                 column: "RamsId");
@@ -545,9 +546,9 @@ namespace KomputerBudowanieAPI.Migrations
                 column: "CaseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PcConfigurations_CPU_CoolingId",
+                name: "IX_PcConfigurations_CpuCoolingId",
                 table: "PcConfigurations",
-                column: "CPU_CoolingId");
+                column: "CpuCoolingId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PcConfigurations_CpuId",
@@ -583,14 +584,46 @@ namespace KomputerBudowanieAPI.Migrations
                 name: "IX_PcConfigurationStorage_StoragesId",
                 table: "PcConfigurationStorage",
                 column: "StoragesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopPrices_CaseId",
+                table: "ShopPrices",
+                column: "CaseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopPrices_CpuCoolingId",
+                table: "ShopPrices",
+                column: "CpuCoolingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopPrices_CpuId",
+                table: "ShopPrices",
+                column: "CpuId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopPrices_MotherboardId",
+                table: "ShopPrices",
+                column: "MotherboardId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopPrices_PowerSupplyId",
+                table: "ShopPrices",
+                column: "PowerSupplyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopPrices_RamId",
+                table: "ShopPrices",
+                column: "RamId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopPrices_StorageId",
+                table: "ShopPrices",
+                column: "StorageId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "FanPcConfiguration");
-
             migrationBuilder.DropTable(
                 name: "PcConfigurationRam");
 
@@ -598,13 +631,13 @@ namespace KomputerBudowanieAPI.Migrations
                 name: "PcConfigurationStorage");
 
             migrationBuilder.DropTable(
-                name: "Fans");
-
-            migrationBuilder.DropTable(
-                name: "Rams");
+                name: "ShopPrices");
 
             migrationBuilder.DropTable(
                 name: "PcConfigurations");
+
+            migrationBuilder.DropTable(
+                name: "Rams");
 
             migrationBuilder.DropTable(
                 name: "Storages");

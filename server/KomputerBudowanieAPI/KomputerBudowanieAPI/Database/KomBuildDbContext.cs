@@ -20,6 +20,7 @@ namespace KomputerBudowanieAPI.Database
         public DbSet<Case> Cases { get; set; }
         public DbSet<PcConfigurationRam> PcConfigurationRam { get; set; }
         public DbSet<PcConfigurationStorage> PcConfigurationStorage { get; set; }
+        public DbSet<ShopPrice> ShopPrices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -44,6 +45,16 @@ namespace KomputerBudowanieAPI.Database
                     .HasOne(p => p.Storage)
                     .WithMany(pc => pc.PcConfigurationStorages)
                     .HasForeignKey(c => c.StoragesId);
+
+            modelBuilder.Entity<Case>().Navigation(c => c.Prices).AutoInclude();
+            modelBuilder.Entity<Cpu>().Navigation(c => c.Prices).AutoInclude();
+            modelBuilder.Entity<CpuCooling>().Navigation(c => c.Prices).AutoInclude();
+            modelBuilder.Entity<Motherboard>().Navigation(c => c.Prices).AutoInclude();
+            modelBuilder.Entity<PowerSupply>().Navigation(c => c.Prices).AutoInclude();
+            modelBuilder.Entity<GraphicCard>().Navigation(c => c.Prices).AutoInclude();
+            modelBuilder.Entity<Ram>().Navigation(c => c.Prices).AutoInclude();
+            modelBuilder.Entity<Storage>().Navigation(c => c.Prices).AutoInclude();
+            modelBuilder.Entity<PowerSupply>().Navigation(c => c.Prices).AutoInclude();
         }
     }
 }

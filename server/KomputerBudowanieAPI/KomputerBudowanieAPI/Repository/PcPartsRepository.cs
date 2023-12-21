@@ -3,10 +3,10 @@ using KomputerBudowanieAPI.Interfaces;
 using Microsoft.EntityFrameworkCore;
 namespace KomputerBudowanieAPI.Repository
 {
-    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
+    public class PcPartsRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
         protected KomBuildDbContext _context;
-        public GenericRepository(KomBuildDbContext context)
+        public PcPartsRepository(KomBuildDbContext context)
         {
             this._context = context;
         }
@@ -22,12 +22,11 @@ namespace KomputerBudowanieAPI.Repository
             return await _context.Set<TEntity>().ToListAsync();
         }
 
-        /*
-         * Różne typy id sa
-         */
         public async Task<TEntity?> GetByIdAsync(int id)
         {
-            return await _context.Set<TEntity>().FindAsync(id);
+            var model = await _context.Set<TEntity>().FindAsync(id);
+
+            return model;
         }
 
         public async Task Create(TEntity entity)
