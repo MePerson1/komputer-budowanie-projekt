@@ -3,6 +3,7 @@ using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace KomputerBudowanieAPI.Controllers
 {
@@ -32,7 +33,7 @@ namespace KomputerBudowanieAPI.Controllers
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<IEnumerable<CaseDto>>(cases));
+            return Ok(_mapper.Map<ICollection<CaseDto>>(cases));
         }
 
         [HttpGet("{id:int}")]
@@ -45,6 +46,17 @@ namespace KomputerBudowanieAPI.Controllers
             }
 
             return Ok(_mapper.Map<CaseDto>(pcCase));
+        }
+
+        [HttpGet("scraper")]
+        public async Task<IActionResult> GetAllCasesScraper()
+        {
+            var cases = await _caseRepository.GetAllAsync();
+            if (cases is null || !cases.Any())
+            {
+                return NotFound();
+            }
+            return Ok(_mapper.Map<ICollection<ProductDto>>(cases));
         }
 
         [HttpPost("compatible")]
@@ -102,7 +114,7 @@ namespace KomputerBudowanieAPI.Controllers
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
-        [HttpPut]
+        [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateCase(int id, [FromBody] CaseDto pcCase)
         {
             try
@@ -117,7 +129,49 @@ namespace KomputerBudowanieAPI.Controllers
             }
         }
 
-        //HttpPost do sprawdznia compactybilnosci przy pobieraniu danych
+        [HttpPut("price")]
+        public async Task<IActionResult> UpdatePrice([FromBody] ProductDto newPrices)
+        {
+            try
+            {
+                if (newPrices == null || newPrices.Prices == null)
+                {
+                    return BadRequest("Invalid or empty price data.");
+                }
 
+                Case pcCase = await _caseRepository.GetByIdAsync(newPrices.Id);
+
+                if (pcCase is null)
+                {
+                    return BadRequest("Case with this ID does not exist.");
+                }
+
+                foreach (var price in newPrices.Prices)
+                {
+                    var existingPrice = pcCase.Prices.FirstOrDefault(p => p.Id == price.Id);
+
+                    if (existingPrice != null)
+                    {
+                        existingPrice.ShopName = price.ShopName;
+                        existingPrice.Link = price.Link;
+                        existingPrice.Price = price.Price;
+                    }
+                    else
+                    {
+                        pcCase.Prices.Add(price);
+                    }
+                    await _caseRepository.Update(pcCase);
+                }
+                return Ok(pcCase);
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest("Error updating prices. Please try again later.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

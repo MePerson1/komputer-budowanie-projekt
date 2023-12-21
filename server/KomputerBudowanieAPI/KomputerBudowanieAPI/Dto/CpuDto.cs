@@ -1,10 +1,12 @@
-﻿namespace KomputerBudowanieAPI.Dto
+﻿using KomputerBudowanieAPI.Models;
+
+namespace KomputerBudowanieAPI.Dto
 {
     public class CpuDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public float Price { get; set; }
+        public ICollection<ShopPrice>? Prices { get; set; }
         public string Producer { get; set; }
         public string ProducerCode { get; set; }
         public string Line { get; set; }
@@ -13,7 +15,7 @@
         public int NumberOfCores { get; set; }
         public int NumberOfThreads { get; set; }
         public float ProcessorBaseFrequencyGHz { get; set; }
-        public float MaxTurboFrequencyGHz { get; set; }
+        public float? MaxTurboFrequencyGHz { get; set; }
         public string? IntegratedGraphics { get; set; }
         public bool HasUnlockedMultiplier { get; set; }
         public string Architecture { get; set; }
