@@ -1,3 +1,5 @@
+import time
+
 import requests
 from bs4 import BeautifulSoup
 from config import product_categories_and_links
@@ -27,7 +29,6 @@ def get_euro_com_price(producer_code, product_name):
     for span in first_basic_specs:
         if span.text == "Kod producenta:":
             first_code = span.find_next('span').get_text(strip=True)  # Znajdz nastepny span i daj jego wartosc
-            print(f"for {first_link}, producer_code={first_code}")
             break
 
     # wyszukiwanie kodu producenta we wszystkich specyfikacjach
@@ -37,16 +38,21 @@ def get_euro_com_price(producer_code, product_name):
         first_advanced_specs.reverse()  # kod producenta jest zwykle gdzies na koncu
 
         for p in first_advanced_specs:
-            print(".")
             if p.text == "Kod producenta:":  # zarowno nazwa atrybutu (typu kod producenta) jak i jego wartosc sa w p, ale sama wartosc juz w spanie for some reason
                 first_code = p.find_next('span').get_text(strip=True)  # Znajdz nastepny span i daj jego wartosc
-                print(f"for {first_link}, producer_code={first_code}")
                 break
 
     # jesli kody producenta z morele i z pierwszego wyniku wyszukiwania z euro.com sie pokrywaja znaczy ze taka rzecz jest na tej stronie i mozna porownywac ich ceny
     if producer_code == first_code:
-        first_price = soup.find("span", class_="price-template__large--total").text
+        first_price = soup.find("span", class_="price-template__large--total")
+
+        if not first_price:
+            print("Match found, but product is unavailable")
+            return {}
+
+        first_price = first_price.text
         first_price += "." + soup.find("span", class_="price-template__large--decimal").text
+        first_price = first_price.replace(" ", "")
         euro_com = {
             "id": 0,
             "shopName": "Euro.com.pl",
@@ -102,7 +108,12 @@ def get_morele_prices():
 
 
 def update_database():
-    for category in product_categories_and_links:
+    product_categories = list(product_categories_and_links)
+    # product_categories.remove("storage-hdd")
+    # product_categories.remove("storage-ssd")
+    # product_categories.append("storage")
+
+    for category in product_categories:
         category_data_link = f"http://localhost:5198/api/{category}/scraper"
         category_record_update_link = f"http://localhost:5198/api/{category}/price"
 
@@ -110,8 +121,10 @@ def update_database():
         category_data = response.json()
 
         for product in category_data:
+            print(f"Scraping prices for {product['name']}...")
             komputronik_price = get_komputronik_price(product["producerCode"])
             euro_com_price = get_euro_com_price(product["producerCode"], product["name"])
+            time.sleep(2)
 
             # Dodawanie dwoch latwiejszych (po wyszukiwaniu) cen
             if not product["prices"]:
@@ -122,18 +135,18 @@ def update_database():
             else:
                 for shop_price in product["prices"]:
                     if shop_price["shopName"] == komputronik_price.get("shopName") and shop_price["price"] != komputronik_price.get("price"):
-                        print(f"Changed price for product {shop_price['name']}, shop {shop_price['shopName']}, from {shop_price['price']} to {komputronik_price['price']}")
+                        print(f"Changed price for product {product['name']}, shop {shop_price['shopName']}, from {shop_price['price']} to {komputronik_price['price']}")
                         shop_price["price"] = komputronik_price["price"]
                         shop_price["link"] = komputronik_price["link"]
                     if shop_price["shopName"] == euro_com_price.get("shopName") and shop_price["price"] != euro_com_price.get("price"):
-                        print(f"Changed price for product {shop_price['name']}, shop {shop_price['shopName']}, from {shop_price['price']} to {euro_com_price['price']}")
+                        print(f"Changed price for product {product['name']}, shop {shop_price['shopName']}, from {shop_price['price']} to {euro_com_price['price']}")
                         shop_price["price"] = euro_com_price["price"]
                         shop_price["link"] = euro_com_price["link"]
 
             response = requests.put(category_record_update_link, json=product)
 
             if response.status_code == 200:
-                print(f"Request on {category_record_update_link} was successful.")
+                print(f"Request for {product['name']} on {category_record_update_link} was successful.\n")
             else:
                 print(f"Request failed with status code: {response.status_code}")
                 print(response.json())

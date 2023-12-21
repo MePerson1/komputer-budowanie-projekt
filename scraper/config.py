@@ -2,16 +2,16 @@
 # nazwa kategorii podzespolow: link do pierwszej strony ze wszystkimi wynikami
 # nazwy kategorii w kluczu sa takie jak endpointy w api uzywane do dodawania produktu
 product_categories_and_links = {
-    "case": "https://www.morele.net/kategoria/obudowy-33/",
-    "cpu": "https://www.morele.net/kategoria/procesory-45/",
-    "cpu-cooling": "https://www.morele.net/kategoria/chlodzenie-cpu-633/",
-    "graphic-card": "https://www.morele.net/kategoria/karty-graficzne-12/",
-    "motherboard": "https://www.morele.net/kategoria/plyty-glowne-42/",
+    # "case": "https://www.morele.net/kategoria/obudowy-33/",
+    # "cpu": "https://www.morele.net/kategoria/procesory-45/",
+    # "cpu-cooling": "https://www.morele.net/kategoria/chlodzenie-cpu-633/",
+    # "graphic-card": "https://www.morele.net/kategoria/karty-graficzne-12/",
+    # "motherboard": "https://www.morele.net/kategoria/plyty-glowne-42/",
     "power-supply": "https://www.morele.net/kategoria/zasilacze-komputerowe-61/",
-    "ram": "https://www.morele.net/kategoria/pamieci-ram-38/",
-    "storage-hdd": "https://www.morele.net/kategoria/dyski-hdd-4/",
-    "storage-ssd": "https://www.morele.net/kategoria/dyski-ssd-518/",
-    "water-cooling": "https://www.morele.net/kategoria/chlodzenie-wodne-zestawy-662/"
+    # "ram": "https://www.morele.net/kategoria/pamieci-ram-38/",
+    # "storage-hdd": "https://www.morele.net/kategoria/dyski-hdd-4/",
+    # "storage-ssd": "https://www.morele.net/kategoria/dyski-ssd-518/",
+    # "water-cooling": "https://www.morele.net/kategoria/chlodzenie-wodne-zestawy-662/"
 }
 
 # Opcja wyboru kategorii produktu do zescrapowania ze slownika powyzej. Musi byc taka sama jak nazwa klucza
