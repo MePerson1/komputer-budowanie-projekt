@@ -1,21 +1,22 @@
 import { useNavigate } from "react-router-dom";
-const PcConfigurationCard = ({ pcConfigration }) => {
+const PcConfigurationCard = ({ pcConfiguration }) => {
   const navigate = useNavigate();
   const handleDetails = () => {
-    navigate(`${window.location.pathname}/${pcConfigration.id}`);
+    navigate(`${window.location.pathname}/${pcConfiguration.id}`);
   };
+
   return (
-    <div className="p-5">
-      <div className="bg-base-100 shadow-xl ">
+    <div className="p-5 m-2 border rounded-lg">
+      <div className="shadow-lg p-4">
         <figure>
           <img src="images/parts/computer.png" className="w-64" alt="Album" />
         </figure>
-        <div className="card-body">
-          <h2 className="card-title">{pcConfigration.name}</h2>
-          <p>{pcConfigration.description}</p>
-          <p>Cena: {pcConfigration.totalPrice.toFixed(2)} zł</p>
-          <div className="card-actions justify-end">
-            <button onClick={handleDetails} className="btn btn-primary">
+        <div className="mt-4">
+          <h2 className="text-lg font-bold">{pcConfiguration.name}</h2>
+          <p className="overflow-hidden">{pcConfiguration.description}</p>
+          <p>Cena: {pcConfiguration.totalPrice.toFixed(2)} zł</p>
+          <div className="flex justify-end">
+            <button className="btn btn-primary" onClick={handleDetails}>
               Szczegóły
             </button>
           </div>
