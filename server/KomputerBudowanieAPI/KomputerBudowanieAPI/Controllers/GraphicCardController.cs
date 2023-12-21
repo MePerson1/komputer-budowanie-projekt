@@ -133,10 +133,8 @@ namespace KomputerBudowanieAPI.Controllers
                     {
                         graphicCard.Prices.Add(price);
                     }
+                    await _graphicCardRepository.Update(graphicCard);
                 }
-
-                await _graphicCardRepository.Update(graphicCard);
-
                 return Ok(graphicCard);
             }
             catch (DbUpdateException ex)

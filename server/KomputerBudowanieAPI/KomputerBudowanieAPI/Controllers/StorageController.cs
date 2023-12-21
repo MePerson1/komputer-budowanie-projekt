@@ -133,10 +133,8 @@ namespace KomputerBudowanieAPI.Controllers
                     {
                         storage.Prices.Add(price);
                     }
+                    await _storageRepository.Update(storage);
                 }
-
-                await _storageRepository.Update(storage);
-
                 return Ok(storage);
             }
             catch (DbUpdateException ex)

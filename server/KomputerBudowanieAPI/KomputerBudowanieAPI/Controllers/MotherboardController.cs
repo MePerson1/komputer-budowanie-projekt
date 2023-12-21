@@ -134,10 +134,9 @@ namespace KomputerBudowanieAPI.Controllers
                     {
                         motherboard.Prices.Add(price);
                     }
+
+                    await _motherboardRepository.Update(motherboard);
                 }
-
-                await _motherboardRepository.Update(motherboard);
-
                 return Ok(motherboard);
             }
             catch (DbUpdateException ex)

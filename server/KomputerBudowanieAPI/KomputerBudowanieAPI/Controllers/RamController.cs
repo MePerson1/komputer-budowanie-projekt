@@ -134,10 +134,8 @@ namespace KomputerBudowanieAPI.Controllers
                     {
                         ram.Prices.Add(price);
                     }
+                    await _ramRepository.Update(ram);
                 }
-
-                await _ramRepository.Update(ram);
-
                 return Ok(ram);
             }
             catch (DbUpdateException ex)
