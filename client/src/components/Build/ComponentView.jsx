@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router";
 import PartPrices from "../shared/PartPrices";
+import { DetailButton } from "../shared/DetailButton";
 
 const ComponentView = ({ pcPart, handleSetToNull, partKey, partType }) => {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ const ComponentView = ({ pcPart, handleSetToNull, partKey, partType }) => {
         >
           Usuń
         </button>
+        <DetailButton id={pcPart.id} partKey={partType.key} />
       </div>
     </div>
   );

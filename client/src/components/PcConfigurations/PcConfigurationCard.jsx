@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
+import { DetailButton } from "../shared/DetailButton";
 
 const PcConfigurationCard = ({ pcConfiguration }) => {
   const navigate = useNavigate();
@@ -8,9 +9,6 @@ const PcConfigurationCard = ({ pcConfiguration }) => {
 
   const toggleDescription = () => {
     setShowFullDescription(!showFullDescription);
-  };
-  const handleDetails = () => {
-    navigate(`${window.location.pathname}/${pcConfiguration.id}`);
   };
 
   return (
@@ -54,9 +52,7 @@ const PcConfigurationCard = ({ pcConfiguration }) => {
           </p>
           <p>Cena: {pcConfiguration.totalPrice.toFixed(2)} zł</p>
           <div className="flex justify-end">
-            <button className="btn btn-primary" onClick={handleDetails}>
-              Szczegóły
-            </button>
+            <DetailButton id={pcConfiguration.id} />
           </div>
         </div>
       </div>

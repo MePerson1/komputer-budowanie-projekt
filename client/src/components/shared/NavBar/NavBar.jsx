@@ -7,13 +7,11 @@ const NavBar = () => {
   return (
     <>
       <nav class="navbar bg-base-300">
-        <div class="navbar-start">
-          <Logo />
-        </div>
+        <div class="navbar-start">Logo</div>
         <div class="navbar-center">
           <NavMenu />
         </div>
-        <div class="navbar-center hidden lg:flex ">
+        <div class="navbar-center hidden sm:flex ">
           <ul class="menu menu-horizontal px-1">
             <li>
               <NavLink to="parts" className="text-lg">

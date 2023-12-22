@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import PartPrices from "../shared/PartPrices";
+import { DetailButton } from "../shared/DetailButton";
 
 const ComponentRow = ({
   part,
@@ -65,10 +66,14 @@ const ComponentRow = ({
         <td>
           <PartPrices prices={part.prices} />
         </td>
-        <td>
-          <button onClick={handleAddPart} className="btn btn-primary">
-            +
+        <td className="flex-col">
+          <button
+            onClick={handleAddPart}
+            className="btn btn-outline btn-primary mr-2"
+          >
+            Dodaj
           </button>
+          <DetailButton id={part.id} />
         </td>
       </tr>
     </>

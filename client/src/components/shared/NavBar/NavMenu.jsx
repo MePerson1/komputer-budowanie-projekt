@@ -13,11 +13,11 @@ export const NavMenu = () => {
   };
 
   return (
-    <div className="dropdown ">
+    <div className="dropdown">
       <summary
         tabIndex="0"
         role="button"
-        className="btn btn-ghost flex lg:hidden"
+        className="btn btn-ghost flex sm:hidden"
         onClick={handleMenuToggle}
       >
         Menu

@@ -2,7 +2,7 @@ import ComponentsTable from "../components/Build/ComponentsTable";
 import Info from "../components/Build/Info";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { PcConfiguration, Motherboard } from "../utils/models/index";
+import { PcConfiguration } from "../utils/models/index";
 import ConfigurationInfo from "../components/Build/ConfigurationInfo";
 import pcParts from "../utils/constants/pcParts";
 import mapPcPartsToIds from "../utils/functions/mapPcPartsToIds";
@@ -29,8 +29,11 @@ const Build = ({ pcConfiguration, setPcConfiguration }) => {
     let totalPrice = 0;
 
     Object.keys(pcConfiguration).forEach((key) => {
-      if (pcConfiguration[key] && pcConfiguration[key].price !== undefined) {
-        totalPrice += pcConfiguration[key].price;
+      if (pcConfiguration[key] && pcConfiguration[key].prices !== undefined) {
+        console.log(
+          pcConfiguration[key].prices.sort((a, b) => a.price - b.price)
+        );
+        totalPrice += pcConfiguration[key].prices[0].price;
       } else if (key === "rams" || key === "storages") {
         pcConfiguration[key].map((part) => (totalPrice += part.price));
       }
