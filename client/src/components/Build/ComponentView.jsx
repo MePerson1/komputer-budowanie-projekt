@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router";
+import PartPrices from "../shared/PartPrices";
 
 const ComponentView = ({ pcPart, handleSetToNull, partKey, partType }) => {
   const navigate = useNavigate();
@@ -14,12 +15,12 @@ const ComponentView = ({ pcPart, handleSetToNull, partKey, partType }) => {
         <div className="flex">
           <div className="m-2">
             <p>Producent: {pcPart.producer}</p>
-            {pcPart.price !== undefined && (
+            {pcPart.prices !== undefined && (
               <p className="font-semibold">
-                Cena: {pcPart.price.toString().replace(".", ",")} zł
+                Cena: <PartPrices prices={pcPart.prices} />
               </p>
             )}
-            {pcPart.price === undefined && <p>Cena: N/A</p>}
+            {pcPart.prices === undefined && <p>Cena: N/A</p>}
           </div>
         </div>
       </div>

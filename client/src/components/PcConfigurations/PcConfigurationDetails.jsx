@@ -26,6 +26,7 @@ const PcConfigurationDetails = () => {
     }
   }
 
+  // fix ram and storages
   return (
     <div>
       {pcConfigurationById !== undefined && pcConfigurationById !== null ? (
@@ -42,7 +43,7 @@ const PcConfigurationDetails = () => {
                         Array.isArray(pcConfigurationById[key]) &&
                         pcConfigurationById[key].length === 0
                       ) &&
-                      (key === "rams" || key === "storages" ? (
+                      (key === "pcConfigurationRam" || key === "storages" ? (
                         pcConfigurationById[key].map((part, idx) => (
                           <PcConfigurationPart
                             key={idx}

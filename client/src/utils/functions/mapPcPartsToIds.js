@@ -28,6 +28,7 @@ const mapPcPartsToIds = (pcConfiguration) => {
       : [],
     fanIds: [],
   };
+  console.log(pcConfigurationIds);
   return pcConfigurationIds;
 };
 
