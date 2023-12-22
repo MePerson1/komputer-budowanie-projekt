@@ -1,4 +1,6 @@
-﻿namespace KomputerBudowanieAPI.Services
+﻿using System.Text.RegularExpressions;
+
+namespace KomputerBudowanieAPI.Services
 {
     public static class ExtractConnectorInfoService
     {
@@ -75,14 +77,70 @@
         {
             List<string> sockets = new List<string>();
 
+            // Rozdzielanie stringa na częsci po przecinkach i ukośnikach
             string[] separators = { ",", "/" };
 
             foreach (var part in input.Split(separators, StringSplitOptions.RemoveEmptyEntries))
             {
+                // Dodajemy każdą część stringa, usuwamy LGA i znaki białe
                 sockets.Add(part.Replace("LGA ", "").Trim());
             }
 
             return sockets;
+        }
+
+        static public Dictionary<string, int> ExtractFanDimensionsFromCase(string input)
+        {
+            //120 mm x3/140 mm x2, 120 mm/140 mm x3, 120 mm x1
+            Dictionary<string, int> resultMap = new Dictionary<string, int>();
+
+            // Rozdzielenie na części po przecinkach
+            string[] parts = input.Split(',');
+
+            foreach (var part in parts)
+            {
+                // Użycie wyrażenia regularnego do znalezienia wymiaru i ilości
+                Match match = Regex.Match(part.Trim(), @"(\d+\s*mm(?:\/\d+\s*mm)?)(?:\s*x(\d+))?");
+
+                if (match.Success)
+                {
+                    string dimension = match.Groups[1].Value.Trim();
+                    int count = 1;
+
+                    if (match.Groups[2].Success)
+                    {
+                        count = int.Parse(match.Groups[2].Value);
+                    }
+
+                    if (dimension.Contains('/'))
+                    {
+                        string[] dimentsionParts = dimension.Split('/');
+                        AddFanDimension(resultMap, dimentsionParts[0], count);
+                        AddFanDimension(resultMap, dimentsionParts[1], count);
+                    }
+                    else
+                    {
+                        AddFanDimension(resultMap, dimension, count);
+                    }
+                }
+            }
+
+            return resultMap;
+        }
+
+        static private void AddFanDimension(Dictionary<string, int> resultMap, string key, int value)
+        {
+            if (resultMap.TryGetValue(key, out int currentValue))
+            {
+                if (value > currentValue)
+                {
+                    resultMap[key] = value;
+                }
+            }
+            else
+            {
+                resultMap.Add(key, value);
+            }
         }
     }
 }

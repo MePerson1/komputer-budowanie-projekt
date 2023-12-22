@@ -107,5 +107,27 @@ namespace Tests.Services
                 Assert.Equal(expectedCount, connectors[slotType]);
             }
         }
+
+        [Theory]
+        [InlineData("120 mm x2/140 mm x1, , 120 mm/140 mm x3", "120 mm", 3)]
+        [InlineData("120 mm x2/140 mm x1, , 120 mm/140 mm x3", "140 mm", 3)]
+        [InlineData("120 mm/140 mm x2, , , , 120 mm x3/140 mm x2", "120 mm", 3)]
+        [InlineData("120 mm/140 mm x2, , , , 120 mm x3/140 mm x2", "140 mm", 2)]
+        [InlineData(" , , 120 mm x1, 120 mm x2", "120 mm", 2)]
+        [InlineData(" , , 120 mm x2, 120 mm x1", "120 mm", 2)]
+        [InlineData("120 mm x3, 120 mm x1, , , 120 mm/140 mm x2", "120 mm", 3)]
+        [InlineData("120 mm x3, 120 mm x1, , , 120 mm/140 mm x2", "140 mm", 2)]
+        [InlineData("120 mm x2, 120 mm x1, , , 120 mm/140 mm x3", "120 mm", 3)]
+        [InlineData("120 mm/140 mm x1, , , 120 mm/140 mm x2, 120 mm/140 mm x3", "120 mm", 3)]
+        [InlineData("120 mm/140 mm x1, , , 120 mm/140 mm x2, 120 mm/140 mm x3", "140 mm", 3)]
+        [InlineData("120 mm/140 mm x1, , , ", "140 mm", 1)]
+        [InlineData("120 mm/140 mm x1, , , ", "120 mm", 1)]
+        public void Test_ExtractFanDimensionsFromCase(string input, string expectedDimension, int expectedCount)
+        {
+            var result = ExtractConnectorInfoService.ExtractFanDimensionsFromCase(input);
+
+            Assert.True(result.ContainsKey(expectedDimension));
+            Assert.Equal(expectedCount, result[expectedDimension]);
+        }
     }
 }
