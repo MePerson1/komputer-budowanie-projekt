@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import time
-from config import product_categories_and_links
+from config import product_categories_and_links, shop_names
 from FillDatabase import find_morele_page_limit
 
 
@@ -55,7 +55,7 @@ def get_euro_com_price(producer_code, product_name):
         first_price = first_price.replace(" ", "")
         euro_com = {
             "id": 0,
-            "shopName": "Euro.com.pl",
+            "shopName": shop_names["euro.com"],
             "link": first_link,
             "price": first_price
         }
@@ -93,7 +93,7 @@ def get_komputronik_price(producer_code):
         first_price = float(soup.find('div', class_="text-3xl font-bold leading-8").text.replace(" zł", "").replace("\xa0", "").replace(",", "."))
         komputronik = {
             "id": 0,
-            "shopName": "Komputronik.pl",
+            "shopName": shop_names["komputronik"],
             "link": first_link,
             "price": first_price
         }
@@ -101,17 +101,6 @@ def get_komputronik_price(producer_code):
     else:
         print("No valid results from komputronik")
         return {}
-
-
-def add_price(price_records, new_price):
-    for record in price_records:
-        if record["shopName"] == new_price["shopName"]:
-            record["price"] = new_price["price"]
-            record["link"] = new_price["link"]
-            return price_records
-
-    price_records.append(new_price)
-    return price_records
 
 
 # zmienne reprezentujace produkty z bazy danych maja na poczatku db_, a inne nic
@@ -123,10 +112,13 @@ def match_morele_products(db_category_products, category_link):
     page_current = 1
     page_limit = find_morele_page_limit(first_soup)
     matched_products = 0
+    all_products = len(db_category_products)
     # slownik stworzony na potrzeby dopasowywania rekordow w czasie O(1)
     category_products_dict = {db_prod["name"]: db_prod for db_prod in db_category_products}
+    # produkty, ktore nie maja matcha przeznaczone do sprawdzenia pozniej pod katem przestarzalej ceny
+    db_category_products_no_match = db_category_products.copy()
 
-    while matched_products != len(db_category_products):
+    while matched_products != all_products and page_current != page_limit + 1:
         if page_current != 1:
             html = requests.get(f"{category_link},,,,,,,,0,,,,/{page_current}/").text
             soup = BeautifulSoup(html, "lxml")
@@ -139,10 +131,13 @@ def match_morele_products(db_category_products, category_link):
         for prod_record in prod_records_raw:
             prod_link = prod_record.find('a', class_='cat-product-image productLink')
             prod_price = prod_record.find('div', class_='price-new').text.replace(" ", "").replace("zł", "").replace("\n", "").replace(",", ".")
+            if "od" in prod_price:  # oznacza to, ze dostepne sa tylko opcje outletowe
+                continue
+
             info = {
                 "id": 0,
                 "name": prod_link['title'].replace('"', ' cala'),
-                "shopName": "Morele.net",
+                "shopName": shop_names["morele"],
                 "link": link_base + prod_link['href'],
                 "price": prod_price
             }
@@ -155,18 +150,49 @@ def match_morele_products(db_category_products, category_link):
                 # stworzenie kopii info, aby nie dodac przypadkiem niepoprawnego rekordu
                 price = info.copy()
                 price.pop("name")
-                db_found_product["prices"] = add_price(db_found_product["prices"], price)
+
+                db_found_product["prices"] = add_or_update_price(db_found_product["prices"], price)
+                db_category_products_no_match.remove(db_found_product)
+
                 matched_products += 1
 
-        print(f"Matched products = {matched_products}")
-        if page_current == page_limit:
-            break
+        print(f"Matched products = {matched_products}/{all_products}")
         page_current += 1
 
-    return db_category_products
+    return db_category_products, db_category_products_no_match
 
 
-def update_product(db_product, update_link):
+def add_or_update_price(price_records, new_price):
+    if not new_price:  # jesli cena jest pusta wyjdz od razu
+        return price_records
+
+    for record in price_records:  # jesli cena juz istnieje zaktualizuj ja
+        if record["shopName"] == new_price["shopName"]:
+            record["price"] = new_price["price"]
+            record["link"] = new_price["link"]
+            return price_records
+
+    price_records.append(new_price)  # jesli ceny jeszcze nie ma, dodaj ja
+    return price_records
+
+
+# aby ta funkcja cos zrobila musza zostac spelnione 4 kroki, dokladnie w takiej kolejnosci
+# 1. produkt zostal sciagniety z bazy danych
+# 2. zostala sprawdzona cena w sklepie
+# 3. okazalo sie ze ceny w sklepie nie ma
+# 4. okazalo sie ze w produkcie jest cena z tego sklepu
+# wowczas przestarzala cena zostaje wykryta i usunieta
+def check_for_obsolete_price(db_product, shop_name):
+    for db_price_record in db_product["prices"]:
+        if shop_name == db_price_record["shopName"]:
+            print(f"Obsolete price found in product {db_product['name']}, shop {db_price_record['shopName']}")
+            delete_obsolete_price_in_db(db_price_record["id"])
+            db_product["prices"].remove(db_price_record)
+
+    return db_product
+
+
+def update_product_in_db(db_product, update_link):
     response = requests.put(update_link, json=db_product)
     if response.status_code == 200:
         print(f"Request for {db_product['name']} on {update_link} was successful.\n")
@@ -174,6 +200,16 @@ def update_product(db_product, update_link):
         print(f"Request failed with status code: {response.status_code}")
         print(response.json())
         print(f"for product: {db_product}")
+
+
+def delete_obsolete_price_in_db(db_price_id):
+    delete_link = f"http://localhost:5198/api/shop-price/{db_price_id}"
+    response = requests.delete(delete_link)
+    if response.status_code == 200:
+        print(f"Request on {delete_link} was successful.\n")
+    else:
+        print(f"Request failed with status code: {response.status_code}, for link {delete_link}")
+        print(response.json())
 
 
 if __name__ == "__main__":
@@ -194,28 +230,38 @@ if __name__ == "__main__":
 
         # Dodawanie cen masowo, dla morele
         if category == "storage":
-            category_products = match_morele_products(category_products, link[0])
-            category_products = match_morele_products(category_products, link[1])
-        else:
-            category_products = match_morele_products(category_products, link)
+            print("hdd")
+            category_products, category_products_no_match_hdd = match_morele_products(category_products, link[0])
+            print("ssd")
+            category_products, category_products_no_match_ssd = match_morele_products(category_products, link[1])
 
-        for product in category_products:
-            update_product(product, category_record_update_link)
+            # zlaczenie dwoch rzekomych grup produktow bez matcha w jeden, ktory faktycznie oddaje stan rzeczy
+            category_products_no_match = [
+                product for product in category_products_no_match_hdd if product in category_products_no_match_ssd
+            ]
+        else:
+            category_products, category_products_no_match = match_morele_products(category_products, link)
+
+        # sprawdzenie pod katem przestarzalych cen produktow ktore nie mialy zadnego matcha
+        for product in category_products_no_match:
+            product = check_for_obsolete_price(product, shop_names["morele"])
 
         # Dodawanie cen dla pojedynczych produktow
         for product in category_products:
             print(f"Scraping prices for {product['name']}...")
+
             komputronik_price = get_komputronik_price(product["producerCode"])
-            euro_com_price = get_euro_com_price(product["producerCode"], product["name"])
-            time.sleep(2)  # chwila oddechu dla stron
-
-            product["prices"] = add_price(product["prices"], komputronik_price)
-            product["prices"] = add_price(product["prices"], euro_com_price)
-
-            response_update = requests.put(category_record_update_link, json=product)
-            if response_update.status_code == 200:
-                print(f"Request for {product['name']} on {category_record_update_link} was successful.\n")
+            if komputronik_price:
+                product["prices"] = add_or_update_price(product["prices"], komputronik_price)
             else:
-                print(f"Request failed with status code: {response_update.status_code}")
-                print(response_update.json())
-                print(f"for product: {product}")
+                product = check_for_obsolete_price(product, shop_names["komputronik"])
+
+            euro_com_price = get_euro_com_price(product["producerCode"], product["name"])
+            if euro_com_price:
+                product["prices"] = add_or_update_price(product["prices"], euro_com_price)
+            else:
+                product = check_for_obsolete_price(product, shop_names["euro.com"])
+
+            time.sleep(2)  # chwila oddechu dla stron
+            if product["prices"]:  # produktow bez cen nie wysylac
+                update_product_in_db(product, category_record_update_link)

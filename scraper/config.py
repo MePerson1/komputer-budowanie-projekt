@@ -14,6 +14,12 @@ product_categories_and_links = {
     "water-cooling": "https://www.morele.net/kategoria/chlodzenie-wodne-zestawy-662/"
 }
 
+shop_names = {
+    "morele": "Morele.net",
+    "euro.com": "Euro.com.pl",
+    "komputronik": "Komputronik.pl"
+}
+
 # Opcja wyboru kategorii produktu do zescrapowania ze slownika powyzej. Musi byc taka sama jak nazwa klucza
 chosen_product_category = "motherboard"
 

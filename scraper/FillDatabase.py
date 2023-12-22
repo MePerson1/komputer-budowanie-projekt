@@ -81,7 +81,7 @@ def get_product_specs(chosen_cat, prod_links):
 
             # wyswietl rzeczy przed tlumaczeniem
             if show_raw_data_in_console:
-                print(f"\nProdukt {i}: {link}")
+                print(f"\nProduct {i}: {link}")
                 for key, value in product_specs.items():
                     print(key, ':', value)
 
@@ -89,7 +89,7 @@ def get_product_specs(chosen_cat, prod_links):
 
             # wyswietl rzeczy po tlumaczeniu
             if show_translated_data_in_console:
-                print(f"\n(PRZETLUMACZONE) Produkt {i}: {link}")
+                print(f"\n(TRANSLATED) Product {i}: {link}")
                 for key, value in translated_product_specs.items():
                     print(key, ':', value)
 
