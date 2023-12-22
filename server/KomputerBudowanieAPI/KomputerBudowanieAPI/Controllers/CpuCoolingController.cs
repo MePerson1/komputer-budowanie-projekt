@@ -2,6 +2,7 @@
 using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -82,6 +83,7 @@ namespace KomputerBudowanieAPI.Controllers
             }
         }
 
+        [Authorize("IsAdminOrScraperJwt")]
         [HttpPost]
         public async Task<IActionResult> CreateCpuCooling([FromBody] CpuCoolingDto cpuCooling)
         {
@@ -97,6 +99,7 @@ namespace KomputerBudowanieAPI.Controllers
             }
         }
 
+        [Authorize("IsAdminOrScraperJwt")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteCpuCooling(int id)
         {
@@ -114,7 +117,7 @@ namespace KomputerBudowanieAPI.Controllers
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
-
+        [Authorize("IsAdminOrScraperJwt")]
         [HttpPut]
         public async Task<IActionResult> UpdateCase([FromBody] CpuCoolingDto cpuCooling)
         {
@@ -130,6 +133,7 @@ namespace KomputerBudowanieAPI.Controllers
             }
         }
 
+        [Authorize("IsAdminOrScraperJwt")]
         [HttpPut("price")]
         public async Task<IActionResult> UpdatePrice([FromBody] ProductDto newPrices)
         {

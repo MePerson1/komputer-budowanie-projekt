@@ -2,6 +2,7 @@
 using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -79,6 +80,7 @@ namespace KomputerBudowanieAPI.Controllers
             }
         }
 
+        [Authorize("IsAdminOrScraperJwt")]
         [HttpPost]
         public async Task<IActionResult> CreateFan([FromBody] WaterCoolingDto fan)
         {
@@ -91,6 +93,7 @@ namespace KomputerBudowanieAPI.Controllers
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
+        [Authorize("IsAdminOrScraperJwt")]
         [HttpPut]
         public async Task<IActionResult> UpdateFan([FromBody] WaterCoolingDto fan)
         {
@@ -103,6 +106,7 @@ namespace KomputerBudowanieAPI.Controllers
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
+        [Authorize("IsAdminOrScraperJwt")]
         [HttpPut("price")]
         public async Task<IActionResult> UpdatePrice([FromBody] ProductDto newPrices)
         {
@@ -150,6 +154,7 @@ namespace KomputerBudowanieAPI.Controllers
             }
         }
 
+        [Authorize("IsAdminOrScraperJwt")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteFan(int id)
         {

@@ -85,6 +85,8 @@ namespace KomputerBudowanieAPI.Controllers
             };
 
             var result = await _user.CreateAsync(newUser, dto.Password);
+            //var user = await _user.FindByEmailAsync(dto.Email);
+            //await _user.AddToRoleAsync(user, "Admin");
 
             if (!result.Succeeded)
             {

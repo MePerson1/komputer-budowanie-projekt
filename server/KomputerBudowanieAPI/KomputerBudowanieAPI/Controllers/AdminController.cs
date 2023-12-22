@@ -1,10 +1,12 @@
 ﻿using KomputerBudowanieAPI.Database;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace KomputerBudowanieAPI.Controllers
 {
     [ApiController]
+    [Authorize("IsAdminOrScraperJwt")]
     [Route("api/admin")]
     public class AdminController : Controller
     {

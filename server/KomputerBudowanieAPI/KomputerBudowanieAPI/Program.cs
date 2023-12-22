@@ -108,6 +108,12 @@ builder.Services.AddAuthorization(options =>
         .RequireRole("Admin")
         .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
     );
+
+    options.AddPolicy("IsAdminOrScraperJwt", policy =>
+        policy
+        .RequireRole("Admin", "Scraper")
+        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+    );
 });
 
 builder.Services.AddCors(opt => opt.AddPolicy("CorsPolicy", builder =>
