@@ -1,8 +1,8 @@
-import time
-
 import requests
 from bs4 import BeautifulSoup
+import time
 from config import product_categories_and_links
+from FillDatabase import find_morele_page_limit
 
 
 def get_euro_com_price(producer_code, product_name):
@@ -103,55 +103,119 @@ def get_komputronik_price(producer_code):
         return {}
 
 
-def get_morele_prices(category, link, category_products):
-    pass
+def add_price(price_records, new_price):
+    for record in price_records:
+        if record["shopName"] == new_price["shopName"]:
+            record["price"] = new_price["price"]
+            record["link"] = new_price["link"]
+            return price_records
+
+    price_records.append(new_price)
+    return price_records
 
 
-def update_database():
+# zmienne reprezentujace produkty z bazy danych maja na poczatku db_, a inne nic
+def match_morele_products(db_category_products, category_link):
+    html_product_search = requests.get(category_link).text
+    first_soup = BeautifulSoup(html_product_search, "lxml")
+
+    link_base = "https://www.morele.net"
+    page_current = 1
+    page_limit = find_morele_page_limit(first_soup)
+    matched_products = 0
+    # slownik stworzony na potrzeby dopasowywania rekordow w czasie O(1)
+    category_products_dict = {db_prod["name"]: db_prod for db_prod in db_category_products}
+
+    while matched_products != len(db_category_products):
+        if page_current != 1:
+            html = requests.get(f"{category_link},,,,,,,,0,,,,/{page_current}/").text
+            soup = BeautifulSoup(html, "lxml")
+        else:
+            soup = first_soup
+
+        product_infos = []
+        # wyszukiwanie i dodawanie nazw, cen i linkow produktow
+        prod_records_raw = soup.find_all('div', class_='cat-product-inside')
+        for prod_record in prod_records_raw:
+            prod_link = prod_record.find('a', class_='cat-product-image productLink')
+            prod_price = prod_record.find('div', class_='price-new').text.replace(" ", "").replace("zł", "").replace("\n", "").replace(",", ".")
+            info = {
+                "id": 0,
+                "name": prod_link['title'].replace('"', ' cala'),
+                "shopName": "Morele.net",
+                "link": link_base + prod_link['href'],
+                "price": prod_price
+            }
+            product_infos.append(info)
+
+        # porownanie wyszukanych produktow z otrzymanymi z bazy i aktualizacja cen
+        for info in product_infos:
+            db_found_product = category_products_dict.get(info["name"])
+            if db_found_product:
+                # stworzenie kopii info, aby nie dodac przypadkiem niepoprawnego rekordu
+                price = info.copy()
+                price.pop("name")
+                db_found_product["prices"] = add_price(db_found_product["prices"], price)
+                matched_products += 1
+
+        print(f"Matched products = {matched_products}")
+        if page_current == page_limit:
+            break
+        page_current += 1
+
+    return db_category_products
+
+
+def update_product(db_product, update_link):
+    response = requests.put(update_link, json=db_product)
+    if response.status_code == 200:
+        print(f"Request for {db_product['name']} on {update_link} was successful.\n")
+    else:
+        print(f"Request failed with status code: {response.status_code}")
+        print(response.json())
+        print(f"for product: {db_product}")
+
+
+if __name__ == "__main__":
     # dostowanie slownika z configu do wygladu bardziej odpowiadajacego bazie danych
-    database_categories_and_links = product_categories_and_links
+    database_categories_and_links = product_categories_and_links.copy()
     database_categories_and_links["storage"] = [product_categories_and_links["storage-hdd"], product_categories_and_links["storage-ssd"]]
     database_categories_and_links.pop("storage-hdd")
     database_categories_and_links.pop("storage-ssd")
 
-    for category in database_categories_and_links:
+    # Dodawanie cen po wyszukiwaniu
+    for category, link in database_categories_and_links.items():
+        print(f"Now scraping for category {category}...")
         category_products_link = f"http://localhost:5198/api/{category}/scraper"
         category_record_update_link = f"http://localhost:5198/api/{category}/price"
 
         response_data = requests.get(category_products_link)
         category_products = response_data.json()
 
+        # Dodawanie cen masowo, dla morele
+        if category == "storage":
+            category_products = match_morele_products(category_products, link[0])
+            category_products = match_morele_products(category_products, link[1])
+        else:
+            category_products = match_morele_products(category_products, link)
+
+        for product in category_products:
+            update_product(product, category_record_update_link)
+
+        # Dodawanie cen dla pojedynczych produktow
         for product in category_products:
             print(f"Scraping prices for {product['name']}...")
             komputronik_price = get_komputronik_price(product["producerCode"])
             euro_com_price = get_euro_com_price(product["producerCode"], product["name"])
-            time.sleep(1)
+            time.sleep(2)  # chwila oddechu dla stron
 
-            # Dodawanie dwoch latwiejszych (po wyszukiwaniu) cen
-            if not product["prices"]:
-                if komputronik_price:
-                    product["prices"].append(komputronik_price)
-                if euro_com_price:
-                    product["prices"].append(euro_com_price)
-            else:
-                for shop_price in product["prices"]:
-                    if shop_price["shopName"] == komputronik_price.get("shopName") and shop_price["price"] != komputronik_price.get("price"):
-                        print(f"Changed price for product {product['name']}, shop {shop_price['shopName']}, from {shop_price['price']} to {komputronik_price['price']}")
-                        shop_price["price"] = komputronik_price["price"]
-                        shop_price["link"] = komputronik_price["link"]
-                    if shop_price["shopName"] == euro_com_price.get("shopName") and shop_price["price"] != euro_com_price.get("price"):
-                        print(f"Changed price for product {product['name']}, shop {shop_price['shopName']}, from {shop_price['price']} to {euro_com_price['price']}")
-                        shop_price["price"] = euro_com_price["price"]
-                        shop_price["link"] = euro_com_price["link"]
+            product["prices"] = add_price(product["prices"], komputronik_price)
+            product["prices"] = add_price(product["prices"], euro_com_price)
 
             response_update = requests.put(category_record_update_link, json=product)
-
             if response_update.status_code == 200:
                 print(f"Request for {product['name']} on {category_record_update_link} was successful.\n")
             else:
                 print(f"Request failed with status code: {response_update.status_code}")
                 print(response_update.json())
                 print(f"for product: {product}")
-
-
-update_database()

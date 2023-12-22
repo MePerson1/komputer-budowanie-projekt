@@ -5,17 +5,7 @@ from config import *
 import ParseProduct
 
 
-def collect_product_links(cat_link):
-    link_base = "https://www.morele.net"
-    prod_links = []
-
-    # wyszukiwanie i dodawanie linkow z pierwszej strony
-    html_product_search = requests.get(cat_link).text
-    soup = BeautifulSoup(html_product_search, "lxml")
-    product_links_raw = soup.find_all('a', class_='cat-product-image productLink')
-    for link in product_links_raw:
-        prod_links.append(link_base + link['href'])
-
+def find_morele_page_limit(soup):
     # ustal ilosc wszystkich stron na podstawie szarego przycisku oznaczajacego ostatnia strone
     # bo morele nie zwraca bledu jak sie poda nieistniejaca ilosc stron, tylko wywala na pierwsza -.-
     page_limit = soup.find("div", class_="pagination-btn-nolink-anchor")
@@ -28,18 +18,33 @@ def collect_product_links(cat_link):
         else:  # jesli ich nie ma znaczy ze jest tylko 1 strona
             page_limit = 1
 
+    return page_limit
+
+
+def collect_product_links(cat_link):
+    link_base = "https://www.morele.net"
+    prod_links = []
+
+    # wyszukiwanie i dodawanie linkow z pierwszej strony
+    html_product_search = requests.get(cat_link).text
+    soup = BeautifulSoup(html_product_search, "lxml")
+    product_links_raw = soup.find_all('a', class_='cat-product-image productLink')
+    for link in product_links_raw:
+        prod_links.append(link_base + link['href'])
+
+    page_limit = find_morele_page_limit(soup)
     if page_limit == 1:
         return prod_links
 
     # wejdz na kazda nastepna strone z konkretnymi produktami, zbierz do nich linki
-    for page in range(2, how_many_pages+1):
-        html_product_search = requests.get(f"{cat_link},,,,,,,,0,,,,/{page}/").text
+    for page_current in range(2, how_many_pages+1):
+        html_product_search = requests.get(f"{cat_link},,,,,,,,0,,,,/{page_current}/").text
         soup = BeautifulSoup(html_product_search, "lxml")
         product_links_raw = soup.find_all('a', class_='cat-product-image productLink')
         # utworz na tej podstawie linki do kazdego produktu dla kazdej strony w liczbie okreslonej w how_many_pages
         for link in product_links_raw:
             prod_links.append(link_base + link['href'])
-        if page == page_limit:
+        if page_current == page_limit:
             break
     return prod_links
 
@@ -135,14 +140,15 @@ def scrape_all_categories():
             add_products_to_database(prod_cat, prods)
 
 
-if choose_all_product_categories:
-    scrape_all_categories()
-else:
-    if chosen_product_category in product_categories_and_links:
-        print(f"Now scraping {how_many_pages} pages of {chosen_product_category}...")
-        product_links = collect_product_links(product_categories_and_links[chosen_product_category])
-        products = get_product_specs(chosen_product_category, product_links)
-        if add_to_database:
-            add_products_to_database(chosen_product_category, products)
+if __name__ == "__main__":
+    if choose_all_product_categories:
+        scrape_all_categories()
     else:
-        print("Variable chosen_product_category in config.py is not equal to any product_categories_and_links key")
+        if chosen_product_category in product_categories_and_links:
+            print(f"Now scraping {how_many_pages} pages of {chosen_product_category}...")
+            product_links = collect_product_links(product_categories_and_links[chosen_product_category])
+            products = get_product_specs(chosen_product_category, product_links)
+            if add_to_database:
+                add_products_to_database(chosen_product_category, products)
+        else:
+            print("Variable chosen_product_category in config.py is not equal to any product_categories_and_links key")
