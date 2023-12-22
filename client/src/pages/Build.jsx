@@ -82,6 +82,8 @@ const Build = ({ pcConfiguration, setPcConfiguration }) => {
         .then((res) => {
           var data = res.data;
           localStorage.removeItem("localConfiugration");
+          setPcConfiguration(PcConfiguration);
+          console.log("test");
           setIsSaved(true);
           navigate(`/configurations/${data.id}`);
         })
