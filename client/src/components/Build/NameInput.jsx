@@ -5,6 +5,7 @@ export const NameInput = ({ name, handleNameChange }) => {
       <input
         type="text"
         className="input input-bordered input-primary input-lg w-3/5"
+        placeholder="Nazwa twojego zestawu"
         value={name}
         onChange={handleNameChange}
       />

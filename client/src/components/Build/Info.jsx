@@ -97,6 +97,15 @@ const Info = ({
                       className="textarea textarea-bordered h-24"
                       placeholder="Opis (opcjonalnie)"
                     ></textarea>
+                    <div className="flex">
+                      <label className="cursor-pointer label">
+                        <span className="label-text mr-2">Prywatne</span>
+                        <input
+                          type="checkbox"
+                          className="checkbox checkbox-secondary"
+                        />
+                      </label>
+                    </div>
                   </label>
                   <div className="modal-action">
                     <div>

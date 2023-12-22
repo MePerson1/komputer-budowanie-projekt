@@ -29,13 +29,14 @@ const ComponentView = ({ pcPart, handleSetToNull, partKey, partType }) => {
         <button onClick={handleChangePart} className="m-2 btn btn-outline">
           Zmień
         </button>
+
+        <DetailButton id={pcPart.id} partKey={partType.key} />
         <button
           onClick={() => handleSetToNull(partKey, pcPart.id)}
-          className="m-2 btn btn-sm bg-red-600 hover:bg-opacity-80 hover:bg-red-950"
+          className="m-2 btn btn-sm btn-outline btn-error "
         >
           Usuń
         </button>
-        <DetailButton id={pcPart.id} partKey={partType.key} />
       </div>
     </div>
   );

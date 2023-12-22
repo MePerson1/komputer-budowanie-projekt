@@ -7,7 +7,7 @@ const Parts = () => {
   return (
     <>
       <Topic title="Wybór typu części" />
-      <Breadcrumbs />
+
       <div className="flex flex-wrap justify-center">
         {pcParts.map((pcPart) => (
           <div className="p-4">
