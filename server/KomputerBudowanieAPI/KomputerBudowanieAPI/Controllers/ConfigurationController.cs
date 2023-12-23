@@ -13,7 +13,7 @@ namespace KomputerBudowanieAPI.Controllers
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
         private readonly IUserRepository _userRepository;
 
-        public ConfigurationController(IPcConfigurationRepository pcConfigurationRepository, IUserRepository userRepository, ICompatibilityService compatibilityService)
+        public ConfigurationController(IPcConfigurationRepository pcConfigurationRepository, IUserRepository userRepository, ICompatibilityPcConfigurationService compatibilityService)
         {
             _pcConfigurationRepository = pcConfigurationRepository;
             _userRepository = userRepository;

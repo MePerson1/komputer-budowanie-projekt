@@ -1,5 +1,7 @@
-﻿using KomputerBudowanieAPI.Models;
+﻿using KomputerBudowanieAPI.Interfaces;
+using KomputerBudowanieAPI.Models;
 using KomputerBudowanieAPI.Services;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +12,7 @@ namespace Tests.Services.CompatibilityServiceTests
 {
     public class PowersupplyStorageCompatibilityTests
     {
-        private readonly CompatibilityService _compatibilityService = new CompatibilityService();
+        private readonly ICompatibilityPcConfigurationService _compatibilityPcConfigurationService = new CompatibilityPcConfigurationService(new CompatibilityPartsService());
 
         private static readonly Storage discHddSata3Form3_5 = new()
         {
@@ -198,7 +200,7 @@ namespace Tests.Services.CompatibilityServiceTests
             };
 
             // Act (When)
-            Toast? toast = await _compatibilityService.CompatibilityCheck(configuration);
+            Toast? toast = await _compatibilityPcConfigurationService.CompatibilityCheck(configuration);
 
             // Assert (Then)
             Assert.NotNull(toast);
@@ -220,7 +222,7 @@ namespace Tests.Services.CompatibilityServiceTests
             };
 
             // Act (When)
-            Toast? toast = await _compatibilityService.CompatibilityCheck(configuration);
+            Toast? toast = await _compatibilityPcConfigurationService.CompatibilityCheck(configuration);
 
             // Assert (Then)
             Assert.NotNull(toast);

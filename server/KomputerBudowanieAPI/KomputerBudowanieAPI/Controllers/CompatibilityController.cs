@@ -10,9 +10,9 @@ namespace KomputerBudowanieAPI.Controllers
     public class CompatibilityController : ControllerBase
     {
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
-        private readonly ICompatibilityService _compatibilityService;
+        private readonly ICompatibilityPcConfigurationService _compatibilityService;
 
-        public CompatibilityController(IPcConfigurationRepository pcConfigurationRepository, ICompatibilityService compatibilityService)
+        public CompatibilityController(IPcConfigurationRepository pcConfigurationRepository, ICompatibilityPcConfigurationService compatibilityService)
         {
             _pcConfigurationRepository = pcConfigurationRepository;
             _compatibilityService = compatibilityService;
