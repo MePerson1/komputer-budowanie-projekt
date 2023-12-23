@@ -14,6 +14,7 @@ product_categories_and_links = {
     "water-cooling": "https://www.morele.net/kategoria/chlodzenie-wodne-zestawy-662/"
 }
 
+# Nazwy sklepow wykorzystanych do scrapowania cen
 shop_names = {
     "morele": "Morele.net",
     "euro.com": "Euro.com.pl",
