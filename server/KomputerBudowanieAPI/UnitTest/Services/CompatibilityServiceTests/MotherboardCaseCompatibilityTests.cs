@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Tests.Services.CompatibilityServiceTests
 {
-    public class CaseMotherboardCompatibilityTests
+    public class MotherboardCaseCompatibilityTests
     {
         private readonly CompatibilityService _compatibilityService = new CompatibilityService();
 

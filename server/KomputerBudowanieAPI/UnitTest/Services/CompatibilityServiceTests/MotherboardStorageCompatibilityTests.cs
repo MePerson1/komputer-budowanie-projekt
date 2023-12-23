@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Tests.Services.CompatibilityServiceTests
 {
-    public class StorageMotherboardCompatibilityTests
+    public class MotherboardStorageCompatibilityTests
     {
         private readonly CompatibilityService _compatibilityService = new CompatibilityService();
 

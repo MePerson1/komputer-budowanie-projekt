@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Tests.Services.CompatibilityServiceTests
 {
-    public class RamCompatibilityTests
+    public class MotherboardRamCompatibilityTests
     {
         private readonly CompatibilityService _compatibilityService = new CompatibilityService();
 

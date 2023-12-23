@@ -122,7 +122,7 @@ namespace Tests.Services
         [InlineData("120 mm/140 mm x1, , , 120 mm/140 mm x2, 120 mm/140 mm x3", "140 mm", 3)]
         [InlineData("120 mm/140 mm x1, , , ", "140 mm", 1)]
         [InlineData("120 mm/140 mm x1, , , ", "120 mm", 1)]
-        public void Test_ExtractFanDimensionsFromCase(string input, string expectedDimension, int expectedCount)
+        public void Given_CasePanelsString_When_ExtractFanDimensionsFromCase_Then_RetrurnMaxFanCountOnPanelDictionary(string input, string expectedDimension, int expectedCount)
         {
             var result = ExtractConnectorInfoService.ExtractFanDimensionsFromCase(input);
 

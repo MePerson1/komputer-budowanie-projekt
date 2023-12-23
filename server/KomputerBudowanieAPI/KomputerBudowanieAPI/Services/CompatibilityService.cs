@@ -32,6 +32,7 @@ namespace KomputerBudowanieAPI.Services
             Ram_Motherboard(ref toast, configuration);
 
             Storage_Motherboard(ref toast, configuration);
+            Storage_PowerSupply(ref toast, configuration);
 
             return toast;
         }
@@ -498,14 +499,28 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
-        // TODO:
-        // - dokończyć
+        // WARNING:
+        // - W dyskach nie ma informacji o tym jaki mają rodzaj zasilania
         static private void Storage_PowerSupply(ref Toast toast, PcConfiguration configuration)
         {
             if (configuration.PcConfigurationStorages is null || !configuration.PcConfigurationStorages.Any() || configuration.PowerSupply is null) return;
 
-
-
+            int sataInPowerSupply = configuration.PowerSupply?.Sata ?? 0;
+            foreach (var disc in configuration.PcConfigurationStorages)
+            {
+                if(disc.Storage.Interface.Contains("SATA"))
+                {
+                    int quantityLeft = sataInPowerSupply - disc.Quantity;
+                    if (quantityLeft >= 0) 
+                    { 
+                        sataInPowerSupply = quantityLeft;
+                    }
+                    else
+                    {
+                        toast.Problems.Add("Niewystarczająca ilość złączy zasilania dla dysków!");
+                    }
+                }
+            }
         }
 
         static private void Cpu_Motherboard(ref Toast toast, PcConfiguration configuration)
