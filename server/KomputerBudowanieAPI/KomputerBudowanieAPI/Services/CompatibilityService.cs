@@ -6,9 +6,11 @@ namespace KomputerBudowanieAPI.Services
 {
     public class CompatibilityService : ICompatibilityService
     {
-        public async Task<Toast?> CompatibilityCheck(PcConfiguration configuration)
+        public async Task<Toast> CompatibilityCheck(PcConfiguration configuration)
         {
+            await Task.Run(() => { });
             Toast toast = new();
+            
             if (configuration is null)
             {
                 toast.Problems.Add("Coś poszło nie tak!");
@@ -37,8 +39,9 @@ namespace KomputerBudowanieAPI.Services
             return toast;
         }
 
-        public async Task<Toast?> CpuCompatibilityCheck(PcConfiguration configuration)
+        public async Task<Toast> CpuCompatibilityCheck(PcConfiguration configuration)
         {
+            await Task.Run(() => { });
             Toast toast = new();
 
             if (configuration is null)
@@ -54,8 +57,9 @@ namespace KomputerBudowanieAPI.Services
             return toast;
         }
 
-        public async Task<Toast?> MotherboardCompatibilityCheck(PcConfiguration configuration)
+        public async Task<Toast> MotherboardCompatibilityCheck(PcConfiguration configuration)
         {
+            await Task.Run(() => { });
             Toast toast = new();
 
             if (configuration is null)
@@ -73,8 +77,9 @@ namespace KomputerBudowanieAPI.Services
             return toast;
         }
 
-        public async Task<Toast?> CpuCoolingCompatibilityCheck(PcConfiguration configuration)
+        public async Task<Toast> CpuCoolingCompatibilityCheck(PcConfiguration configuration)
         {
+            await Task.Run(() => { });
             Toast toast = new();
 
             Case_CpuCooling(ref toast, configuration); //2
@@ -84,8 +89,9 @@ namespace KomputerBudowanieAPI.Services
             return toast;
         }
 
-        public async Task<Toast?> WaterCoolingCompatibilityCheck(PcConfiguration configuration)
+        public async Task<Toast> WaterCoolingCompatibilityCheck(PcConfiguration configuration)
         {
+            await Task.Run(() => { });
             Toast toast = new();
 
             Case_WaterCooling(ref toast, configuration);
@@ -94,8 +100,9 @@ namespace KomputerBudowanieAPI.Services
             return toast;
         }
 
-        public async Task<Toast?> CoolingCompatibilityCheck(PcConfiguration configuration)
+        public async Task<Toast> CoolingCompatibilityCheck(PcConfiguration configuration)
         {
+            await Task.Run(() => { });
             Toast toast = new();
 
             Case_CpuCooling(ref toast, configuration);
@@ -105,24 +112,26 @@ namespace KomputerBudowanieAPI.Services
             return toast;
         }
 
-        public Task<Toast?> RamCompatibilityCheck(PcConfiguration configuration)
+        public async Task<Toast> RamCompatibilityCheck(PcConfiguration configuration)
         {
+            await Task.Run(() => { });
             Toast toast = new();
 
             if (configuration is null)
             {
                 toast.Problems.Add("Coś poszło nie tak!");
-                return Task.FromResult<Toast?>(toast);
+                return toast;
             }
 
             Ram_Motherboard(ref toast, configuration); //1, 2 i 3
             Ram_CpuCooling(ref toast, configuration); //4
 
-            return Task.FromResult<Toast?>(toast);
+            return toast;
         }
 
-        public async Task<Toast?> StorageCompatibilityCheck(PcConfiguration configuration)
+        public async Task<Toast> StorageCompatibilityCheck(PcConfiguration configuration)
         {
+            await Task.Run(() => { });
             Toast toast = new();
 
             if (configuration is null)
@@ -137,8 +146,9 @@ namespace KomputerBudowanieAPI.Services
             return toast;
         }
 
-        public async Task<Toast?> GraphicCardCompatibilityCheck(PcConfiguration configuration)
+        public async Task<Toast> GraphicCardCompatibilityCheck(PcConfiguration configuration)
         {
+            await Task.Run(() => { });
             Toast toast = new();
 
             //"powerConnectors": "3x 8-pin",
@@ -168,8 +178,9 @@ namespace KomputerBudowanieAPI.Services
             return toast;
         }
 
-        public async Task<Toast?> PowerSupplyCompatibliityCheck(PcConfiguration configuration)
+        public async Task<Toast> PowerSupplyCompatibliityCheck(PcConfiguration configuration)
         {
+            await Task.Run(() => { });
             Toast toast = new();
             if (configuration is null)
             {
@@ -184,8 +195,9 @@ namespace KomputerBudowanieAPI.Services
             return toast;
         }
 
-        public async Task<Toast?> CaseCompatibilityCheck(PcConfiguration configuration)
+        public async Task<Toast> CaseCompatibilityCheck(PcConfiguration configuration)
         {
+            await Task.Run(() => { });
             Toast toast = new();
             if (configuration is null)
             {
