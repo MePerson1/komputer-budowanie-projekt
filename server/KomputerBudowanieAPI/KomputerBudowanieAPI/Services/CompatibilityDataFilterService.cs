@@ -6,8 +6,6 @@ namespace KomputerBudowanieAPI.Services
 {
     public class CompatibilityDataFilterService : ICompatibilityDataFilterService
     {
-        // TODO:
-        // - dodać sprawdzanie chłodzeń?
         public void CpuFilter(PcConfiguration configuration, ref IEnumerable<Cpu> cpus)
         {
             if (configuration.Motherboard is not null)
@@ -16,6 +14,12 @@ namespace KomputerBudowanieAPI.Services
                     .Where(cpu => Cpu_Motherboard(cpu, configuration.Motherboard))
                     .ToList();
             }
+            /*if (configuration.CpuCooling is not null)
+            {
+                cpus = cpus
+                    .Where(cpu => Cpu_Motherboard(cpu, configuration.Motherboard))
+                    .ToList();
+            }*/
         }
 
         public void MotherboardFilter(PcConfiguration configuration, ref IEnumerable<Motherboard> motherboards)
@@ -173,18 +177,14 @@ namespace KomputerBudowanieAPI.Services
         static private bool Case_Motherboard(Case pcCase, Motherboard motherboard) =>
             (motherboard.BoardStandard == "ATX" && pcCase.Compatibility.Contains(motherboard.BoardStandard + ",")) ||
             (motherboard.BoardStandard != "ATX" && pcCase.Compatibility.Contains(motherboard.BoardStandard));
-        static private bool Cpu_Motherboard(Cpu cpu, Motherboard motherboard) =>
-            (cpu.Producer != "AMD" && motherboard.SupportedProcessors.Contains(cpu.Line))
-            || (cpu.Producer == "AMD" && motherboard.SupportedProcessors.Contains(Regex.Match(cpu.Line, @"^([\w\-]+)").Value))
-            && motherboard.CPUSocket == cpu.SocketType;
+        
 
         static private bool Ram_Motherboard(Ram ram, Motherboard motherboard) =>
             motherboard.MemoryStandard == ram.MemoryType
             && motherboard.MemoryConnectorType == ram.PinType
             && motherboard.MemorySlotsCount >= ram.ModuleCount;
 
-        static private bool Case_GraphicCard(Case pcCase, GraphicCard card) =>
-            pcCase.MaxGPULengthCM * 10 >= card.CardLengthMM;
+        
 
         static private bool Case_CpuCooling(Case pcCase, CpuCooling cpuCooling) =>
             (pcCase.MaxCoolingSystemHeightCM * 10) >= cpuCooling.HeightMM;
@@ -193,11 +193,70 @@ namespace KomputerBudowanieAPI.Services
             (storage.FormFactor == "3.5 cala" && pcCase.InternalBaysThreePointFiveInch > 0) ||
             (storage.FormFactor == "2.5 cala" && pcCase.InternalBaysTwoPointFiveInch > 0);
 
+        static private bool Storage_Motherboard(Storage storage, Motherboard motherboard)
+        {
+            Dictionary<string, int> connectors = ExtractConnectorInfoService.ExtractsStorageSlotsFromMotherboard(motherboard.DriveConnectors);
 
-        //pain
-        static private bool GraphicCard_PowerSupply(GraphicCard graphicCard, PowerSupply powerSupply)
+            if (connectors.ContainsKey(storage.Interface))
+            {
+                if (connectors[storage.Interface] > 0) connectors[storage.Interface] = connectors[storage.Interface]--;
+                else return false;
+            }
+            else if (storage.FormFactor.Contains("M.2"))
+            {
+                if (connectors["M.2 slot"] > 0) connectors["M.2 slot"] = connectors["M.2 slot"]--;
+                else return false;
+            }
+            else
+            {
+                return false;
+            }
+            return true;
+        }
+
+        static private bool Storage_PowerSupply(Storage storage, PowerSupply powerSupply, int discsUsed)
+        {
+            if (!storage.Interface.Contains("SATA")) return true;
+
+            if(discsUsed > 0) { }
+
+            return true;
+        }
+
+        static private bool Cpu_Motherboard(Cpu cpu, Motherboard motherboard) =>
+            (cpu.Producer != "AMD" && motherboard.SupportedProcessors.Contains(cpu.Line))
+            || (cpu.Producer == "AMD" && motherboard.SupportedProcessors.Contains(Regex.Match(cpu.Line, @"^([\w\-]+)").Value))
+            && motherboard.CPUSocket == cpu.SocketType;
+
+        static private bool Case_GraphicCard(Case pcCase, GraphicCard card) =>
+            pcCase.MaxGPULengthCM * 10 >= card.CardLengthMM;
+
+        static private bool GraphicCard_Motherboard(GraphicCard graphicCard, Motherboard motherboard)
         {
 
+            // GraphicCard:
+            // "connectorType": "PCI Express 4.0 x16",
+            // "connectorType": "PCI Express 3.0 x16",
+            // "connectorType": "PCI Express 4.0 x8",
+
+            // Motherboard:
+            // "expansionSlots": "PCI Express x1 (1 szt.), PCI Express x16 (3 szt.)",
+            // "expansionSlots": "PCI Express x1 (3 szt.), PCI Express x16 (2 szt.)",
+            string GraphicCardConnector = graphicCard.ConnectorType;
+
+            // Usunięcie wszystkich wersji " N.N " ze środka stringa GraphicCardConnector
+            GraphicCardConnector = Regex.Replace(GraphicCardConnector, @"( \d+\.\d+ )", " ", RegexOptions.IgnoreCase).Trim();
+
+            if (!motherboard.ExpansionSlots.Contains(GraphicCardConnector))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        //działa
+        static private bool GraphicCard_PowerSupply(GraphicCard graphicCard, PowerSupply powerSupply)
+        {
             List<string> graphicCardConnectors = ExtractConnectorInfoService.ExtractPowerConnectorsFromGraphicCard(graphicCard.PowerConnectors);
 
             int powerSupply6_plus2pin = powerSupply.PCIE8Pin_6Plus2;
@@ -227,59 +286,6 @@ namespace KomputerBudowanieAPI.Services
                 {
                     return false;
                 }
-            }
-            return true;
-        }
-
-        static private bool GraphicCard_Motherboard(GraphicCard graphicCard, Motherboard motherboard)
-        {
-
-            // GraphicCard:
-            // "connectorType": "PCI Express 4.0 x16",
-            // "connectorType": "PCI Express 3.0 x16",
-            // "connectorType": "PCI Express 4.0 x8",
-
-            // Motherboard:
-            // "expansionSlots": "PCI Express x1 (1 szt.), PCI Express x16 (3 szt.)",
-            // "expansionSlots": "PCI Express x1 (3 szt.), PCI Express x16 (2 szt.)",
-            string GraphicCardConnector = graphicCard.ConnectorType;
-
-            // Usunięcie wszystkich wersji " N.N " ze środka stringa GraphicCardConnector
-            GraphicCardConnector = Regex.Replace(GraphicCardConnector, @"( \d+\.\d+ )", " ", RegexOptions.IgnoreCase).Trim();
-
-            if (!motherboard.ExpansionSlots.Contains(GraphicCardConnector))
-            {
-                return false;
-            }
-            return true;
-
-        }
-
-        static private bool Storage_Motherboard(Storage storage, Motherboard motherboard)
-        {
-
-            Dictionary<string, int> connectors = ExtractConnectorInfoService.ExtractsStorageSlotsFromMotherboard(motherboard.DriveConnectors);
-
-            //W dyskach M2
-            //"interface": "PCI-E x4 Gen4 NVMe", "PCI-E x4 Gen3 NVMe",
-            // "formFactor": "M.2 2280", 
-
-            //W dyskach SATA
-            //"interface": "SATA 3",
-            //"formFactor": "2.5 cala",
-            if (connectors.ContainsKey(storage.Interface))
-            {
-                if (connectors[storage.Interface] > 0) connectors[storage.Interface] = connectors[storage.Interface]--;
-                else return false;
-            }
-            else if (storage.FormFactor.Contains("M.2"))
-            {
-                if (connectors["M.2 slot"] > 0) connectors["M.2 slot"] = connectors["M.2 slot"]--;
-                else return false;
-            }
-            else
-            {
-                return false;
             }
             return true;
         }
