@@ -60,15 +60,16 @@ namespace KomputerBudowanieAPI.Services
 
             if (configuration.PcConfigurationRams is not null)
             {
-                int ramCount = 0;
+                int ramsCount = 0;
                 foreach (var m in configuration.PcConfigurationRams)
                 {
-                    ramCount += m.Quantity;
+                    ramsCount += m.Ram.ModuleCount * m.Quantity;
                 }
+                
                 foreach (PcConfigurationRam ram in configuration.PcConfigurationRams)
                 {
                     motherboards = motherboards
-                        .Where(motherboard => Ram_Motherboard(ram.Ram, motherboard, ramCount))
+                        .Where(motherboard => Ram_Motherboard(ram.Ram, motherboard, ramsCount))
                         .ToList();
                 }
             }
@@ -128,7 +129,9 @@ namespace KomputerBudowanieAPI.Services
         {
             if (configuration.Motherboard is not null)
             {
-                
+                rams = rams
+                    .Where(ram => Ram_Motherboard(ram, configuration.Motherboard, 0))
+                    .ToList();
             }
         }
 
@@ -196,7 +199,7 @@ namespace KomputerBudowanieAPI.Services
                 foreach (var relation in configuration.PcConfigurationStorages)
                 {
                     cases = cases
-                        .Where(c => Case_Storages(c, relation.Storage))
+                        .Where(pcCase => Case_Storages(pcCase, relation.Storage))
                         .ToList();
                 }
             }
@@ -314,9 +317,10 @@ namespace KomputerBudowanieAPI.Services
 
         //TODO:
         // Poprawić
-        static private bool Ram_Motherboard(Ram ram, Motherboard motherboard, int ramCount) =>
+        private bool Ram_Motherboard(Ram ram, Motherboard motherboard, int slotsCount) =>
             motherboard.MemoryStandard == ram.MemoryType
             && motherboard.MemoryConnectorType == ram.PinType
-            && motherboard.MemorySlotsCount >= ram.ModuleCount;
+            && motherboard.MemorySlotsCount >= slotsCount;
+                
     }
 }

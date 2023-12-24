@@ -25,23 +25,23 @@ namespace KomputerBudowanieAPI.Services
             }
 
             _compatibilityPartsService.Cpu_Motherboard(ref toast, configuration.Cpu, configuration.Motherboard);
-            _compatibilityPartsService.Cpu_GraphicCard(ref toast, configuration);
+            _compatibilityPartsService.Cpu_GraphicCard(ref toast, configuration.Cpu, configuration.GraphicCard);
             _compatibilityPartsService.Cpu_AllCooling(ref toast, configuration);
 
             _compatibilityPartsService.GraphicCard_Motherboard(ref toast, configuration.GraphicCard, configuration.Motherboard);
             _compatibilityPartsService.GraphicCard_PowerSupply(ref toast, configuration.GraphicCard, configuration.PowerSupply);
 
             _compatibilityPartsService.Case_Motherboard(ref toast, configuration.Case, configuration.Motherboard);
-            _compatibilityPartsService.Case_PowerSupply(ref toast, configuration);
+            _compatibilityPartsService.Case_PowerSupply(ref toast, configuration.Case, configuration.PowerSupply);
             _compatibilityPartsService.Case_GraphicCard(ref toast, configuration.Case, configuration.GraphicCard);
             _compatibilityPartsService.Case_CpuCooling(ref toast, configuration.Case, configuration.CpuCooling);
-            _compatibilityPartsService.Case_Storages(ref toast, configuration);
+            _compatibilityPartsService.Case_Storages(ref toast, configuration.Case, configuration.PcConfigurationStorages);
 
-            _compatibilityPartsService.Ram_CpuCooling(ref toast, configuration);
-            _compatibilityPartsService.Ram_Motherboard(ref toast, configuration);
+            _compatibilityPartsService.CpuCooling_Rams(ref toast, configuration.CpuCooling, configuration.PcConfigurationRams);
+            _compatibilityPartsService.Motherboard_Rams(ref toast, configuration.Motherboard, configuration.PcConfigurationRams);
 
-            _compatibilityPartsService.Storage_Motherboard(ref toast, configuration);
-            _compatibilityPartsService.Storages_PowerSupply(ref toast, configuration);
+            _compatibilityPartsService.Motherboard_Storages(ref toast, configuration.Motherboard, configuration.PcConfigurationStorages);
+            _compatibilityPartsService.PowerSupply_Storages(ref toast, configuration.PowerSupply, configuration.PcConfigurationStorages);
 
             return toast;
         }
@@ -59,7 +59,7 @@ namespace KomputerBudowanieAPI.Services
 
             _compatibilityPartsService.Cpu_Motherboard(ref toast, configuration.Cpu, configuration.Motherboard); //1 i 2
             _compatibilityPartsService.Cpu_AllCooling(ref toast, configuration);
-            _compatibilityPartsService.Cpu_GraphicCard(ref toast, configuration); //3
+            _compatibilityPartsService.Cpu_GraphicCard(ref toast, configuration.Cpu, configuration.GraphicCard); //3
 
             return toast;
         }
@@ -78,8 +78,8 @@ namespace KomputerBudowanieAPI.Services
             _compatibilityPartsService.Cpu_Motherboard(ref toast, configuration.Cpu, configuration.Motherboard); //1
             _compatibilityPartsService.GraphicCard_Motherboard(ref toast, configuration.GraphicCard, configuration.Motherboard); //2
             _compatibilityPartsService.Case_Motherboard(ref toast, configuration.Case, configuration.Motherboard); //4
-            _compatibilityPartsService.Ram_Motherboard(ref toast, configuration); //5 i 6
-            _compatibilityPartsService.Storage_Motherboard(ref toast, configuration); //7
+            _compatibilityPartsService.Motherboard_Rams(ref toast, configuration.Motherboard, configuration.PcConfigurationRams); //5 i 6
+            _compatibilityPartsService.Motherboard_Storages(ref toast, configuration.Motherboard, configuration.PcConfigurationStorages); //7
 
             return toast;
         }
@@ -91,7 +91,7 @@ namespace KomputerBudowanieAPI.Services
 
             _compatibilityPartsService.Case_CpuCooling(ref toast, configuration.Case, configuration.CpuCooling); //2
             _compatibilityPartsService.Cpu_CpuCooling(ref toast, configuration.Cpu, configuration.CpuCooling);
-            _compatibilityPartsService.Ram_CpuCooling(ref toast, configuration); //4
+            _compatibilityPartsService.CpuCooling_Rams(ref toast, configuration.CpuCooling, configuration.PcConfigurationRams); //4
 
             return toast;
         }
@@ -114,7 +114,7 @@ namespace KomputerBudowanieAPI.Services
 
             _compatibilityPartsService.Case_CpuCooling(ref toast, configuration.Case, configuration.CpuCooling);
             _compatibilityPartsService.Cpu_AllCooling(ref toast, configuration);
-            _compatibilityPartsService.Ram_CpuCooling(ref toast, configuration);
+            _compatibilityPartsService.CpuCooling_Rams(ref toast, configuration.CpuCooling, configuration.PcConfigurationRams);
 
             return toast;
         }
@@ -130,8 +130,8 @@ namespace KomputerBudowanieAPI.Services
                 return toast;
             }
 
-            _compatibilityPartsService.Ram_Motherboard(ref toast, configuration); //1, 2 i 3
-            _compatibilityPartsService.Ram_CpuCooling(ref toast, configuration); //4
+            _compatibilityPartsService.Motherboard_Rams(ref toast, configuration.Motherboard, configuration.PcConfigurationRams); //1, 2 i 3
+            _compatibilityPartsService.CpuCooling_Rams(ref toast, configuration.CpuCooling, configuration.PcConfigurationRams); //4
 
             return toast;
         }
@@ -147,8 +147,8 @@ namespace KomputerBudowanieAPI.Services
                 return toast;
             }
 
-            _compatibilityPartsService.Storage_Motherboard(ref toast, configuration); //1
-            _compatibilityPartsService.Storages_PowerSupply(ref toast, configuration); //2
+            _compatibilityPartsService.Motherboard_Storages(ref toast, configuration.Motherboard, configuration.PcConfigurationStorages); //1
+            _compatibilityPartsService.PowerSupply_Storages(ref toast, configuration.PowerSupply, configuration.PcConfigurationStorages); //2
 
             return toast;
         }
@@ -157,15 +157,6 @@ namespace KomputerBudowanieAPI.Services
         {
             await Task.Run(() => { });
             Toast toast = new();
-
-            //"powerConnectors": "3x 8-pin",
-            //"powerConnectors": "8-pin"
-            //"powerConnectors": "6-pin",
-
-            //"pciE8Pin_6Plus4": 4,
-            //"pciE16Pin": 0,
-            //"pciE8Pin": 0,
-            //"pciE6Pin": 0,
 
             if (configuration is null)
             {
@@ -196,8 +187,8 @@ namespace KomputerBudowanieAPI.Services
             }
 
             _compatibilityPartsService.GraphicCard_PowerSupply(ref toast, configuration.GraphicCard, configuration.PowerSupply);
-            _compatibilityPartsService.Case_PowerSupply(ref toast, configuration);
-            _compatibilityPartsService.Storages_PowerSupply(ref toast, configuration);
+            _compatibilityPartsService.Case_PowerSupply(ref toast, configuration.Case, configuration.PowerSupply);
+            _compatibilityPartsService.PowerSupply_Storages(ref toast, configuration.PowerSupply, configuration.PcConfigurationStorages);
 
             return toast;
         }
@@ -213,20 +204,13 @@ namespace KomputerBudowanieAPI.Services
             }
 
             _compatibilityPartsService.Case_Motherboard(ref toast, configuration.Case, configuration.Motherboard); //1
-            _compatibilityPartsService.Case_PowerSupply(ref toast, configuration); //2 i 3
+            _compatibilityPartsService.Case_PowerSupply(ref toast, configuration.Case, configuration.PowerSupply); //2 i 3
             _compatibilityPartsService.Case_GraphicCard(ref toast, configuration.Case, configuration.GraphicCard); //4
             _compatibilityPartsService.Case_CpuCooling(ref toast, configuration.Case, configuration.CpuCooling); //5
             _compatibilityPartsService.Case_WaterCooling(ref toast, configuration.Case, configuration.WaterCooling);
-            _compatibilityPartsService.Case_Storages(ref toast, configuration); //7
+            _compatibilityPartsService.Case_Storages(ref toast, configuration.Case, configuration.PcConfigurationStorages); //7
 
             return toast;
         }
-
-        //
-        // Prywatne metody do sprawdzania kompatybilności części
-        // PcPart1_PcPart2
-        //
-
-        
     }
 }
