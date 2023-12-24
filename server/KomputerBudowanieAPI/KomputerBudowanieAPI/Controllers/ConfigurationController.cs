@@ -11,12 +11,10 @@ namespace KomputerBudowanieAPI.Controllers
     public class ConfigurationController : ControllerBase
     {
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
-        private readonly IUserRepository _userRepository;
 
-        public ConfigurationController(IPcConfigurationRepository pcConfigurationRepository, IUserRepository userRepository, ICompatibilityService compatibilityService)
+        public ConfigurationController(IPcConfigurationRepository pcConfigurationRepository, ICompatibilityService compatibilityService)
         {
             _pcConfigurationRepository = pcConfigurationRepository;
-            _userRepository = userRepository;
         }
 
         // GET: api/<ConfigurationController>
