@@ -114,7 +114,7 @@ def scrape_product_category(product_category, category_link):
     product_links = collect_product_links(category_link)
     products = get_product_specs(product_category, product_links)
     if add_to_database:
-        DatabaseOperations.add_products_from_category(product_category, products)
+        DatabaseOperations.add_products_from_category(products, product_category)
 
 
 if __name__ == "__main__":
