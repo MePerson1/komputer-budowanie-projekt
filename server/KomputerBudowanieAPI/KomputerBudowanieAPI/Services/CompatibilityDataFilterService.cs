@@ -18,43 +18,32 @@ namespace KomputerBudowanieAPI.Services
         {
             if (configuration.Motherboard is not null)
             {
-                cpus = cpus
-                    .Where(cpu => Cpu_Motherboard(cpu, configuration.Motherboard))
-                    .ToList();
+                cpus = cpus.Where(cpu => Cpu_Motherboard(cpu, configuration.Motherboard));
             }
             if (configuration.CpuCooling is not null)
             {
-                cpus = cpus
-                    .Where(cpu => Cpu_CpuCooling(cpu, configuration.CpuCooling))
-                    .ToList();
+                cpus = cpus.Where(cpu => Cpu_CpuCooling(cpu, configuration.CpuCooling));
             }
             if (configuration.WaterCooling is not null)
             {
-                cpus = cpus
-                    .Where(cpu => Cpu_WaterCooling(cpu, configuration.WaterCooling))
-                    .ToList();
+                cpus = cpus.Where(cpu => Cpu_WaterCooling(cpu, configuration.WaterCooling));   
             }
+            cpus = cpus.ToList();
         }
 
         public void MotherboardFilter(PcConfiguration configuration, ref IEnumerable<Motherboard> motherboards)
         {
             if (configuration.Cpu is not null)
             {
-                motherboards = motherboards
-                    .Where(motherboard => Cpu_Motherboard(configuration.Cpu, motherboard))
-                    .ToList();
+                motherboards = motherboards.Where(motherboard => Cpu_Motherboard(configuration.Cpu, motherboard));
             }
             if (configuration.GraphicCard is not null)
             {
-                motherboards = motherboards
-                    .Where(motherboard => GraphicCard_Motherboard(configuration.GraphicCard, motherboard))
-                    .ToList();
+                motherboards = motherboards.Where(motherboard => GraphicCard_Motherboard(configuration.GraphicCard, motherboard));
             }
             if (configuration.Case is not null)
             {
-                motherboards = motherboards
-                    .Where(motherboard => Case_Motherboard(configuration.Case, motherboard))
-                    .ToList();
+                motherboards = motherboards.Where(motherboard => Case_Motherboard(configuration.Case, motherboard));
             }
             if (configuration.PcConfigurationRams is not null)
             {
@@ -62,61 +51,51 @@ namespace KomputerBudowanieAPI.Services
                 
                 foreach (PcConfigurationRam ram in configuration.PcConfigurationRams)
                 {
-                    motherboards = motherboards
-                        .Where(motherboard => Ram_Motherboard(ram.Ram, motherboard, ramsCount))
-                        .ToList();
+                    motherboards = motherboards.Where(motherboard => Ram_Motherboard(ram.Ram, motherboard, ramsCount));
                 }
             }
             if (configuration.PcConfigurationStorages is not null)
             {
                 (int m2Storages, int sataStorages) = StoragesCount(configuration.PcConfigurationStorages);
 
-                motherboards = motherboards
-                        .Where(motherboard => Motherboard_To_Storages(motherboard, m2Storages, sataStorages))
-                        .ToList();
+                motherboards = motherboards.Where(motherboard => Motherboard_To_Storages(motherboard, m2Storages, sataStorages));
             }
+            motherboards = motherboards.ToList();
         }
 
         public void CpuCoolingFilter(PcConfiguration configuration, ref IEnumerable<CpuCooling> cpuCoolings)
         {
             if (configuration.Cpu is not null)
             {
-                cpuCoolings = cpuCoolings
-                    .Where(cpuCooling => Cpu_CpuCooling(configuration.Cpu, cpuCooling))
-                    .ToList();
+                cpuCoolings = cpuCoolings.Where(cpuCooling => Cpu_CpuCooling(configuration.Cpu, cpuCooling));
             }
             if (configuration.Case is not null)
             {
-                cpuCoolings = cpuCoolings
-                    .Where(cpuCooling => Case_CpuCooling(configuration.Case, cpuCooling))
-                    .ToList();
+                cpuCoolings = cpuCoolings.Where(cpuCooling => Case_CpuCooling(configuration.Case, cpuCooling));
             }
+            cpuCoolings = cpuCoolings.ToList();
         }
 
         public void WaterCoolingFilter(PcConfiguration configuration, ref IEnumerable<WaterCooling> waterCoolings)
         {
             if (configuration.Cpu is not null)
             {
-                waterCoolings = waterCoolings
-                    .Where(waterCooling => Cpu_WaterCooling(configuration.Cpu, waterCooling))
-                    .ToList();
+                waterCoolings = waterCoolings.Where(waterCooling => Cpu_WaterCooling(configuration.Cpu, waterCooling));
             }
             if (configuration.Case is not null)
             {
-                waterCoolings = waterCoolings
-                    .Where(waterCooling => Case_WaterCooling(configuration.Case, waterCooling))
-                    .ToList();
+                waterCoolings = waterCoolings.Where(waterCooling => Case_WaterCooling(configuration.Case, waterCooling));
             }
+            waterCoolings = waterCoolings.ToList();
         }
 
         public void RamFilter(PcConfiguration configuration, ref IEnumerable<Ram> rams)
         {
             if (configuration.Motherboard is not null)
             {
-                rams = rams
-                    .Where(ram => Ram_Motherboard(ram, configuration.Motherboard))
-                    .ToList();
+                rams = rams.Where(ram => Ram_Motherboard(ram, configuration.Motherboard));
             }
+            rams = rams.ToList();
         }
 
         public void StorageFilter(PcConfiguration configuration, ref IEnumerable<Storage> storages)
@@ -126,63 +105,51 @@ namespace KomputerBudowanieAPI.Services
             {
                 (m2Count, sataCount) = StoragesCount(configuration.PcConfigurationStorages);
             }
-                
             if (configuration.Motherboard is not null)
             {
                 Dictionary<string, int> connectors = ExtractConnectorInfoService.ExtractsStorageSlotsFromMotherboard(configuration.Motherboard.DriveConnectors);
-                storages = storages
-                        .Where(storage => Storage_To_Motherboard(storage, connectors, m2Count, sataCount))
-                        .ToList();
+                storages = storages.Where(storage => Storage_To_Motherboard(storage, connectors, m2Count, sataCount));
             }
             if(configuration.PowerSupply is not null)
             {
                 if (sataCount <= configuration.PowerSupply.Sata)
                 {
-                    storages = storages
-                        .Where(storage => !storage.Interface.Contains("SATA"))
-                        .ToList();
+                    storages = storages.Where(storage => !storage.Interface.Contains("SATA"));
                 }
             }
+            storages = storages.ToList();
         }
 
         public void PowerSupplyFilter(PcConfiguration configuration, ref IEnumerable<PowerSupply> powerSupplies)
         {
             if (configuration.GraphicCard is not null)
             {
-                powerSupplies = powerSupplies
-                    .Where(powerSupply => GraphicCard_PowerSupply(configuration.GraphicCard, powerSupply))
-                    .ToList();
+                powerSupplies = powerSupplies.Where(powerSupply => GraphicCard_PowerSupply(configuration.GraphicCard, powerSupply));
             }
             if (configuration.PcConfigurationStorages is not null)
             {
                 int sataCount = StoragesSataCount(configuration.PcConfigurationStorages);
 
-                powerSupplies = powerSupplies
-                    .Where(powerSupply => powerSupply.Sata >= sataCount)
-                    .ToList();
+                powerSupplies = powerSupplies.Where(powerSupply => powerSupply.Sata >= sataCount);
             }
+            powerSupplies = powerSupplies.ToList();
         }
 
         public void GraphicCardFilter(PcConfiguration configuration, ref IEnumerable<GraphicCard> graphicCards)
         {
             if (configuration.Case is not null)
             {
-                graphicCards = graphicCards
-                    .Where(graphicCard => Case_GraphicCard(configuration.Case, graphicCard))
-                    .ToList();
+                graphicCards = graphicCards.Where(graphicCard => Case_GraphicCard(configuration.Case, graphicCard));
             }
             if (configuration.Motherboard is not null)
             {
-                graphicCards = graphicCards
-                    .Where(graphicCard => GraphicCard_Motherboard(graphicCard, configuration.Motherboard))
-                    .ToList();
+                graphicCards = graphicCards.Where(graphicCard => GraphicCard_Motherboard(graphicCard, configuration.Motherboard));
             }
             if (configuration.PowerSupply is not null)
             {
-                graphicCards = graphicCards
-                    .Where(graphicCard => GraphicCard_PowerSupply(graphicCard, configuration.PowerSupply))
-                    .ToList();
+                graphicCards = graphicCards.Where(graphicCard => GraphicCard_PowerSupply(graphicCard, configuration.PowerSupply));
             }
+            graphicCards = graphicCards.ToList();
         }
 
         public void CaseFilter(PcConfiguration configuration, ref IEnumerable<Case> cases)
@@ -190,35 +157,26 @@ namespace KomputerBudowanieAPI.Services
 
             if (configuration.Motherboard is not null)
             {
-                cases = cases
-                    .Where(c => Case_Motherboard(c, configuration.Motherboard))
-                    .ToList();
+                cases = cases.Where(c => Case_Motherboard(c, configuration.Motherboard));
             }
             if (configuration.CpuCooling is not null)
             {
-                cases = cases
-                    .Where(c => Case_CpuCooling(c, configuration.CpuCooling))
-                    .ToList();
+                cases = cases.Where(c => Case_CpuCooling(c, configuration.CpuCooling));
             }
             if (configuration.WaterCooling is not null)
             {
-                cases = cases
-                    .Where(pcCase => Case_WaterCooling(pcCase, configuration.WaterCooling))
-                    .ToList();
+                cases = cases.Where(pcCase => Case_WaterCooling(pcCase, configuration.WaterCooling));
             }
             if (configuration.GraphicCard is not null)
             {
-                cases = cases
-                    .Where(pcCase => Case_GraphicCard(pcCase, configuration.GraphicCard))
-                    .ToList();
+                cases = cases.Where(pcCase => Case_GraphicCard(pcCase, configuration.GraphicCard));
             }
             if (configuration.PcConfigurationStorages is not null)
             {
                 (int size2_5, int size3_5) = StoragesSizeCount(configuration.PcConfigurationStorages);
-                cases = cases
-                        .Where(pcCase => pcCase.InternalBaysTwoPointFiveInch >= size2_5 && pcCase.InternalBaysThreePointFiveInch >= size3_5)
-                        .ToList();
+                cases = cases.Where(pcCase => pcCase.InternalBaysTwoPointFiveInch >= size2_5 && pcCase.InternalBaysThreePointFiveInch >= size3_5);
             }
+            cases = cases.ToList();
         }
 
         private int StoragesSataCount(ICollection<PcConfigurationStorage> storages)
@@ -425,7 +383,7 @@ namespace KomputerBudowanieAPI.Services
                     return false;
                 }
             }
-            else if (storage.FormFactor.Contains("M.2"))
+            else if (connectors.ContainsKey("M.2 slot") && storage.FormFactor.Contains("M.2"))
             {
                 if (connectors["M.2 slot"] < m2Count + 1)
                 {
