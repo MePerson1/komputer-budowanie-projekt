@@ -37,9 +37,15 @@ namespace KomputerBudowanieAPI.Controllers
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 };
+
+                var tokenLiftime = DateTime.UtcNow.AddMinutes(60);
                 foreach (var role in await _user.GetRolesAsync(user))
                 {
                     claims.Add(new Claim(ClaimTypes.Role, role));
+                    if(role == "Scraper")
+                    {
+                        tokenLiftime = DateTime.UtcNow.AddHours(12);
+                    }
                 }
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -47,7 +53,7 @@ namespace KomputerBudowanieAPI.Controllers
                     issuer: _configuration["Tokens:Issuer"],
                     audience: _configuration["Tokens:Audience"],
                     claims: claims,
-                    expires: DateTime.UtcNow.AddMinutes(60),
+                    expires: tokenLiftime,
                     signingCredentials: creds
                 );
                 return Ok(
