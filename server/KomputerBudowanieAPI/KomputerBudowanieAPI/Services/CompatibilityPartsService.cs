@@ -8,7 +8,12 @@ namespace KomputerBudowanieAPI.Services
 {
     public class CompatibilityPartsService : ICompatibilityPartsService
     {
-        //Sprawdzanie ogólne chłodzenia aby ktoś nie dał chłodzenia wodnego i powietrznego jednocześnie
+        /// <summary>
+        /// Checking compatybility of the CPU with all coolings. All issiues found are added to the toast.
+        /// </summary>
+        /// <param name="toast"></param>
+        /// <param name="configuration"></param>
+        /// <remarks>Problems: Cooler does not support the CPU socket.</remarks>
         public void Cpu_AllCooling(ref Toast toast, PcConfiguration configuration)
         {
             if (configuration.CpuCooling is not null && configuration.WaterCooling is not null)
@@ -20,14 +25,17 @@ namespace KomputerBudowanieAPI.Services
             Cpu_WaterCooling(ref toast, configuration.Cpu, configuration.WaterCooling);
         }
 
+
+        /// <summary>
+        /// Checking compatybility of the CPU with CpuCooling. All issiues found are added to the toast.
+        /// </summary>
+        /// <param name="toast"></param>
+        /// <param name="cpu"></param>
+        /// <param name="cpuCooling"></param>
+        /// <remarks>Problems: CPU cooler does not support the CPU socket.</remarks>
         public void Cpu_CpuCooling(ref Toast toast, Cpu? cpu, CpuCooling? cpuCooling)
         {
             if (cpu is null || cpuCooling is null) return;
-            //CPU:
-            //"socketType": "Socket 1700",
-
-            //CpuCooling:
-            //"processorSocket": "1150/1151/1155/1156/1200, 1366, 1700, 2011/2011-3, 2066, 775, AM3(+)/AM2(+)/FM2(+)/FM1, AM4/AM5",
 
             List<string> sockets = ExtractConnectorInfoService.ExtractSocketsFromCpuCooling(cpuCooling.ProcessorSocket);
             string socket = cpu.SocketType.Replace("Socket ", "").Replace("(+)", "").Trim();
@@ -38,19 +46,16 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
+        /// <summary>
+        /// Checking compatybility of the CPU with water cooling. All issiues found are added to the toast.
+        /// </summary>
+        /// <param name="toast"></param>
+        /// <param name="cpu"></param>
+        /// <param name="waterCooling"></param>
+        /// <remarks>Problems: Water cooler does not support the CPU socket.</remarks>
         public void Cpu_WaterCooling(ref Toast toast, Cpu? cpu, WaterCooling? waterCooling)
         {
             if (cpu is null || waterCooling is null) return;
-            //CPU:
-            //Intel:
-            //"socketType": "Socket 1700",
-            //AMD:
-            //"socketType": "Socket AM4"
-
-            //WaterCooling:
-            //"intelCompatibility": "LGA 1150/1151/1155/1156/1200, LGA 1700, LGA 2011/2011-3, LGA 2066",
-            //"amdCompatibility": "AM3(+)/AM2(+)/FM2(+)/FM1, AM4/AM5",
-
 
             List<string> sockets;
             if (cpu.Producer == "Intel")
@@ -79,6 +84,13 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
+        /// <summary>
+        /// Checking compatybility of the CPU with graphic card. All issiues found are added to the toast.
+        /// </summary>
+        /// <param name="toast"></param>
+        /// <param name="cpu"></param>
+        /// <param name="graphicCard"></param>
+        /// <remarks>Warnings: Prcoesor does not have integrated graphic card.</remarks>
         public void Cpu_GraphicCard(ref Toast toast, Cpu? cpu, GraphicCard? graphicCard)
         {
             if (cpu is null || graphicCard is not null) return;
@@ -89,25 +101,16 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
+        /// <summary>
+        /// Checking compatybility of the case with water cooling. All issiues found are added to the toast.
+        /// </summary>
+        /// <param name="toast"></param>
+        /// <param name="pcCase"></param>
+        /// <param name="waterCooling"></param>
+        /// <remarks>Problems: Water cooling does not fit into case.</remarks>
         public void Case_WaterCooling(ref Toast toast, Case? pcCase, WaterCooling? waterCooling)
         {
             if (pcCase is null || waterCooling is null) return;
-            //Case:
-            //"panelFront": "120 mm/140 mm x2",
-            //"panelRear": null,
-            //"panelSide": null,
-            //"panelBottom": null,
-            //"panelTop": "120 mm x3/140 mm x2", // "120 mm/140 mm x3" // "120 mm/140 mm x2" // "120 mm x1"
-            //"powerSupply": null,
-            //"powerSupplyPower": null,
-
-            //WaterCooling:
-            //"radiatorSizeMM": 360,
-            //"radiatorLengthMM": 395,
-            //"radiatorWidthMM": 120,
-            //"radiatorHeightMM": 28,
-            //"fanCount": 3,
-            //"fanDiameterMM": 120,
 
             string allPanels = $"{pcCase.PanelBottom}, {pcCase.PanelFront}, {pcCase.PanelRear}, {pcCase.PanelSide}, {pcCase.PanelTop}";
 
@@ -123,33 +126,39 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
+        /// <summary>
+        /// Checking compatybility of the case with CPU cooling. All issiues found are added to the toast.
+        /// </summary>
+        /// <param name="toast"></param>
+        /// <param name="pcCase"></param>
+        /// <param name="cpuCooling"></param>
+        /// <remarks>Problems: CPU cooling does not fit into case.</remarks>
         public void Case_CpuCooling(ref Toast toast, Case? pcCase, CpuCooling? cpuCooling)
         {
             if (pcCase is null || cpuCooling is null) return;
 
-            //"maxCoolingSystemHeightCM": 17.5,
-            //"heightMM": 155,
-            //w zaleznosci od jednostki height dla cpu cooling
             if (pcCase.MaxCoolingSystemHeightCM * 10 < cpuCooling.HeightMM)
             {
                 toast.Problems.Add("Chłodzenie CPU nie mieści się w obudowie!");
             }
         }
 
+        /// <summary>
+        /// Checking compatybility of the case with motherboard. All issiues found are added to the toast.
+        /// </summary>
+        /// <param name="toast"></param>
+        /// <param name="pcCase"></param>
+        /// <param name="motherboard"></param>
+        /// <remarks>Problems: Case is not compatible with motherboard standard.</remarks>
         public void Case_Motherboard(ref Toast toast, Case? pcCase, Motherboard? motherboard)
         {
             if (pcCase is null || motherboard is null) return;
-            //Case:
-            //Compatibylity: "ATX, Extended ATX (e-ATX), Micro ATX (uATX), Mini ITX"
-
-            //Motherboard:
-            //BoardStandard: "ATX", "Micro ATX"
-
-            //Problem w tym ,że obsługiwane standardy w case są zapisywane naraz kilka i po przecinku!
+            
+            // Problem w tym ,że obsługiwane standardy w case są zapisywane naraz kilka i po przecinku!
             if (motherboard.BoardStandard == "ATX")
             {
                 string compatiblity = " " + pcCase.Compatibility + ",";
-                if (!compatiblity.Contains(" " + motherboard.BoardStandard + ",")) //Chyba poprawiłem
+                if (!compatiblity.Contains(" " + motherboard.BoardStandard + ",")) 
                 {
                     toast.Problems.Add($"Obudowa nie jest kompatybilna z standardem płyty głównej {motherboard.BoardStandard}!");
                 }
@@ -163,33 +172,36 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
-        // WARNING:
-        // - brak danych aby sprawdzić czy powersupply wejdzie do obudowy
+        /// Warnings:
+        /// Lack of data to check if the power supply will fit into the case.
+        /// <summary>
+        /// Checking compatybility of the case with power supply. All issiues found are added to the toast.
+        /// </summary>
+        /// <param name="toast"></param>
+        /// <param name="pcCase"></param>
+        /// <param name="powerSupply"></param>
+        /// <remarks>Warnings: The case already contains a power supply.</remarks>
         public void Case_PowerSupply(ref Toast toast, Case? pcCase, PowerSupply? powerSupply)
         {
             if (pcCase is null || powerSupply is null) return;
-
-            //W przypadku obudowy (ale dotyczy to rozmiaru płyty głównej):
-            //"compatibility": "ATX, Micro ATX (uATX), Mini ITX",
-
-            //W przypadku zasilacza:
-            //"formFactor": "ATX",
-            //"formFactor": "ATX 3.0",
+            
             if (pcCase.PowerSupply is not null)
             {
                 toast.Warnings.Add("Obudowa już zawiera zasilacz!");
             }
         }
 
+        /// <summary>
+        /// Checking compatybility of the CPU with motherboard. All issiues found are added to the toast.
+        /// </summary>
+        /// <param name="toast"></param>
+        /// <param name="cpu"></param>
+        /// <param name="motherboard"></param>
+        /// <remarks>Problems: The motherboard does not support this processor line. | The motherboard has a different socket type than the processor.</remarks>
         public void Cpu_Motherboard(ref Toast toast, Cpu? cpu, Motherboard? motherboard)
         {
             if (cpu is null || motherboard is null) return;
 
-            //Motherboard:
-            //"supportedProcessors": "Intel Celeron, Intel Core i3, Intel Core i5, Intel Core i7, Intel Core i9, Intel Pentium Gold",
-            //CPU:
-            //"line": "Core i9",
-            //CheckSupportedProcessor
             var line = cpu.Line;
             if (cpu.Producer == "AMD")
             {
@@ -200,17 +212,20 @@ namespace KomputerBudowanieAPI.Services
             {
                 toast.Problems.Add($"Płyta główna nie wspiera tej procesorów {cpu.Line}!");
             }
-            //Motherboard:
-            //"cpuSocket": "Socket 1700",
-            //CPU:
-            //"socketType": "Socket 1700",
-            //CheckCPUSocket
+            
             if (motherboard.CPUSocket != cpu.SocketType)
             {
                 toast.Problems.Add($"Płyta główna ma inny typ gniazda {motherboard.CPUSocket}, a procesor {cpu.SocketType}!");
             }
         }
 
+        /// <summary>
+        /// Checking compatybility of the case with graphic card. All issiues found are added to the toast.
+        /// </summary>
+        /// <param name="toast"></param>
+        /// <param name="pcCase"></param>
+        /// <param name="graphicCard"></param>
+        /// <remarks> Problems: The graphics card is too big for this case.</remarks>
         public void Case_GraphicCard(ref Toast toast, Case? pcCase, GraphicCard? graphicCard)
         {
             if (graphicCard is null || pcCase is null) return;
@@ -221,22 +236,24 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
-        // WARNING:
-        // - tu by się jeszcze przydało zwrócić warning jak płyta główna ma starszy typ złącza od karty graficznej, problem jest taki że nie ma danych aby to zrobić
+        /// Warnings:
+        /// It would be useful to issue a warning if the motherboard has an older type of connector than the graphics card, but the problem is that there is no data to do that.
+        /// <summary>
+        /// Checking compatybility of the graphic card with motherboard. All issiues found are added to the toast.
+        /// </summary>
+        /// <param name="toast"></param>
+        /// <param name="graphicCard"></param>
+        /// <param name="motherboard"></param>
+        /// <remarks>
+        /// Problems: The motherboard does not have a suitable connector for this graphics card.
+        /// </remarks>
         public void GraphicCard_Motherboard(ref Toast toast, GraphicCard? graphicCard, Motherboard? motherboard)
         {
             if (graphicCard is null || motherboard is null) return;
-            // GraphicCard:
-            // "connectorType": "PCI Express 4.0 x16",
-            // "connectorType": "PCI Express 3.0 x16",
-            // "connectorType": "PCI Express 4.0 x8",
-
-            // Motherboard:
-            // "expansionSlots": "PCI Express x1 (1 szt.), PCI Express x16 (3 szt.)",
-            // "expansionSlots": "PCI Express x1 (3 szt.), PCI Express x16 (2 szt.)",
+            
             string GraphicCardConnector = graphicCard.ConnectorType;
 
-            // Usunięcie wszystkich wersji " N.N " ze środka stringa GraphicCardConnector
+            // Usunięcie wszystkich wersji " N.N " (np. PCI Express 4.0 x16 to " 4.0 ") ze środka stringa GraphicCardConnector
             GraphicCardConnector = Regex.Replace(GraphicCardConnector, @"( \d+\.\d+ )", " ", RegexOptions.IgnoreCase).Trim();
 
             if (!motherboard.ExpansionSlots.Contains(GraphicCardConnector))
@@ -245,6 +262,15 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
+        /// <summary>
+        /// Checking compatybility of the graphic card with power supply. All issiues found are added to the toast.
+        /// </summary>
+        /// <param name="toast"></param>
+        /// <param name="graphicCard"></param>
+        /// <param name="powerSupply"></param>
+        /// <remarks>
+        /// Problems: Insufficient number of connectors for the graphics card.
+        /// </remarks>
         public void GraphicCard_PowerSupply(ref Toast toast, GraphicCard? graphicCard, PowerSupply? powerSupply)
         {
             if (graphicCard is null || powerSupply is null) return;
@@ -281,8 +307,15 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
-        // WARNING:
-        // - W dyskach nie ma informacji o tym jaki mają rodzaj zasilania
+        /// Warning:
+        /// There is no information about the power connectors in the disc drives.
+        /// <summary>
+        /// Checking compatybility of the power supply with all storages. All issiues found are added to the toast.
+        /// </summary>
+        /// <param name="toast"></param>
+        /// <param name="powerSupply"></param>
+        /// <param name="storages"></param>
+        /// <remarks> Problems: Insufficient power connectors for drives.</remarks>
         public void PowerSupply_Storages(ref Toast toast, PowerSupply? powerSupply, ICollection<PcConfigurationStorage>? storages)
         {
             if (storages is null || !storages.Any() || powerSupply is null) return;
@@ -305,6 +338,13 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
+        /// <summary>
+        /// Checking compatybility of the motherboard with all storages. All issiues found are added to the toast.
+        /// </summary>
+        /// <param name="toast"></param>
+        /// <param name="motherboard"></param>
+        /// <param name="storages"></param>
+        /// <remarks> Problems: Insufficient number of connectors for storages.</remarks>
         public void Motherboard_Storages(ref Toast toast, Motherboard? motherboard, ICollection<PcConfigurationStorage>? storages)
         {
             if (storages is null || !storages.Any() || motherboard is null) return;
@@ -314,15 +354,7 @@ namespace KomputerBudowanieAPI.Services
 
             foreach (var disc in storages)
             {
-                //W dyskach M2
-                //"interface": "PCI-E x4 Gen4 NVMe", "PCI-E x4 Gen3 NVMe",
-                // "formFactor": "M.2 2280", 
-
-                //W dyskach SATA
-                //"interface": "SATA 3",
-                //"formFactor": "2.5 cala",
-
-                //Wszystkie dyski sata:
+                //All sata, ata and other simillar storages:
                 if (connectors.ContainsKey(disc.Storage.Interface))
                 {
                     int quantityLeft = connectors[disc.Storage.Interface] - disc.Quantity;
@@ -335,7 +367,7 @@ namespace KomputerBudowanieAPI.Services
                         toast.Problems.Add($"Niewystarczająca ilość złączy {disc.Storage.Interface}!");
                     }
                 }
-                //Wszystkie dyski M2:
+                //All M2 storages:
                 else if (disc.Storage.FormFactor.Contains("M.2") && connectors.ContainsKey("M.2 slot"))
                 {
                     int quantityLeft = connectors["M.2 slot"] - disc.Quantity;
@@ -348,7 +380,6 @@ namespace KomputerBudowanieAPI.Services
                         toast.Problems.Add($"Niewystarczająca ilość złączy M2!");
                     }
                 }
-                //Jak nie znajdzie w ogóle takiego złącza na płycie:
                 else
                 {
                     toast.Problems.Add($"Płyta {motherboard.Name} nie ma żadnego złącza {disc.Storage.Interface} dla dysku {disc.Storage.Name}!");
@@ -356,6 +387,13 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
+        /// <summary>
+        /// Checking compatybility of the case with all storages. All issiues found are added to the toast.
+        /// </summary>
+        /// <param name="toast"></param>
+        /// <param name="pcCase"></param>
+        /// <param name="storages"></param>
+        /// <remarks> Problems: This case does not have the appropriate number of x.x-inch bays.</remarks>
         public void Case_Storages(ref Toast toast, Case? pcCase, ICollection<PcConfigurationStorage>? storages)
         {
             if (storages is null || !storages.Any() || pcCase is null) return;
@@ -377,6 +415,13 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
+        /// <summary>
+        /// Checking compatybility of the motherboard with all rams. All issiues found are added to the toast.
+        /// </summary>
+        /// <param name="toast"></param>
+        /// <param name="motherboard"></param>
+        /// <param name="rams"></param>
+        /// <remarks> Problems: The motherboard does not support this RAM standard. | The motherboard has a different ram connector.</remarks>
         public void Motherboard_Rams(ref Toast toast, Motherboard? motherboard, ICollection<PcConfigurationRam>? rams)
         {
             if (rams is null || !rams.Any() || motherboard is null) return;
@@ -391,7 +436,7 @@ namespace KomputerBudowanieAPI.Services
                     toast.Problems.Add("Płyta główna nie wspiera tego standardu pamięci ram! " + relation.Ram.Name);
                 }
                 //CheckMRamPinType
-                if (motherboard.MemoryConnectorType != relation.Ram.PinType) //zmienić nazwe zmiennych może
+                if (motherboard.MemoryConnectorType != relation.Ram.PinType)
                 {
                     toast.Problems.Add("Płyta główna ma inne złącze do ramu! " + relation.Ram.Name);
                 }
@@ -403,14 +448,18 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
-        // TODO:
-        // - dokończyć, jakoś nie wiem jeszcze jak to dobrze zrobić, być może dobrze się nie da
+        /// <summary>
+        /// Checking compatybility of the CPU cooling with all rams. All issiues found are added to the toast.
+        /// </summary>
+        /// <param name="toast"></param>
+        /// <param name="cpuCooling"></param>
+        /// <param name="rams"></param>
+        /// <remarks> Warnings: Ram may not fit under the cooler.</remarks>
         public void CpuCooling_Rams(ref Toast toast, CpuCooling? cpuCooling, ICollection<PcConfigurationRam>? rams)
         {
             if (rams is null || !rams.Any() || cpuCooling is null) return;
 
             //CheckCoolingSize
-            //tutaj sprawdzenie rozmiaru chłodzenia i czy ram jest lowprofile przy tym ale jeszcze nie ma cpucooling kinda
             foreach (var relation in rams)
             {
                 if (!relation.Ram.LowProfile && cpuCooling.DepthMM > 140)

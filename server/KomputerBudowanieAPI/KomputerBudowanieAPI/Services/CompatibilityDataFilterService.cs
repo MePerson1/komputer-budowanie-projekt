@@ -1,5 +1,6 @@
 ﻿using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
+using Microsoft.Extensions.Configuration;
 using System.Text.RegularExpressions;
 
 namespace KomputerBudowanieAPI.Services
@@ -13,7 +14,6 @@ namespace KomputerBudowanieAPI.Services
             _compatibilityPartsService = compatibilityPartsService;
         }
 
-        //Dobrze
         public void CpuFilter(PcConfiguration configuration, ref IEnumerable<Cpu> cpus)
         {
             if (configuration.Motherboard is not null)
@@ -36,7 +36,6 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
-        //Rams i Storages do poprawy
         public void MotherboardFilter(PcConfiguration configuration, ref IEnumerable<Motherboard> motherboards)
         {
             if (configuration.Cpu is not null)
@@ -57,14 +56,9 @@ namespace KomputerBudowanieAPI.Services
                     .Where(motherboard => Case_Motherboard(configuration.Case, motherboard))
                     .ToList();
             }
-
             if (configuration.PcConfigurationRams is not null)
             {
-                int ramsCount = 0;
-                foreach (var m in configuration.PcConfigurationRams)
-                {
-                    ramsCount += m.Ram.ModuleCount * m.Quantity;
-                }
+                int ramsCount = RamCount(configuration.PcConfigurationRams);
                 
                 foreach (PcConfigurationRam ram in configuration.PcConfigurationRams)
                 {
@@ -75,17 +69,14 @@ namespace KomputerBudowanieAPI.Services
             }
             if (configuration.PcConfigurationStorages is not null)
             {
-                foreach (var disc in configuration.PcConfigurationStorages)
-                {
-                    motherboards = motherboards
-                        .Where(motherboard => Storage_Motherboard(disc.Storage, motherboard))
+                (int m2Storages, int sataStorages) = StoragesCount(configuration.PcConfigurationStorages);
+
+                motherboards = motherboards
+                        .Where(motherboard => Motherboard_To_Storages(motherboard, m2Storages, sataStorages))
                         .ToList();
-                }
             }
         }
 
-        // TODO:
-        // - ram dokończyć
         public void CpuCoolingFilter(PcConfiguration configuration, ref IEnumerable<CpuCooling> cpuCoolings)
         {
             if (configuration.Cpu is not null)
@@ -100,13 +91,8 @@ namespace KomputerBudowanieAPI.Services
                     .Where(cpuCooling => Case_CpuCooling(configuration.Case, cpuCooling))
                     .ToList();
             }
-            if (configuration.PcConfigurationRams is not null)
-            {
-
-            }
         }
 
-        //Dobrze
         public void WaterCoolingFilter(PcConfiguration configuration, ref IEnumerable<WaterCooling> waterCoolings)
         {
             if (configuration.Cpu is not null)
@@ -123,30 +109,58 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
-
-        //Poprawić
         public void RamFilter(PcConfiguration configuration, ref IEnumerable<Ram> rams)
         {
             if (configuration.Motherboard is not null)
             {
                 rams = rams
-                    .Where(ram => Ram_Motherboard(ram, configuration.Motherboard, 0))
+                    .Where(ram => Ram_Motherboard(ram, configuration.Motherboard))
                     .ToList();
             }
         }
 
-        // TODO:
-        // - dokończyć
         public void StorageFilter(PcConfiguration configuration, ref IEnumerable<Storage> storages)
         {
-
+            int m2Count = 0, sataCount = 0;
+            if (configuration.PcConfigurationStorages is not null)
+            {
+                (m2Count, sataCount) = StoragesCount(configuration.PcConfigurationStorages);
+            }
+                
+            if (configuration.Motherboard is not null)
+            {
+                Dictionary<string, int> connectors = ExtractConnectorInfoService.ExtractsStorageSlotsFromMotherboard(configuration.Motherboard.DriveConnectors);
+                storages = storages
+                        .Where(storage => Storage_To_Motherboard(storage, connectors, m2Count, sataCount))
+                        .ToList();
+            }
+            if(configuration.PowerSupply is not null)
+            {
+                if (sataCount <= configuration.PowerSupply.Sata)
+                {
+                    storages = storages
+                        .Where(storage => !storage.Interface.Contains("SATA"))
+                        .ToList();
+                }
+            }
         }
 
-        // TODO:
-        // - dokończyć
         public void PowerSupplyFilter(PcConfiguration configuration, ref IEnumerable<PowerSupply> powerSupplies)
         {
+            if (configuration.GraphicCard is not null)
+            {
+                powerSupplies = powerSupplies
+                    .Where(powerSupply => GraphicCard_PowerSupply(configuration.GraphicCard, powerSupply))
+                    .ToList();
+            }
+            if (configuration.PcConfigurationStorages is not null)
+            {
+                int sataCount = StoragesSataCount(configuration.PcConfigurationStorages);
 
+                powerSupplies = powerSupplies
+                    .Where(powerSupply => powerSupply.Sata >= sataCount)
+                    .ToList();
+            }
         }
 
         public void GraphicCardFilter(PcConfiguration configuration, ref IEnumerable<GraphicCard> graphicCards)
@@ -171,8 +185,6 @@ namespace KomputerBudowanieAPI.Services
             }
         }
 
-        // TODO:
-        // - dokończyć
         public void CaseFilter(PcConfiguration configuration, ref IEnumerable<Case> cases)
         {
 
@@ -194,17 +206,94 @@ namespace KomputerBudowanieAPI.Services
                     .Where(pcCase => Case_WaterCooling(pcCase, configuration.WaterCooling))
                     .ToList();
             }
+            if (configuration.GraphicCard is not null)
+            {
+                cases = cases
+                    .Where(pcCase => Case_GraphicCard(pcCase, configuration.GraphicCard))
+                    .ToList();
+            }
             if (configuration.PcConfigurationStorages is not null)
             {
-                foreach (var relation in configuration.PcConfigurationStorages)
-                {
-                    cases = cases
-                        .Where(pcCase => Case_Storages(pcCase, relation.Storage))
+                (int size2_5, int size3_5) = StoragesSizeCount(configuration.PcConfigurationStorages);
+                cases = cases
+                        .Where(pcCase => pcCase.InternalBaysTwoPointFiveInch >= size2_5 && pcCase.InternalBaysThreePointFiveInch >= size3_5)
                         .ToList();
-                }
             }
         }
 
+        private int StoragesSataCount(ICollection<PcConfigurationStorage> storages)
+        {
+            int count = 0;
+            foreach (var storage in storages)
+            {
+                if (storage.Storage.Interface.Contains("SATA"))
+                {
+                    count += storage.Quantity;
+                }
+            }
+            return count;
+        }
+
+        private (int, int) StoragesCount(ICollection<PcConfigurationStorage> storages)
+        {
+            int m2Count = 0;
+            int sataCount = 0;
+            foreach (var storage in storages)
+            {
+                if (storage.Storage.Interface.Contains("SATA"))
+                {
+                    m2Count += storage.Quantity;
+                }
+                else if (storage.Storage.FormFactor.Contains("M.2"))
+                {
+                    sataCount += storage.Quantity;
+                }
+            }
+            return (m2Count, sataCount);
+        }
+
+        private int RamCount(ICollection<PcConfigurationRam> rams)
+        {
+            int count = 0;
+            foreach (var ram in rams)
+            {
+                count += ram.Ram.ModuleCount * ram.Quantity;
+            }
+            return count;
+        }
+
+        private (int, int) StoragesSizeCount(ICollection<PcConfigurationStorage> storages)
+        {
+            int count2_5 = 0;
+            int count3_5 = 0;
+            foreach (var storage in storages)
+            {
+                if (storage.Storage.FormFactor == "2.5 cala")
+                {
+                    count2_5 += storage.Quantity;
+                }
+                else if (storage.Storage.FormFactor == "3.5 cala")
+                {
+                    count3_5 += storage.Quantity;
+                }
+            }
+            return (count2_5, count3_5);
+        }
+
+        private int StoragesM2Count(ICollection<PcConfigurationStorage> storages)
+        {
+            int count = 0;
+            foreach (var storage in storages)
+            {
+                if (storage.Storage.FormFactor.Contains("M.2"))
+                {
+                    count += storage.Quantity;
+                }
+            }
+            return count;
+        }
+
+        // Sprawdza czy procesor i chłodzenie wodne są ze sobą kompatybilne
         private bool Cpu_WaterCooling(Cpu cpu, WaterCooling waterCooling)
         {
             Toast toast = new Toast();
@@ -213,6 +302,7 @@ namespace KomputerBudowanieAPI.Services
             return true;
         }
 
+        // Sprawdza czy procesor i chłodzenie powietrzne są ze sobą kompatybilne
         private bool Cpu_CpuCooling(Cpu cpu, CpuCooling cpuCooling)
         {
             Toast toast = new Toast();
@@ -221,6 +311,7 @@ namespace KomputerBudowanieAPI.Services
             return true;
         }
 
+        // Sprawdza czy obudowa i płyta główna są ze sobą kompatybilne
         private bool Case_Motherboard(Case pcCase, Motherboard motherboard)
         {
             Toast toast = new Toast();
@@ -229,6 +320,7 @@ namespace KomputerBudowanieAPI.Services
             return true;
         }
 
+        // Sprawdza czy obudowa i chłodzenie powietrzne są ze sobą kompatybilne
         private bool Case_CpuCooling(Case pcCase, CpuCooling cpuCooling)
         {
             Toast toast = new Toast();
@@ -237,6 +329,7 @@ namespace KomputerBudowanieAPI.Services
             return true;
         }
 
+        // Sprawdza czy obudowa i chłodzenie wodne są ze sobą kompatybilne
         private bool Case_WaterCooling(Case pcCase, WaterCooling waterCooling)
         {
             Toast toast = new Toast();
@@ -245,6 +338,7 @@ namespace KomputerBudowanieAPI.Services
             return true;
         }
 
+        // Sprawdza czy procesor i płyta główna są ze sobą kompatybilne
         private bool Cpu_Motherboard(Cpu cpu, Motherboard motherboard)
         {
             Toast toast = new Toast();
@@ -253,6 +347,7 @@ namespace KomputerBudowanieAPI.Services
             return true;
         }
 
+        // Sprawdza czy obudowa i karta graficzna są ze sobą kompatybilne
         private bool Case_GraphicCard(Case pcCase, GraphicCard card)
         {
             Toast toast = new Toast();
@@ -261,6 +356,7 @@ namespace KomputerBudowanieAPI.Services
             return true;
         }
 
+        // Sprawdza czy karta graficzna i płyta główna są ze sobą kompatybilne
         private bool GraphicCard_Motherboard(GraphicCard graphicCard, Motherboard motherboard)
         {
             Toast toast = new Toast();
@@ -269,6 +365,7 @@ namespace KomputerBudowanieAPI.Services
             return true;
         }
 
+        // Sprawdza czy karta graficzna i zasilacz są ze sobą kompatybilne
         private bool GraphicCard_PowerSupply(GraphicCard graphicCard, PowerSupply powerSupply)
         {
             Toast toast = new Toast();
@@ -277,17 +374,74 @@ namespace KomputerBudowanieAPI.Services
             return true;
         }
 
-        //TODO:
-        // Dokończyć
-        static private bool Storage_PowerSupply(Storage storage, PowerSupply powerSupply, int discsUsed)
+        // Sprawdza czy dysk pasuje do zasilacza
+        static private bool Storage_PowerSupply(Storage storage, PowerSupply powerSupply, int sataDiscsUsed = 0)
         {
+            if (storage.Interface.Contains("SATA"))
+            {
+                if (sataDiscsUsed >= powerSupply.Sata)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
 
+        // Sprawdza czy płyta główna będzie pasowała do ilości dodanych już dysków
+        private bool Motherboard_To_Storages(Motherboard motherboard, int m2Count, int sataCount)
+        {
+            Dictionary<string, int> connectors = ExtractConnectorInfoService.ExtractsStorageSlotsFromMotherboard(motherboard.DriveConnectors);
+
+            if (m2Count > 0)
+            {
+                if (connectors.TryGetValue("M.2 slot", out int val))
+                {
+                    if (val < m2Count)
+                    {
+                        return false;
+                    }
+                }
+            }
+            if (sataCount > 0)
+            {
+                if (connectors.TryGetValue("SATA 3", out int val))
+                {
+                    if (val < sataCount)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        // Sprawdza czy dysk będzie pasował do dodanej już płyty głownej, uwzględniając dodane dyski
+        public bool Storage_To_Motherboard(Storage storage, Dictionary<string, int> connectors, int m2Count, int sataCount)
+        {
+            if (connectors.ContainsKey(storage.Interface))
+            {
+                if (connectors[storage.Interface] < sataCount + 1)
+                {
+                    return false;
+                }
+            }
+            else if (storage.FormFactor.Contains("M.2"))
+            {
+                if (connectors["M.2 slot"] < m2Count + 1)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
 
             return true;
         }
 
-        //TODO:
-        // Poprawić
+        // DEPRECATED:
+        // Sprawdza czy pojedynczy dysk będzie pasował do płyty głównej, nie uwzględnia innych dysków
         private bool Storage_Motherboard(Storage storage, Motherboard motherboard)
         {
             Dictionary<string, int> connectors = ExtractConnectorInfoService.ExtractsStorageSlotsFromMotherboard(motherboard.DriveConnectors);
@@ -309,18 +463,17 @@ namespace KomputerBudowanieAPI.Services
             return true;
         }
 
-        //TODO:
-        // Poprawić
-        private bool Case_Storages(Case pcCase, Storage storage) =>
+        // DEPRECATED:
+        // Sprawdza czy pojedynczy dysk zmieści się w obudowie
+        private bool Case_Storage(Case pcCase, Storage storage) =>
             (storage.FormFactor == "3.5 cala" && pcCase.InternalBaysThreePointFiveInch > 0) ||
             (storage.FormFactor == "2.5 cala" && pcCase.InternalBaysTwoPointFiveInch > 0);
 
-        //TODO:
-        // Poprawić
-        private bool Ram_Motherboard(Ram ram, Motherboard motherboard, int slotsCount) =>
+        // Sprawdza czy dany zestaw pamięci ram będzie pasował do płyty głównej, uwzlędnia sloty wykorzystane przez inne pamięci ram
+        private bool Ram_Motherboard(Ram ram, Motherboard motherboard, int slotsUsed = 0) =>
             motherboard.MemoryStandard == ram.MemoryType
             && motherboard.MemoryConnectorType == ram.PinType
-            && motherboard.MemorySlotsCount >= slotsCount;
+            && motherboard.MemorySlotsCount >= slotsUsed;
                 
     }
 }
