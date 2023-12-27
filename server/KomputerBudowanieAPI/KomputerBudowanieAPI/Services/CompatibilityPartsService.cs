@@ -25,7 +25,6 @@ namespace KomputerBudowanieAPI.Services
             Cpu_WaterCooling(ref toast, configuration.Cpu, configuration.WaterCooling);
         }
 
-
         /// <summary>
         /// Checking compatybility of the CPU with CpuCooling. All issiues found are added to the toast.
         /// </summary>
@@ -33,16 +32,39 @@ namespace KomputerBudowanieAPI.Services
         /// <param name="cpu"></param>
         /// <param name="cpuCooling"></param>
         /// <remarks>Problems: CPU cooler does not support the CPU socket.</remarks>
-        public void Cpu_CpuCooling(ref Toast toast, Cpu? cpu, CpuCooling? cpuCooling)
+        public void Cpu_CpuCooling(ref Toast toast, Cpu? cpu, CpuCooling? cpuCooling, List<string>? socketsFromCpuCooling = null)
         {
             if (cpu is null || cpuCooling is null) return;
 
-            List<string> sockets = ExtractConnectorInfoService.ExtractSocketsFromCpuCooling(cpuCooling.ProcessorSocket);
+            socketsFromCpuCooling ??= ExtractConnectorInfoService.ExtractSocketsFromCpuCooling(cpuCooling.ProcessorSocket);
+
             string socket = cpu.SocketType.Replace("Socket ", "").Replace("(+)", "").Trim();
 
-            if (!sockets.Contains(socket))
+            if (!socketsFromCpuCooling.Contains(socket))
             {
                 toast.Problems.Add($"{cpuCooling.Name} nie wspiera gniazda procesora {socket}!");
+            }
+        }
+
+        /// <summary>
+        /// Checking compatybility of the motherboard with CPU cooling. All issiues found are added to the toast.
+        /// </summary>
+        /// <param name="toast"></param>
+        /// <param name="motherboard"></param>
+        /// <param name="cpuCooling"></param>
+        /// <param name="socketsFromCpuCooling"></param>
+        /// <remarks>Problems: CPU cooler does not support the CPU socket on the motherboard.</remarks>
+        public void Motherboard_CpuCooling(ref Toast toast, Motherboard? motherboard, CpuCooling? cpuCooling, List<string>? socketsFromCpuCooling = null)
+        {
+            if (motherboard is null || cpuCooling is null) return;
+
+            socketsFromCpuCooling ??= ExtractConnectorInfoService.ExtractSocketsFromCpuCooling(cpuCooling.ProcessorSocket);
+
+            string socket = motherboard.CPUSocket.Replace("Socket ", "").Replace("(+)", "").Trim();
+
+            if (!socketsFromCpuCooling.Contains(socket))
+            {
+                toast.Problems.Add($"{cpuCooling.Name} nie wspiera gniazda procesora {socket} z płyty głownej!");
             }
         }
 
@@ -53,34 +75,53 @@ namespace KomputerBudowanieAPI.Services
         /// <param name="cpu"></param>
         /// <param name="waterCooling"></param>
         /// <remarks>Problems: Water cooler does not support the CPU socket.</remarks>
-        public void Cpu_WaterCooling(ref Toast toast, Cpu? cpu, WaterCooling? waterCooling)
+        public void Cpu_WaterCooling(ref Toast toast, Cpu? cpu, WaterCooling? waterCooling, List<string>? socketsFromWaterCooling = null)
         {
             if (cpu is null || waterCooling is null) return;
 
-            List<string> sockets;
-            if (cpu.Producer == "Intel")
+            if (socketsFromWaterCooling is null)
             {
-                sockets = ExtractConnectorInfoService.ExtractSocketsFromCpuCooling(waterCooling.IntelCompatibility);
+                if (cpu.Producer == "Intel")
+                {
+                    socketsFromWaterCooling = ExtractConnectorInfoService.ExtractSocketsFromCpuCooling(waterCooling.IntelCompatibility);
+                }
+                else if (cpu.Producer == "AMD")
+                {
+                    socketsFromWaterCooling = ExtractConnectorInfoService.ExtractSocketsFromCpuCooling(waterCooling.AMDCompatibility);
+                }
+                else
+                {
+                    toast.Problems.Add("Nie wykrywam poprawnie producenta procesora!");
+                    return;
+                }
             }
-            else if (cpu.Producer == "AMD")
-            {
-                sockets = ExtractConnectorInfoService.ExtractSocketsFromCpuCooling(waterCooling.AMDCompatibility);
-            }
-            else
-            {
-                toast.Problems.Add("Nie wykrywam poprawnie producenta procesora!");
-                return;
-            }
-
+            
             string socket = cpu.SocketType.Replace("Socket ", "").Replace("(+)", "").Trim();
-            for (int i = 0; i < sockets.Count; i++)
-            {
-                sockets[i] = sockets[i].Replace("LGA ", "");
-            }
 
-            if (!sockets.Contains(socket))
+            if (!socketsFromWaterCooling.Contains(socket))
             {
                 toast.Problems.Add($"{waterCooling.Name} nie wspiera gniazda procesora {socket}!");
+            }
+        }
+
+        /// <summary>
+        /// Checking compatybility of the motherboard with water cooling. All issiues found are added to the toast.
+        /// </summary>
+        /// <param name="toast"></param>
+        /// <param name="motherboard"></param>
+        /// <param name="waterCooling"></param>
+        /// <remarks>Problems: Water cooler does not support the CPU socket on the motherboard.</remarks>
+        public void Motherboard_WaterCooling(ref Toast toast, Motherboard? motherboard, WaterCooling? waterCooling, List<string>? socketsFromWaterCooling = null)
+        {
+            if (motherboard is null || waterCooling is null) return;
+
+            socketsFromWaterCooling ??= ExtractConnectorInfoService.ExtractSocketsFromCpuCooling($"{waterCooling.IntelCompatibility}, {waterCooling.AMDCompatibility}");
+
+            string socket = motherboard.CPUSocket.Replace("Socket ", "").Replace("(+)", "").Trim();
+
+            if (!socketsFromWaterCooling.Contains(socket))
+            {
+                toast.Problems.Add($"{waterCooling.Name} nie wspiera gniazda procesora {socket} z płyty głownej!");
             }
         }
 

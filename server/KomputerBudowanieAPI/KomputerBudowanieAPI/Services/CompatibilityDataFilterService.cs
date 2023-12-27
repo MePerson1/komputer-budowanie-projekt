@@ -60,6 +60,16 @@ namespace KomputerBudowanieAPI.Services
 
                 motherboards = motherboards.Where(motherboard => Motherboard_To_Storages(motherboard, m2Storages, sataStorages));
             }
+            if (configuration.WaterCooling is not null)
+            {
+                List<string> sockets = ExtractConnectorInfoService.ExtractSocketsFromCpuCooling($"{configuration.WaterCooling.IntelCompatibility}, {configuration.WaterCooling.AMDCompatibility}");
+                motherboards = motherboards.Where(motherboard => Motherboard_WaterCooling(motherboard, configuration.WaterCooling, sockets));
+            }
+            if (configuration.CpuCooling is not null)
+            {
+                List<string> sockets = ExtractConnectorInfoService.ExtractSocketsFromCpuCooling(configuration.CpuCooling.ProcessorSocket);
+                motherboards = motherboards.Where(motherboard => Motherboard_CpuCooling(motherboard, configuration.CpuCooling, sockets));
+            }
             motherboards = motherboards.ToList();
         }
 
@@ -73,6 +83,10 @@ namespace KomputerBudowanieAPI.Services
             {
                 cpuCoolings = cpuCoolings.Where(cpuCooling => Case_CpuCooling(configuration.Case, cpuCooling));
             }
+            if (configuration.Motherboard is not null)
+            {
+                cpuCoolings = cpuCoolings.Where(cpuCooling => Motherboard_CpuCooling(configuration.Motherboard, cpuCooling));
+            }
             cpuCoolings = cpuCoolings.ToList();
         }
 
@@ -85,6 +99,10 @@ namespace KomputerBudowanieAPI.Services
             if (configuration.Case is not null)
             {
                 waterCoolings = waterCoolings.Where(waterCooling => Case_WaterCooling(configuration.Case, waterCooling));
+            }
+            if (configuration.Motherboard is not null)
+            {
+                waterCoolings = waterCoolings.Where(waterCooling => Motherboard_WaterCooling(configuration.Motherboard, waterCooling));
             }
             waterCoolings = waterCoolings.ToList();
         }
@@ -249,6 +267,22 @@ namespace KomputerBudowanieAPI.Services
                 }
             }
             return count;
+        }
+
+        private bool Motherboard_WaterCooling(Motherboard motherboard, WaterCooling waterCooling, List<string>? sockets = null)
+        {
+            Toast toast = new Toast();
+            _compatibilityPartsService.Motherboard_WaterCooling(ref toast, motherboard, waterCooling, sockets);
+            if (toast.Problems.Any()) return false;
+            return true;
+        }
+
+        private bool Motherboard_CpuCooling(Motherboard motherboard, CpuCooling cpuCooling, List<string>? sockets = null)
+        {
+            Toast toast = new Toast();
+            _compatibilityPartsService.Motherboard_CpuCooling(ref toast, motherboard, cpuCooling, sockets);
+            if (toast.Problems.Any()) return false;
+            return true;
         }
 
         // Sprawdza czy procesor i chłodzenie wodne są ze sobą kompatybilne

@@ -8,9 +8,13 @@ namespace KomputerBudowanieAPI.Interfaces
         void Cpu_AllCooling(ref Toast toast, PcConfiguration configuration);
 
 
-        void Cpu_CpuCooling(ref Toast toast, Cpu? cpu, CpuCooling? cpuCooling);
+        void Cpu_CpuCooling(ref Toast toast, Cpu? cpu, CpuCooling? cpuCooling, List<string>? socketsFromCpuCooling = null);
 
-        void Cpu_WaterCooling(ref Toast toast, Cpu? cpu, WaterCooling? waterCooling);
+        void Motherboard_CpuCooling(ref Toast toast, Motherboard? motherboard, CpuCooling? cpuCooling, List<string>? socketsFromCpuCooling = null);
+
+        void Cpu_WaterCooling(ref Toast toast, Cpu? cpu, WaterCooling? waterCooling, List<string>? socketsFromWaterCooling = null);
+
+        void Motherboard_WaterCooling(ref Toast toast, Motherboard? motherboard, WaterCooling? waterCooling, List<string>? socketsFromWaterCooling = null);
 
         void Cpu_GraphicCard(ref Toast toast, Cpu? cpu, GraphicCard? graphicCard);
 
