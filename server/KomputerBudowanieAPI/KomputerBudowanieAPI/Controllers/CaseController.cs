@@ -166,10 +166,8 @@ namespace KomputerBudowanieAPI.Controllers
                     {
                         pcCase.Prices.Add(price);
                     }
+                    await _caseRepository.Update(pcCase);
                 }
-
-                await _caseRepository.Update(pcCase);
-
                 return Ok(pcCase);
             }
             catch (DbUpdateException ex)

@@ -148,9 +148,10 @@ namespace KomputerBudowanieAPI.Controllers
                     {
                         cpu.Prices.Add(price);
                     }
+                    await _cpuRepository.Update(cpu);
                 }
 
-                await _cpuRepository.Update(cpu);
+
 
                 return Ok(cpu);
             }

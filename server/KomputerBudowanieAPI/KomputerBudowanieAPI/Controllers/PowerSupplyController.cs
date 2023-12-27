@@ -139,10 +139,8 @@ namespace KomputerBudowanieAPI.Controllers
                     {
                         powerSupply.Prices.Add(price);
                     }
+                    await _powerSupplyRepository.Update(powerSupply);
                 }
-
-                await _powerSupplyRepository.Update(powerSupply);
-
                 return Ok(powerSupply);
             }
             catch (DbUpdateException ex)

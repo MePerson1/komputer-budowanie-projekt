@@ -139,10 +139,8 @@ namespace KomputerBudowanieAPI.Controllers
                     {
                         waterCooling.Prices.Add(price);
                     }
+                    await _waterCoolingRepository.Update(waterCooling);
                 }
-
-                await _waterCoolingRepository.Update(waterCooling);
-
                 return Ok(waterCooling);
             }
             catch (DbUpdateException ex)

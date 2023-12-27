@@ -58,6 +58,7 @@ namespace KomputerBudowanieAPI.Database
             modelBuilder.Entity<Ram>().Navigation(c => c.Prices).AutoInclude();
             modelBuilder.Entity<Storage>().Navigation(c => c.Prices).AutoInclude();
             modelBuilder.Entity<PowerSupply>().Navigation(c => c.Prices).AutoInclude();
+            modelBuilder.Entity<WaterCooling>().Navigation(c => c.Prices).AutoInclude();
         }
     }
 }

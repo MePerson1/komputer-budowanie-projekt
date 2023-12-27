@@ -164,12 +164,17 @@ namespace KomputerBudowanieAPI.Controllers
                     }
                     else
                     {
+                        ShopPrice newPrice = new ShopPrice
+                        {
+                            ShopName = price.ShopName,
+                            Link = price.Link,
+                            Price = price.Price
+                        };
+
                         cpuCooling.Prices.Add(price);
                     }
+                    await _cpuCoolingRepository.Update(cpuCooling);
                 }
-
-                await _cpuCoolingRepository.Update(cpuCooling);
-
                 return Ok(cpuCooling);
             }
             catch (DbUpdateException ex)
