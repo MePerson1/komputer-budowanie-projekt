@@ -1,4 +1,5 @@
 using KomputerBudowanieAPI.Database;
+using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
 using KomputerBudowanieAPI.Repository;
@@ -89,28 +90,28 @@ builder.Services
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
+            ValidIssuer = builder.Configuration["Tokens:Issuer"],
+            ValidAudience = builder.Configuration["Tokens:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Tokens:Key"])),
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Tokens:Issuer"],
-            ValidAudience = builder.Configuration["Tokens:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Tokens:Key"]))
+            ValidateIssuerSigningKey = true
         };
     }
 );
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("IsAdminJwt",policy =>
+    options.AddPolicy(IdentityData.AdminPolicyName ,policy =>
         policy
-        .RequireRole("Admin")
+        .RequireRole(IdentityData.AdminUserClaimName)
         .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
     );
 
-    options.AddPolicy("IsAdminOrScraperJwt", policy =>
+    options.AddPolicy(IdentityData.ScraperOrAdminPolicyName, policy =>
         policy
-        .RequireRole("Admin", "Scraper")
+        .RequireRole(IdentityData.ScraperUserClaimName, IdentityData.AdminUserClaimName)
         .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
     );
 });

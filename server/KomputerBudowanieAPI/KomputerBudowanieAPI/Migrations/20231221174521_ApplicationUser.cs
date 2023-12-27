@@ -1,4 +1,5 @@
 ﻿using System;
+using KomputerBudowanieAPI.Identity;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -222,8 +223,8 @@ namespace KomputerBudowanieAPI.Migrations
                 new object[]
                 {
                     Guid.NewGuid().ToString(),
-                    "Admin",
-                    "ADMIN",
+                    IdentityData.AdminUserClaimName,
+                    IdentityData.AdminUserClaimName.ToUpper(),
                     Guid.NewGuid().ToString()
                 }
             );
@@ -232,8 +233,8 @@ namespace KomputerBudowanieAPI.Migrations
                 new object[]
                 {
                     Guid.NewGuid().ToString(),
-                    "Scraper",
-                    "SCRAPER",
+                    IdentityData.ScraperUserClaimName,
+                    IdentityData.ScraperUserClaimName.ToUpper(),
                     Guid.NewGuid().ToString()
                 }
             );

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -83,7 +84,7 @@ namespace KomputerBudowanieAPI.Controllers
             }
         }
 
-        [Authorize("IsAdminOrScraperJwt")]
+        [Authorize(IdentityData.ScraperOrAdminPolicyName)]
         [HttpPost]
         public async Task<IActionResult> CreateCpuCooling([FromBody] CpuCoolingDto cpuCooling)
         {
@@ -99,7 +100,7 @@ namespace KomputerBudowanieAPI.Controllers
             }
         }
 
-        [Authorize("IsAdminOrScraperJwt")]
+        [Authorize(IdentityData.ScraperOrAdminPolicyName)]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteCpuCooling(int id)
         {
@@ -117,7 +118,7 @@ namespace KomputerBudowanieAPI.Controllers
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
-        [Authorize("IsAdminOrScraperJwt")]
+        [Authorize(IdentityData.ScraperOrAdminPolicyName)]
         [HttpPut]
         public async Task<IActionResult> UpdateCase([FromBody] CpuCoolingDto cpuCooling)
         {
@@ -133,7 +134,7 @@ namespace KomputerBudowanieAPI.Controllers
             }
         }
 
-        [Authorize("IsAdminOrScraperJwt")]
+        [Authorize(IdentityData.ScraperOrAdminPolicyName)]
         [HttpPut("price")]
         public async Task<IActionResult> UpdatePrice([FromBody] ProductDto newPrices)
         {
