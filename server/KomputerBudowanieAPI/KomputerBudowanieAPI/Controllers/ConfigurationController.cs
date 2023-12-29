@@ -11,12 +11,10 @@ namespace KomputerBudowanieAPI.Controllers
     public class ConfigurationController : ControllerBase
     {
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
-        private readonly IUserRepository _userRepository;
 
-        public ConfigurationController(IPcConfigurationRepository pcConfigurationRepository, IUserRepository userRepository, ICompatibilityService compatibilityService)
+        public ConfigurationController(IPcConfigurationRepository pcConfigurationRepository, ICompatibilityService compatibilityService)
         {
             _pcConfigurationRepository = pcConfigurationRepository;
-            _userRepository = userRepository;
         }
 
         // GET: api/<ConfigurationController>
@@ -44,7 +42,7 @@ namespace KomputerBudowanieAPI.Controllers
         // GET api/users/5/configurations
         [Route("users/{userId}")]
         [HttpGet]
-        public async Task<IActionResult> Get(int userId)
+        public async Task<IActionResult> Get(string userId)
         {
             var configs = await _pcConfigurationRepository.GetAllAsync(userId);
             if (configs is null || !configs.Any())

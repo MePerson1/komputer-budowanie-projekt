@@ -6,7 +6,7 @@ namespace KomputerBudowanieAPI.Interfaces
     public interface IPcConfigurationRepository
     {
         Task<IEnumerable<PcConfiguration>> GetAllAsync();
-        Task<IEnumerable<PcConfiguration>> GetAllAsync(int userId);
+        Task<IEnumerable<PcConfiguration>> GetAllAsync(string userId);
 
         Task<PcConfiguration?> GetByIdAsync(Guid id);
         Task<PcConfiguration> Create(PcConfigurationDto newConfigurationDto);

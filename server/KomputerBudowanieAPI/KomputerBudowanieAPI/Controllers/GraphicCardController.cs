@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -79,6 +81,7 @@ namespace KomputerBudowanieAPI.Controllers
             }
         }
 
+        [Authorize(IdentityData.ScraperOrAdminPolicyName)]
         [HttpPost]
         public async Task<IActionResult> CreateGraphicCard([FromBody] GraphicCardDto graphicCard)
         {
@@ -91,6 +94,7 @@ namespace KomputerBudowanieAPI.Controllers
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
+        [Authorize(IdentityData.ScraperOrAdminPolicyName)]
         [HttpPut]
         public async Task<IActionResult> UpdateGraphicCard([FromBody] GraphicCardDto graphicCard)
         {
@@ -102,6 +106,8 @@ namespace KomputerBudowanieAPI.Controllers
             }
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
+
+        [Authorize(IdentityData.ScraperOrAdminPolicyName)]
         [HttpPut("price")]
         public async Task<IActionResult> UpdatePrice([FromBody] ProductDto newPrices)
         {
@@ -147,6 +153,7 @@ namespace KomputerBudowanieAPI.Controllers
             }
         }
 
+        [Authorize(IdentityData.ScraperOrAdminPolicyName)]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteGraphicCard(int id)
         {
