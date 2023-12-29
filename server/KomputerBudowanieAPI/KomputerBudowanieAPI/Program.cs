@@ -48,7 +48,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 //builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(PcPartsRepository<>));
 builder.Services.AddScoped<IPcConfigurationRepository, PcConfigurationRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 builder.Services.AddScoped<ICompatibilityPartsService, CompatibilityPartsService>();
 builder.Services.AddScoped<ICompatibilityPcConfigurationService, CompatibilityPcConfigurationService>();
 builder.Services.AddScoped<ICompatibilityDataFilterService, CompatibilityDataFilterService>();
