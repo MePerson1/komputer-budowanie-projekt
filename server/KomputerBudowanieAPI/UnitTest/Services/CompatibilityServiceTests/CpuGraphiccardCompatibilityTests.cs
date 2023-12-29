@@ -1,4 +1,5 @@
-﻿using KomputerBudowanieAPI.Models;
+﻿using KomputerBudowanieAPI.Interfaces;
+using KomputerBudowanieAPI.Models;
 using KomputerBudowanieAPI.Services;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace Tests.Services.CompatibilityServiceTests
 {
     public class CpuGraphiccardCompatibilityTests
     {
-        private readonly CompatibilityService _compatibilityService = new CompatibilityService();
+        private readonly ICompatibilityPcConfigurationService _compatibilityPcConfigurationService = new CompatibilityPcConfigurationService(new CompatibilityPartsService());
 
         [Fact]
         public async void Given_CpuWithoutGraphic_When_CompatibilityCheck_Then_Warning()
@@ -29,7 +30,7 @@ namespace Tests.Services.CompatibilityServiceTests
             };
 
             // Act (When)
-            Toast? toast = await _compatibilityService.CompatibilityCheck(configuration);
+            Toast? toast = await _compatibilityPcConfigurationService.CompatibilityCheck(configuration);
 
             // Assert (Then)
             Assert.NotNull(toast);
@@ -54,7 +55,7 @@ namespace Tests.Services.CompatibilityServiceTests
             };
 
             // Act (When)
-            Toast? toast = await _compatibilityService.CompatibilityCheck(configuration);
+            Toast? toast = await _compatibilityPcConfigurationService.CompatibilityCheck(configuration);
 
             // Assert (Then)
             Assert.NotNull(toast);
@@ -85,7 +86,7 @@ namespace Tests.Services.CompatibilityServiceTests
             };
 
             // Act (When)
-            Toast? toast = await _compatibilityService.CompatibilityCheck(configuration);
+            Toast? toast = await _compatibilityPcConfigurationService.CompatibilityCheck(configuration);
 
             // Assert (Then)
             Assert.NotNull(toast);

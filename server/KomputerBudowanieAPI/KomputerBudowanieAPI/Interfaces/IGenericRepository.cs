@@ -8,10 +8,13 @@
          * Różne typy id sa
          */
         Task<TEntity?> GetByIdAsync(int id);
-        Task Create(TEntity entity);
-        Task Update(TEntity entity);
-        Task Delete(TEntity entity);
-        Task SaveChanges();
 
+        Task Create(TEntity entity);
+
+        Task Update(TEntity entity);
+
+        Task Delete(TEntity entity);
+
+        Task SaveChanges();
     }
 }

@@ -9,11 +9,15 @@ namespace KomputerBudowanieAPI.Interfaces
         Task<IEnumerable<PcConfiguration>> GetAllAsync(string userId);
 
         Task<PcConfiguration?> GetByIdAsync(Guid id);
-        Task<PcConfiguration> Create(PcConfigurationDto newConfigurationDto);
-        Task<PcConfiguration> Update(Guid id, PcConfigurationDto entity);
-        Task Delete(PcConfiguration entity);
-        Task SaveChanges();
-        Task<PcConfiguration?> GetDataFromIds(PcConfigurationDto dto, PcConfiguration pcConfiguration);
 
+        Task<PcConfiguration> Create(PcConfigurationDto newConfigurationDto);
+
+        Task<PcConfiguration> Update(Guid id, PcConfigurationDto entity);
+
+        Task Delete(PcConfiguration entity);
+
+        Task SaveChanges();
+
+        Task<PcConfiguration?> GetDataFromIds(PcConfigurationDto dto, PcConfiguration pcConfiguration);
     }
 }

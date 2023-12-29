@@ -48,7 +48,9 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 //builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(PcPartsRepository<>));
 builder.Services.AddScoped<IPcConfigurationRepository, PcConfigurationRepository>();
-builder.Services.AddScoped<ICompatibilityService, CompatibilityService>();
+
+builder.Services.AddScoped<ICompatibilityPartsService, CompatibilityPartsService>();
+builder.Services.AddScoped<ICompatibilityPcConfigurationService, CompatibilityPcConfigurationService>();
 builder.Services.AddScoped<ICompatibilityDataFilterService, CompatibilityDataFilterService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
