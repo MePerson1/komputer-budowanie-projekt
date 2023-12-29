@@ -346,6 +346,11 @@ namespace KomputerBudowanieAPI.Services
                     toast.Problems.Add($"Coś poszło nie tak podczas sprawdzania złączy! ({connector})");
                 }
             }
+
+            if(powerSupply.PowerW < graphicCard.RecommendedPSUCapacityW) 
+            {
+                toast.Problems.Add($"Zalecany jest zasilacz do karty graficznej o mocy minimum: {graphicCard.RecommendedPSUCapacityW} W!");
+            }
         }
 
         /// Warning:
