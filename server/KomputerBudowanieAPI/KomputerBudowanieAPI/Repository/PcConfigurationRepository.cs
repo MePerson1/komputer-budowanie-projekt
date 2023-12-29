@@ -31,7 +31,7 @@ namespace KomputerBudowanieAPI.Repository
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<PcConfiguration>> GetAllAsync(int userId)
+        public async Task<IEnumerable<PcConfiguration>> GetAllAsync(string userId)
         {
             return await _context.Set<PcConfiguration>().Where(config => config.User.Id == userId)
                 .Include(pc => pc.Motherboard)

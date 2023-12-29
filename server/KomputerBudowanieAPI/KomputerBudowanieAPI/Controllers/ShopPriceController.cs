@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KomputerBudowanieAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/shop-price")]
     [ApiController]
     public class ShopPriceController : ControllerBase
     {
