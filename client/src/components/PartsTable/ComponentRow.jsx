@@ -30,6 +30,10 @@ const ComponentRow = ({
         setPcConfiguration({ ...pcConfiguration, cpuCooling: part });
         navigate("/build");
         break;
+      case "water-cooling":
+        setPcConfiguration({ ...pcConfiguration, waterCooling: part });
+        navigate("/build");
+        break;
       case "case":
         setPcConfiguration({ ...pcConfiguration, case: part });
         navigate("/build");

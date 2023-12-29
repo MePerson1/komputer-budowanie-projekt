@@ -1,14 +1,4 @@
-import {
-  Case,
-  Cpu,
-  CpuCooling,
-  GraphicCard,
-  Motherboard,
-  PowerSupply,
-  Ram,
-  Storage,
-  WaterCooling,
-} from "./index";
+import {} from "./index";
 
 const PcConfiguration = {
   case: null,

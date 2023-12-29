@@ -7,6 +7,7 @@ const pcParts = [
     info: "Jest to główny układ obliczeniowy komputera.",
     tip: "Wybierz procesor odpowiedni do potrzeb użytkowania komputera.",
   },
+
   {
     key: "cpu-cooling",
     nameENG: "Cpu Cooling",
@@ -15,6 +16,15 @@ const pcParts = [
     info: "Chłodzi procesor, zapobiegając przegrzewaniu się.",
     tip: "Upewnij się, że chłodzenie jest kompatybilne z procesorem i obudową.",
   },
+  {
+    key: "water-cooling",
+    nameENG: "Water Cooling",
+    namePL: "Chłodzenie wodne",
+    icon: "images/parts/water-cooling.png",
+    info: "Chłodzi procesor, zapobiegając przegrzewaniu się.",
+    tip: "Upewnij się, że chłodzenie jest kompatybilne z procesorem i obudową.",
+  },
+
   {
     key: "motherboard",
     nameENG: "Motherboard",
