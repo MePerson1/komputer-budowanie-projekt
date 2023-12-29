@@ -91,13 +91,13 @@ namespace Tests.Services.CompatibilityServiceTests
             yield return new object[]
             {
                 motherboard4xSlotDdr4Udimm,
-                new List<Ram>
+                new List<PcConfigurationRam>
                 {
-                    ram1xUdimmDdr4,
-                    ram1xUdimmDdr4,
-                    ram1xUdimmDdr4,
-                    ram1xUdimmDdr4,
-                    ram1xUdimmDdr4
+                    new PcConfigurationRam()
+                    {
+                        Ram = ram1xUdimmDdr4,
+                        Quantity = 5
+                    }
                 },
                 new List<string>
                 {
@@ -108,11 +108,18 @@ namespace Tests.Services.CompatibilityServiceTests
             yield return new object[]
             {
                 motherboard4xSlotDdr4Udimm,
-                new List<Ram>
+                new List<PcConfigurationRam>
                 {
-                    ram1xUdimmDdr4,
-                    ram2xUdimmDdr4,
-                    ram2xUdimmDdr4,
+                    new PcConfigurationRam()
+                    {
+                        Ram = ram1xUdimmDdr4,
+                        Quantity = 1
+                    },
+                    new PcConfigurationRam()
+                    {
+                        Ram = ram2xUdimmDdr4,
+                        Quantity = 2
+                    },
                 },
                 new List<string>
                 {
@@ -123,9 +130,13 @@ namespace Tests.Services.CompatibilityServiceTests
             yield return new object[]
             {
                 motherboard4xSlotDdr5Udimm,
-                new List<Ram>
+                new List<PcConfigurationRam>
                 {
-                    ram1xUdimmDdr4
+                    new PcConfigurationRam()
+                    {
+                        Ram = ram1xUdimmDdr4,
+                        Quantity = 1
+                    },
                 },
                 new List<string>
                 {
@@ -136,9 +147,13 @@ namespace Tests.Services.CompatibilityServiceTests
             yield return new object[]
             {
                 motherboard4xSlotDdr4Udimm,
-                new List<Ram>
+                new List<PcConfigurationRam>
                 {
-                    ram1xUdimmDdr3
+                    new PcConfigurationRam()
+                    {
+                        Ram = ram1xUdimmDdr3,
+                        Quantity = 1
+                    },
                 },
                 new List<string>
                 {
@@ -152,88 +167,109 @@ namespace Tests.Services.CompatibilityServiceTests
             yield return new object[]
             {
                 motherboard4xSlotDdr4Udimm,
-                new List<Ram>
+                new List<PcConfigurationRam>
                 {
-                    ram1xUdimmDdr4,
+                    new PcConfigurationRam()
+                    {
+                        Ram = ram1xUdimmDdr4,
+                        Quantity = 1
+                    },
                 }
             };
 
             yield return new object[]
             {
                 motherboard4xSlotDdr4Udimm,
-                new List<Ram>
+                new List<PcConfigurationRam>
                 {
-                    ram1xUdimmDdr4,
-                    ram1xUdimmDdr4,
-                    ram1xUdimmDdr4,
-                    ram1xUdimmDdr4,
+                    new PcConfigurationRam()
+                    {
+                        Ram = ram1xUdimmDdr4,
+                        Quantity = 4
+                    },
                 }
             };
 
             yield return new object[]
             {
                 motherboard4xSlotDdr4Udimm,
-                new List<Ram>
+                new List<PcConfigurationRam>
                 {
-                    ram2xUdimmDdr4,
-                    ram2xUdimmDdr4,
+                    new PcConfigurationRam()
+                    {
+                        Ram = ram2xUdimmDdr4,
+                        Quantity = 2
+                    },
                 }
             };
 
             yield return new object[]
             {
                 motherboard4xSlotDdr4Udimm,
-                new List<Ram>
+                new List<PcConfigurationRam>
                 {
-                    ram2xUdimmDdr4,
-                    ram1xUdimmDdr4,
-                    ram1xUdimmDdr4,
+                    new PcConfigurationRam()
+                    {
+                        Ram = ram2xUdimmDdr4,
+                        Quantity = 1
+                    },
+                    new PcConfigurationRam()
+                    {
+                        Ram = ram1xUdimmDdr4,
+                        Quantity = 2
+                    },
                 }
             };
 
             yield return new object[]
             {
                 motherboard4xSlotDdr5Udimm,
-                new List<Ram>
+                new List<PcConfigurationRam>
                 {
-                    ram1xUdimmDdr5
+                    new PcConfigurationRam()
+                    {
+                        Ram = ram1xUdimmDdr5,
+                        Quantity = 1
+                    },
                 }
             };
 
             yield return new object[]
             {
                 motherboard4xSlotDdr5Udimm,
-                new List<Ram>
+                new List<PcConfigurationRam>
                 {
-                    ram1xUdimmDdr5,
-                    ram1xUdimmDdr5,
-                    ram1xUdimmDdr5,
-                    ram1xUdimmDdr5,
+                    new PcConfigurationRam()
+                    {
+                        Ram = ram1xUdimmDdr5,
+                        Quantity = 4
+                    },
                 }
             };
 
             yield return new object[]
             {
                 motherboard4xSlotDdr5Udimm,
-                new List<Ram>
+                new List<PcConfigurationRam>
                 {
-                    ram2xUdimmDdr5,
-                    ram2xUdimmDdr5,
+                    new PcConfigurationRam()
+                    {
+                        Ram = ram2xUdimmDdr5,
+                        Quantity = 2
+                    },
                 }
             };
         }
 
         [Theory]
         [MemberData(nameof(MotherboardAndRamIncompatibleData))]
-        public async void Given_MotherboardAndRams_When_CompatibilityCheck_Then_NotCompatible(Motherboard motherboard, List<Ram> ramList, List<string> problems)
+        public async void Given_MotherboardAndRams_When_CompatibilityCheck_Then_NotCompatible(Motherboard motherboard, List<PcConfigurationRam> ramList, List<string> problems)
         {
             // Arrange (Given)
-            List<PcConfigurationRam> rams = makePcConfigurationRamList(ramList);
-
             PcConfiguration configuration = new PcConfiguration
             {
                 Motherboard = motherboard,
-                PcConfigurationRams = rams
+                PcConfigurationRams = ramList
             };
 
             // Act (When)
@@ -249,15 +285,13 @@ namespace Tests.Services.CompatibilityServiceTests
 
         [Theory]
         [MemberData(nameof(MotherboardAndRamCompatibleData))]
-        public async void Given_MotherboardAndRams_When_CompatibilityCheck_Then_Compatible(Motherboard motherboard, List<Ram> ramList)
+        public async void Given_MotherboardAndRams_When_CompatibilityCheck_Then_Compatible(Motherboard motherboard, List<PcConfigurationRam> ramList)
         {
             // Arrange (Given)
-            List<PcConfigurationRam> rams = makePcConfigurationRamList(ramList);
-
             PcConfiguration configuration = new PcConfiguration
             {
                 Motherboard = motherboard,
-                PcConfigurationRams = rams
+                PcConfigurationRams = ramList
             };
 
             // Act (When)
@@ -266,22 +300,6 @@ namespace Tests.Services.CompatibilityServiceTests
             // Assert (Then)
             Assert.NotNull(toast);
             Assert.Empty(toast.Problems);
-        }
-
-        public static List<PcConfigurationRam> makePcConfigurationRamList(List<Ram> ramList)
-        {
-            List<PcConfigurationRam> pcConfigurationRamList = new List<PcConfigurationRam>();
-            foreach (Ram ram in ramList) 
-            {
-                PcConfigurationRam pcConfigurationRam = new PcConfigurationRam()
-                {
-                    RamsId = ram.Id,
-                    Ram = ram,
-                    Quantity = 1
-                };
-                pcConfigurationRamList.Add(pcConfigurationRam);
-            }
-            return pcConfigurationRamList;
         }
     }
 }
