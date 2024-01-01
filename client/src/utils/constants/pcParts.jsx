@@ -11,7 +11,7 @@ const pcParts = [
   {
     key: "cpu-cooling",
     nameENG: "Cpu Cooling",
-    namePL: "Chłodzenie procesora",
+    namePL: "Chłodzenie procesora powietrzne",
     icon: "images/parts/cpu-cooling.png",
     info: "Chłodzi procesor, zapobiegając przegrzewaniu się.",
     tip: "Upewnij się, że chłodzenie jest kompatybilne z procesorem i obudową.",
@@ -19,7 +19,7 @@ const pcParts = [
   {
     key: "water-cooling",
     nameENG: "Water Cooling",
-    namePL: "Chłodzenie wodne",
+    namePL: "Chłodzenie procesora wodne",
     icon: "images/parts/water-cooling.png",
     info: "Chłodzi procesor, zapobiegając przegrzewaniu się.",
     tip: "Upewnij się, że chłodzenie jest kompatybilne z procesorem i obudową.",

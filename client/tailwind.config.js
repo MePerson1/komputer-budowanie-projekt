@@ -8,6 +8,11 @@ module.exports = {
       },
     },
   },
+  variants: {
+    extend: {
+      visibility: ["group-hover"],
+    },
+  },
   plugins: [require("daisyui")],
   daisyui: {
     themes: ["light", "dark", "forest", "synthwave"],

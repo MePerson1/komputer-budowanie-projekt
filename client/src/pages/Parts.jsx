@@ -3,16 +3,15 @@ import pcParts from "../utils/constants/pcParts";
 import ChooseCategory from "../components/Parts/ChooseCategory";
 import Topic from "../components/shared/Topic";
 import Breadcrumbs from "../components/shared/Breadcrumbs";
+import ChooseCategoryHover from "../components/Parts/ChooseCategoryHover";
 const Parts = () => {
   return (
     <>
       <Topic title="Wybór typu części" />
 
-      <div className="flex flex-wrap justify-center">
+      <div className="flex flex-wrap justify-center ">
         {pcParts.map((pcPart) => (
-          <div className="p-4">
-            <ChooseCategory pcPart={pcPart} />
-          </div>
+          <ChooseCategory pcPart={pcPart} />
         ))}
       </div>
     </>
