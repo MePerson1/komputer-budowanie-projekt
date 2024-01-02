@@ -7,9 +7,9 @@ namespace KomputerBudowanieAPI.Models
 
         [Key]
         public Guid Id { get; set; }
-
         public string? Name { get; set; }
         public string? Description { get; set; }
+        public bool isPrivate { get; set; } = true;
 
         public Motherboard? Motherboard { get; set; }
         public GraphicCard? GraphicCard { get; set; }
