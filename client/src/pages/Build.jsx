@@ -53,7 +53,9 @@ const Build = ({ pcConfiguration, setPcConfiguration }) => {
       if (pcConfiguration[key] && pcConfiguration[key].prices !== undefined) {
         totalPrice += pcConfiguration[key].prices[0].price;
       } else if (key === "rams" || key === "storages") {
-        pcConfiguration[key].map((part) => (totalPrice += part.price));
+        pcConfiguration[key].map(
+          (part) => (totalPrice += part.prices[0].price)
+        );
       }
     });
 
