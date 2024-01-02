@@ -200,8 +200,6 @@ namespace KomputerBudowanieAPI.Repository
 
             pcConfiguration.TotalPrice = await CountTotalPrice(pcConfiguration);
 
-
-
             return pcConfiguration;
         }
         public async Task<double> CountTotalPrice(PcConfiguration pcConfiguration)
@@ -231,8 +229,6 @@ namespace KomputerBudowanieAPI.Repository
             if (pcConfiguration.WaterCooling != null && pcConfiguration.WaterCooling.Prices.Any() && pcConfiguration.WaterCooling.Prices is not null)
                 totalPrice += pcConfiguration.WaterCooling.Prices.Min(p => p.Price);
 
-
-            // Add prices of storages
             if (pcConfiguration.PcConfigurationStorages != null && pcConfiguration.PcConfigurationStorages.Any())
             {
                 foreach (var storage in pcConfiguration.PcConfigurationStorages)
@@ -242,7 +238,6 @@ namespace KomputerBudowanieAPI.Repository
                 }
             }
 
-            // Add prices of RAMs
             if (pcConfiguration.PcConfigurationRams != null && pcConfiguration.PcConfigurationRams.Any())
             {
                 foreach (var ram in pcConfiguration.PcConfigurationRams)

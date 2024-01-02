@@ -32,7 +32,7 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(configs);
         }
 
-        [HttpGet("{public}")]
+        [HttpGet("public")]
         public async Task<IActionResult> GetPublic()
         {
             var configs = await _pcConfigurationRepository.GetAllAsyncPublic();
