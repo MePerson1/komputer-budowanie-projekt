@@ -25,21 +25,6 @@ const Build = ({ pcConfiguration, setPcConfiguration }) => {
         JSON.stringify(pcConfiguration)
       );
     }
-
-    let totalPrice = 0;
-
-    Object.keys(pcConfiguration).forEach((key) => {
-      if (pcConfiguration[key] && pcConfiguration[key].prices !== undefined) {
-        console.log(
-          pcConfiguration[key].prices.sort((a, b) => a.price - b.price)
-        );
-        totalPrice += pcConfiguration[key].prices[0].price;
-      } else if (key === "rams" || key === "storages") {
-        pcConfiguration[key].map((part) => (totalPrice += part.price));
-      }
-    });
-
-    setTotalPrice(totalPrice);
   }, [pcConfiguration]);
 
   useEffect(() => {
@@ -62,10 +47,34 @@ const Build = ({ pcConfiguration, setPcConfiguration }) => {
   }
 
   useEffect(() => {
+    let totalPrice = 0;
+
+    Object.keys(pcConfiguration).forEach((key) => {
+      if (pcConfiguration[key] && pcConfiguration[key].prices !== undefined) {
+        totalPrice += pcConfiguration[key].prices[0].price;
+      } else if (key === "rams" || key === "storages") {
+        pcConfiguration[key].map((part) => (totalPrice += part.price));
+      }
+    });
+
+    setTotalPrice(totalPrice);
     if (pcConfiguration !== PcConfiguration) {
       getInfo(pcConfiguration);
     }
-  }, []);
+  }, [
+    pcConfiguration.case,
+    pcConfiguration.cpu,
+    pcConfiguration.cpuCooling,
+    pcConfiguration.fans,
+    pcConfiguration.graphicCard,
+    pcConfiguration.id,
+    pcConfiguration.motherboard,
+    pcConfiguration.powerSupply,
+    pcConfiguration.rams,
+    pcConfiguration.storages,
+    pcConfiguration.user,
+    pcConfiguration.waterCooling,
+  ]);
 
   const handleNameChange = (event) => {
     const newName = event.target.value;

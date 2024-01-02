@@ -3,6 +3,7 @@ import EmptyComponentView from "./EmptyComponentView";
 
 const ComponentsTable = ({ setPcConfiguration, pcConfiguration, pcParts }) => {
   const handleSetToNull = (key, partId) => {
+    console.log(key + " " + partId);
     if (key === "rams" || key === "storages") {
       const indexToRemove = pcConfiguration[key].findIndex(
         (part) => part.id === partId
@@ -42,14 +43,14 @@ const ComponentsTable = ({ setPcConfiguration, pcConfiguration, pcParts }) => {
             key={pcParts[1].key}
             pcPart={pcConfiguration.cpuCooling}
             handleSetToNull={handleSetToNull}
-            partKey={pcParts[1].key}
+            partKey={"cpuCooling"}
             partType={pcParts[1]}
           />
         )}
 
         {pcConfiguration.waterCooling !== null && (
           <ComponentView
-            key={pcParts[1].key}
+            key={pcParts[2].key}
             pcPart={pcConfiguration.waterCooling}
             handleSetToNull={handleSetToNull}
             partKey={"waterCooling"}
@@ -57,14 +58,14 @@ const ComponentsTable = ({ setPcConfiguration, pcConfiguration, pcParts }) => {
           />
         )}
 
-        {pcConfiguration.cpuColing === null ||
-          (pcConfiguration.waterCooling === null && (
+        {pcConfiguration.cpuCooling === null &&
+          pcConfiguration.waterCooling === null && (
             <div className="bg-base-200 rounded lg:">
               <EmptyComponentView pcPart={pcParts[1]} />
               <div className="divider">lub</div>
               <EmptyComponentView pcPart={pcParts[2]} />
             </div>
-          ))}
+          )}
 
         {pcConfiguration.motherboard !== undefined &&
         pcConfiguration.motherboard !== null ? (
