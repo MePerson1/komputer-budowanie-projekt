@@ -30,7 +30,23 @@ namespace KomputerBudowanieAPI.Repository
                     .ThenInclude(storage => storage.Storage)
                 .ToListAsync();
         }
-
+        public async Task<IEnumerable<PcConfiguration>> GetAllAsyncPublic()
+        {
+            return await _context.PcConfigurations
+               .Where(pc => pc.isPrivate == false)
+               .Include(pc => pc.Motherboard)
+               .Include(pc => pc.Case)
+               .Include(pc => pc.Cpu)
+               .Include(pc => pc.CpuCooling)
+               .Include(pc => pc.GraphicCard)
+               .Include(pc => pc.PowerSupply)
+               .Include(pc => pc.WaterCooling)
+               .Include(pc => pc.PcConfigurationRams)
+                   .ThenInclude(ram => ram.Ram)
+               .Include(pc => pc.PcConfigurationStorages)
+                   .ThenInclude(storage => storage.Storage)
+               .ToListAsync();
+        }
         public async Task<IEnumerable<PcConfiguration>> GetAllAsync(string userId)
         {
             return await _context.Set<PcConfiguration>().Where(config => config.User.Id == userId)

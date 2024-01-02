@@ -1,5 +1,7 @@
 ﻿using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -18,10 +20,22 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         // GET: api/<ConfigurationController>
+        [Authorize(IdentityData.ScraperOrAdminPolicyName)]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             var configs = await _pcConfigurationRepository.GetAllAsync();
+            if (configs is null || !configs.Any())
+            {
+                return NotFound();
+            }
+            return Ok(configs);
+        }
+
+        [HttpGet("{public}")]
+        public async Task<IActionResult> GetPublic()
+        {
+            var configs = await _pcConfigurationRepository.GetAllAsyncPublic();
             if (configs is null || !configs.Any())
             {
                 return NotFound();
