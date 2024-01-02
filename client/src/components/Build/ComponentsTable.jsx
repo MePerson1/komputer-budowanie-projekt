@@ -26,13 +26,20 @@ const ComponentsTable = ({ setPcConfiguration, pcConfiguration, pcParts }) => {
     <>
       <div className="grid grid-cols-1 gap-5">
         {pcConfiguration.cpu !== undefined && pcConfiguration.cpu !== null ? (
-          <ComponentView
-            key={pcParts[0].key}
-            pcPart={pcConfiguration.cpu}
-            handleSetToNull={handleSetToNull}
-            partKey={pcParts[0].key}
-            partType={pcParts[0]}
-          />
+          <div>
+            <div className="tooltip" data-tip={pcParts[0].tip}>
+              <h2 className=" text-sm lg:text-2xl font-bold">
+                {pcParts[0].namePL}
+              </h2>
+            </div>
+            <ComponentView
+              key={pcParts[0].key}
+              pcPart={pcConfiguration.cpu}
+              handleSetToNull={handleSetToNull}
+              partKey={pcParts[0].key}
+              partType={pcParts[0]}
+            />
+          </div>
         ) : (
           <EmptyComponentView pcPart={pcParts[0]} />
         )}
