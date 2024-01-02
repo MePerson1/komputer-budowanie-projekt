@@ -18,7 +18,7 @@ namespace KomputerBudowanieAPI.Dto
         public WaterCoolingDto Fan { get; set; } // tutaj tez many to many raczej
         public PowerSupplyDto PowerSupply { get; set; }
 
-        public User? User { get; set; } = null;
+        public ApplicationUser? User { get; set; } = null;
 
         public ICollection<StorageDto> Memories { get; set; }
         public ICollection<RamDto> Rams { get; set; }

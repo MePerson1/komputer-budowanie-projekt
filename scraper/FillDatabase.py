@@ -3,19 +3,10 @@ from bs4 import BeautifulSoup
 from requests import exceptions
 from config import *
 import ParseProduct
+import DatabaseOperations
 
 
-def collect_product_links(cat_link):
-    link_base = "https://www.morele.net"
-    prod_links = []
-
-    # wyszukiwanie i dodawanie linkow z pierwszej strony
-    html_product_search = requests.get(cat_link).text
-    soup = BeautifulSoup(html_product_search, "lxml")
-    product_links_raw = soup.find_all('a', class_='cat-product-image productLink')
-    for link in product_links_raw:
-        prod_links.append(link_base + link['href'])
-
+def find_morele_page_limit(soup):
     # ustal ilosc wszystkich stron na podstawie szarego przycisku oznaczajacego ostatnia strone
     # bo morele nie zwraca bledu jak sie poda nieistniejaca ilosc stron, tylko wywala na pierwsza -.-
     page_limit = soup.find("div", class_="pagination-btn-nolink-anchor")
@@ -28,18 +19,33 @@ def collect_product_links(cat_link):
         else:  # jesli ich nie ma znaczy ze jest tylko 1 strona
             page_limit = 1
 
+    return page_limit
+
+
+def collect_product_links(cat_link):
+    link_base = "https://www.morele.net"
+    prod_links = []
+
+    # wyszukiwanie i dodawanie linkow z pierwszej strony
+    html_product_search = requests.get(cat_link).text
+    soup = BeautifulSoup(html_product_search, "lxml")
+    product_links_raw = soup.find_all('a', class_='cat-product-image productLink')
+    for prod_link in product_links_raw:
+        prod_links.append(link_base + prod_link['href'])
+
+    page_limit = find_morele_page_limit(soup)
     if page_limit == 1:
         return prod_links
 
     # wejdz na kazda nastepna strone z konkretnymi produktami, zbierz do nich linki
-    for page in range(2, how_many_pages+1):
-        html_product_search = requests.get(f"{cat_link},,,,,,,,0,,,,/{page}/").text
+    for page_current in range(2, how_many_pages+1):
+        html_product_search = requests.get(f"{cat_link},,,,,,,,0,,,,/{page_current}/").text
         soup = BeautifulSoup(html_product_search, "lxml")
         product_links_raw = soup.find_all('a', class_='cat-product-image productLink')
         # utworz na tej podstawie linki do kazdego produktu dla kazdej strony w liczbie okreslonej w how_many_pages
-        for link in product_links_raw:
-            prod_links.append(link_base + link['href'])
-        if page == page_limit:
+        for prod_link in product_links_raw:
+            prod_links.append(link_base + prod_link['href'])
+        if page_current == page_limit:
             break
     return prod_links
 
@@ -47,10 +53,10 @@ def collect_product_links(cat_link):
 def get_product_specs(chosen_cat, prod_links):
     i = 1
     all_products = []
-    for link in prod_links:
+    for prod_link in prod_links:
         try:
             # wejdz do poszczegolnego produktu
-            html_product = requests.get(link).text
+            html_product = requests.get(prod_link).text
             soup = BeautifulSoup(html_product, "lxml")
 
             # sprawdz czy jest dostepny zanim w ogole zacznie sie jakas obrobka
@@ -76,7 +82,7 @@ def get_product_specs(chosen_cat, prod_links):
 
             # wyswietl rzeczy przed tlumaczeniem
             if show_raw_data_in_console:
-                print(f"\nProdukt {i}: {link}")
+                print(f"\nProduct {i}: {prod_link}")
                 for key, value in product_specs.items():
                     print(key, ':', value)
 
@@ -84,7 +90,7 @@ def get_product_specs(chosen_cat, prod_links):
 
             # wyswietl rzeczy po tlumaczeniu
             if show_translated_data_in_console:
-                print(f"\n(PRZETLUMACZONE) Produkt {i}: {link}")
+                print(f"\n(TRANSLATED) Product {i}: {prod_link}")
                 for key, value in translated_product_specs.items():
                     print(key, ':', value)
 
@@ -92,57 +98,31 @@ def get_product_specs(chosen_cat, prod_links):
             all_products.append(translated_product_specs)
             i += 1
         except exceptions.RequestException as req_error:
-            print(f"Request error for link {link}: {req_error}")
+            print(f"RequestException error occured for {prod_link}: {req_error}")
         except ParseProduct.ProductNotAvailable:
-            print(f"Product {link} is not available")
+            print(f"Product {prod_link} is not available")
         except ParseProduct.ImportantSpecNotFound as e:
-            print(f"Product {link} is missing crucial atribute. {e}")
+            print(f"Product {prod_link} is missing crucial atribute. {e}")
         except Exception as e:
-            print(f"\n\nAn unexpected error occurred for link {link}: {e}\n\n")
+            print(f"\n\nAn unexpected error occurred for {prod_link}: {e}\n\n")
     print(f"Proper records after parsing: {len(all_products)}")
     return all_products
 
 
-def add_products_to_database(chosen_cat, prods):
-    url = "http://localhost:5198/api/"
+def scrape_product_category(product_category, category_link):
+    print(f"Now scraping {how_many_pages} pages of {product_category}...")
+    product_links = collect_product_links(category_link)
+    products = get_product_specs(product_category, product_links)
+    if add_to_database:
+        DatabaseOperations.add_products_from_category(products, product_category)
 
-    # w aplikacji nie ma podzialu na dyski ssd i hdd
-    if 'storage' in chosen_cat:
-        url += 'storage'
+
+if __name__ == "__main__":
+    if choose_all_product_categories:
+        for category, link in product_categories_and_links.items():
+            scrape_product_category(category, link)
     else:
-        url += chosen_cat
-
-    i = 1
-    for product in prods:
-        response = requests.post(url, json=product)
-
-        if response.status_code == 200:
-            print(f"Request {i} on {url} was successful.")
+        if chosen_product_category in product_categories_and_links:
+            scrape_product_category(chosen_product_category, product_categories_and_links[chosen_product_category])
         else:
-            print(f"Request failed with status code: {response.status_code}")
-            print(response.json())
-            print(f"for product: {product}")
-            break
-        i += 1
-
-
-def scrape_all_categories():
-    for prod_cat, cat_link in product_categories_and_links.items():
-        print(f"Now scraping {how_many_pages} pages of {prod_cat}...")
-        prod_links = collect_product_links(cat_link)
-        prods = get_product_specs(prod_cat, prod_links)
-        if add_to_database:
-            add_products_to_database(prod_cat, prods)
-
-
-if choose_all_product_categories:
-    scrape_all_categories()
-else:
-    if chosen_product_category in product_categories_and_links:
-        print(f"Now scraping {how_many_pages} pages of {chosen_product_category}...")
-        product_links = collect_product_links(product_categories_and_links[chosen_product_category])
-        products = get_product_specs(chosen_product_category, product_links)
-        if add_to_database:
-            add_products_to_database(chosen_product_category, products)
-    else:
-        print("Variable chosen_product_category in config.py is not equal to any product_categories_and_links key")
+            print("Variable chosen_product_category in config.py is not equal to any product_categories_and_links key")
