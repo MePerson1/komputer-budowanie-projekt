@@ -3,17 +3,17 @@ import { Logo } from "../Logo";
 import { NavUserMenu } from "./NavUserMenu";
 import { NavMenu } from "./NavMenu";
 
-const NavBar = () => {
+const NavBar = ({ loggedUser }) => {
   return (
     <>
       <nav class="navbar bg-base-300">
         <div class="navbar-start">
-          <Logo />
+          <Link to="/">Logo</Link>
         </div>
         <div class="navbar-center">
           <NavMenu />
         </div>
-        <div class="navbar-center hidden lg:flex ">
+        <div class="navbar-center hidden sm:flex ">
           <ul class="menu menu-horizontal px-1">
             <li>
               <NavLink to="parts" className="text-lg">
@@ -47,7 +47,7 @@ const NavBar = () => {
           </ul>
         </div>
         <div class="navbar-end">
-          <NavUserMenu />
+          <NavUserMenu loggedUser={loggedUser} />
         </div>
       </nav>
     </>

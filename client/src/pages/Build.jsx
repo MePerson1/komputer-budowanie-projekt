@@ -2,7 +2,7 @@ import ComponentsTable from "../components/Build/ComponentsTable";
 import Info from "../components/Build/Info";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { PcConfiguration, Motherboard } from "../utils/models/index";
+import { PcConfiguration } from "../utils/models/index";
 import ConfigurationInfo from "../components/Build/ConfigurationInfo";
 import pcParts from "../utils/constants/pcParts";
 import mapPcPartsToIds from "../utils/functions/mapPcPartsToIds";
@@ -25,18 +25,6 @@ const Build = ({ pcConfiguration, setPcConfiguration }) => {
         JSON.stringify(pcConfiguration)
       );
     }
-
-    let totalPrice = 0;
-
-    Object.keys(pcConfiguration).forEach((key) => {
-      if (pcConfiguration[key] && pcConfiguration[key].price !== undefined) {
-        totalPrice += pcConfiguration[key].price;
-      } else if (key === "rams" || key === "storages") {
-        pcConfiguration[key].map((part) => (totalPrice += part.price));
-      }
-    });
-
-    setTotalPrice(totalPrice);
   }, [pcConfiguration]);
 
   useEffect(() => {
@@ -59,10 +47,36 @@ const Build = ({ pcConfiguration, setPcConfiguration }) => {
   }
 
   useEffect(() => {
+    let totalPrice = 0;
+
+    Object.keys(pcConfiguration).forEach((key) => {
+      if (pcConfiguration[key] && pcConfiguration[key].prices !== undefined) {
+        totalPrice += pcConfiguration[key].prices[0].price;
+      } else if (key === "rams" || key === "storages") {
+        pcConfiguration[key].map(
+          (part) => (totalPrice += part.prices[0].price)
+        );
+      }
+    });
+
+    setTotalPrice(totalPrice);
     if (pcConfiguration !== PcConfiguration) {
       getInfo(pcConfiguration);
     }
-  }, []);
+  }, [
+    pcConfiguration.case,
+    pcConfiguration.cpu,
+    pcConfiguration.cpuCooling,
+    pcConfiguration.fans,
+    pcConfiguration.graphicCard,
+    pcConfiguration.id,
+    pcConfiguration.motherboard,
+    pcConfiguration.powerSupply,
+    pcConfiguration.rams,
+    pcConfiguration.storages,
+    pcConfiguration.user,
+    pcConfiguration.waterCooling,
+  ]);
 
   const handleNameChange = (event) => {
     const newName = event.target.value;
@@ -79,6 +93,8 @@ const Build = ({ pcConfiguration, setPcConfiguration }) => {
         .then((res) => {
           var data = res.data;
           localStorage.removeItem("localConfiugration");
+          setPcConfiguration(PcConfiguration);
+          console.log("test");
           setIsSaved(true);
           navigate(`/configurations/${data.id}`);
         })

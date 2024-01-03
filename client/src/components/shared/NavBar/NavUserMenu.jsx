@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
-export const NavUserMenu = () => {
+export const NavUserMenu = ({ loggedUser }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleMenuToggle = () => {
@@ -12,15 +12,20 @@ export const NavUserMenu = () => {
     setIsMenuOpen(false);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.reload(false);
+  };
+
   return (
-    <div className="dropdown">
+    <div className="dropdown dropdown-end">
       <summary
         tabIndex="0"
         role="button"
         className="btn btn-ghost flex"
         onClick={handleMenuToggle}
       >
-        Konto
+        {loggedUser ? loggedUser.nickName : "Konto"}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -37,18 +42,42 @@ export const NavUserMenu = () => {
       {isMenuOpen && (
         <ul
           tabIndex="0"
-          className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-max"
+          className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-200 rounded-box w-max"
         >
-          <li>
-            <NavLink to="/logowanie" onClick={handleMenuItemClick}>
-              Logowanie
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/rejestracja" onClick={handleMenuItemClick}>
-              Rejestracja
-            </NavLink>
-          </li>
+          {loggedUser ? (
+            <>
+              <li>
+                <NavLink to="/konto" onClick={handleMenuItemClick}>
+                  Konto
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  className="truncate"
+                  to="/konfiguracje/{id}"
+                  onClick={handleMenuItemClick}
+                >
+                  Twoje konfiguracje
+                </NavLink>
+              </li>
+              <li>
+                <button onClick={() => handleLogout()}>Wyloguj</button>
+              </li>
+            </>
+          ) : (
+            <>
+              <li>
+                <NavLink to="/logowanie" onClick={handleMenuItemClick}>
+                  Logowanie
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/rejestracja" onClick={handleMenuItemClick}>
+                  Rejestracja
+                </NavLink>
+              </li>
+            </>
+          )}
         </ul>
       )}
     </div>

@@ -1,25 +1,46 @@
-const PartPrices = ({ price }) => {
+const PartPrices = ({ prices }) => {
+  if (!prices || prices.length === 0) {
+    return null;
+  }
+
+  prices.sort((a, b) => a.price - b.price);
+  const minPrice = Math.min(...prices.map((item) => item.price));
+
   return (
     <div class="dropdown dropdown-right">
       <div tabindex="0" role="button" class="btn m-1">
-        {price} zł
+        <div className="">{minPrice} zł</div>
+        <img
+          width="20"
+          height="20"
+          src="https://img.icons8.com/material-sharp/24/forward.png"
+          alt="forward"
+          className="invert"
+        />
       </div>
       <ul
         tabindex="0"
-        class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+        class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-80"
       >
-        <li>
-          <p>
-            <a href="https://www.google.com/">Cena1 - Sklep1</a>
-          </p>
-        </li>
-        <li>
-          <p>
-            Cena2 - <a>Sklep2</a>
-          </p>
-        </li>
+        {prices.map((price) => (
+          <li key={price.id}>
+            <p>
+              <a href={price.link}>
+                {price.price === minPrice ? (
+                  <div className="badge badge-secondary badge-outline">
+                    {price.price} zł Najniższa cena
+                  </div>
+                ) : (
+                  <div className="badge badge-outline">{price.price} zł</div>
+                )}
+                {` : ${price.shopName} `}
+              </a>
+            </p>
+          </li>
+        ))}
       </ul>
     </div>
   );
 };
+
 export default PartPrices;

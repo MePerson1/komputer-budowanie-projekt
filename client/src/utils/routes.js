@@ -13,7 +13,6 @@ import pcParts from "./constants/pcParts";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import PcConfigurationDetails from "../components/PcConfigurations/PcConfigurationDetails";
-import { PcConfiguration } from "./models";
 
 const AppRoutes = ({
   pcConfiguration,
@@ -56,8 +55,7 @@ const AppRoutes = ({
         }
       />
     ))}
-    {/* TODO 
-    Add routes by name and then send id, and give partdeatil item bruh */}
+    {/* TODO: Add routes by name and then send id, and give partdeatil item bruh */}
     {pcParts.map((part) => (
       <Route
         path={`/parts/${part.key}/:id`}

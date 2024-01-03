@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router";
+import PartPrices from "../shared/PartPrices";
+import { DetailButton } from "../shared/DetailButton";
 
 const ComponentView = ({ pcPart, handleSetToNull, partKey, partType }) => {
   const navigate = useNavigate();
@@ -14,12 +16,12 @@ const ComponentView = ({ pcPart, handleSetToNull, partKey, partType }) => {
         <div className="flex">
           <div className="m-2">
             <p>Producent: {pcPart.producer}</p>
-            {pcPart.price !== undefined && (
+            {pcPart.prices !== undefined && (
               <p className="font-semibold">
-                Cena: {pcPart.price.toString().replace(".", ",")} zł
+                Cena: <PartPrices prices={pcPart.prices} />
               </p>
             )}
-            {pcPart.price === undefined && <p>Cena: N/A</p>}
+            {pcPart.prices === undefined && <p>Cena: N/A</p>}
           </div>
         </div>
       </div>
@@ -27,9 +29,11 @@ const ComponentView = ({ pcPart, handleSetToNull, partKey, partType }) => {
         <button onClick={handleChangePart} className="m-2 btn btn-outline">
           Zmień
         </button>
+
+        <DetailButton id={pcPart.id} partKey={partType.key} />
         <button
           onClick={() => handleSetToNull(partKey, pcPart.id)}
-          className="m-2 btn btn-sm bg-red-600 hover:bg-opacity-80 hover:bg-red-950"
+          className="m-2 btn btn-sm btn-outline btn-error "
         >
           Usuń
         </button>
