@@ -3,7 +3,7 @@ import { Logo } from "../Logo";
 import { NavUserMenu } from "./NavUserMenu";
 import { NavMenu } from "./NavMenu";
 
-const NavBar = () => {
+const NavBar = ({ loggedUser }) => {
   return (
     <>
       <nav class="navbar bg-base-300">
@@ -47,7 +47,7 @@ const NavBar = () => {
           </ul>
         </div>
         <div class="navbar-end">
-          <NavUserMenu />
+          <NavUserMenu loggedUser={loggedUser} />
         </div>
       </nav>
     </>

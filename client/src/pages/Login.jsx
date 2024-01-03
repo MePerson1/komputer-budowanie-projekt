@@ -11,7 +11,11 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [success, setSuccess] = useState("");
-  const [token, setToken] = useState("");
+
+  useEffect(() => {
+    const token = JSON.parse(localStorage.getItem("token"));
+    if (token !== null) navigate("/");
+  }, []);
 
   useEffect(() => {
     setErrorMessage("");
@@ -20,22 +24,19 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    try {
-      const response = await axios.post(
-        "http://localhost:5198/api/user/token",
-        {
-          email,
-          password,
-        }
-      );
-      //
-      setSuccess("Zalogowano pomyślnie!");
+    axios
+      .post("http://localhost:5198/api/user/token", { email, password })
+      .then((response) => {
+        console.log("Registration Successful", response.data);
+        setSuccess("Zalogowano pomyślnie!");
+        localStorage.setItem("token", JSON.stringify(response.data.token));
 
-      setTimeout(() => navigate("/"), 3000);
-    } catch (error) {
-      console.error("Registration Failed", error.response.data);
-      setErrorMessage(error.response.data);
-    }
+        window.location.reload(false);
+      })
+      .catch((error) => {
+        console.error("Registration Failed", error.response.data);
+        setErrorMessage(error.response.data);
+      });
   };
 
   return (
@@ -53,6 +54,9 @@ const Login = () => {
                 type="text"
                 placeholder="Podaj email"
                 class="w-full input input-bordered input-primary"
+                onChange={(e) => setEmail(e.target.value)}
+                value={email}
+                required
               />
             </div>
             <div>
@@ -63,9 +67,13 @@ const Login = () => {
                 type="password"
                 placeholder="Wprowadź hasło"
                 class="w-full input input-bordered input-primary"
+                autoComplete="off"
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+                required
               />
             </div>
-            <div className="flex">
+            <div className="flex justify-between ">
               <Link
                 to="/rejestracja"
                 class="text-xs  hover:underline hover:text-blue-600"

@@ -14,26 +14,24 @@ const Register = () => {
   useEffect(() => {
     setErrorMessage("");
   }, [nickname, email, password]);
-
+  useEffect(() => {
+    const token = JSON.parse(localStorage.getItem("token"));
+    if (token !== null) navigate("/");
+  }, []);
   const handleRegistration = async (e) => {
     e.preventDefault();
 
-    try {
-      const response = await axios.post("http://localhost:5198/api/user", {
-        nickname,
-        email,
-        password,
+    axios
+      .post("http://localhost:5198/api/user", { nickname, email, password })
+      .then((response) => {
+        console.log("Registration Successful", response.data);
+        setSuccess("Konto utworzone pomyślnie!");
+        setTimeout(() => navigate("/logowanie"), 3000);
+      })
+      .catch((error) => {
+        console.error("Registration Failed", error.response.data);
+        setErrorMessage(error.response.data);
       });
-
-      console.log("Registration Successful", response.data);
-
-      setSuccess("Konto utworzone pomyślnie!");
-
-      setTimeout(() => navigate("/logowanie"), 3000);
-    } catch (error) {
-      console.error("Registration Failed", error.response.data);
-      setErrorMessage(error.response.data);
-    }
   };
   // TODO:
   // - wyswietlanie error o hasle itd pod danymi rzeczami
