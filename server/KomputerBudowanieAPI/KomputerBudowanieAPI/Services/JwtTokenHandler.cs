@@ -11,12 +11,23 @@ namespace KomputerBudowanieAPI.Services
         private readonly string _issuer;
         private readonly string _audience;
         private readonly byte[] _secretKey;
+        private readonly TokenValidationParameters _validationParameters;
 
         public JwtTokenHandler(string issuer, string audience, string secretKey)
         {
             _issuer = issuer;
             _audience = audience;
             _secretKey = System.Text.Encoding.UTF8.GetBytes(secretKey);
+            _validationParameters = new TokenValidationParameters
+            {
+                ValidIssuer = _issuer,
+                ValidAudience = _audience,
+                IssuerSigningKey = new SymmetricSecurityKey(_secretKey),
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true
+            };
         }
 
         public JwtSecurityToken GenerateToken(IEnumerable<Claim> claims, DateTime lifeTime)
@@ -41,7 +52,7 @@ namespace KomputerBudowanieAPI.Services
 
             try
             {
-                var principal = tokenHandler.ValidateToken(token, GetTokenValidationParameters(), out var securityToken);
+                var principal = tokenHandler.ValidateToken(token, _validationParameters, out var securityToken);
 
                 return principal;
             }
@@ -53,16 +64,7 @@ namespace KomputerBudowanieAPI.Services
 
         public TokenValidationParameters GetTokenValidationParameters()
         {
-            return new TokenValidationParameters
-            {
-                ValidIssuer = _issuer,
-                ValidAudience = _audience,
-                IssuerSigningKey = new SymmetricSecurityKey(_secretKey),
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true
-            };
+            return _validationParameters;
         }
     }
 }
