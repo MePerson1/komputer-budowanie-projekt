@@ -1,5 +1,8 @@
 ﻿using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Models;
+using KomputerBudowanieAPI.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -15,10 +18,12 @@ namespace KomputerBudowanieAPI.Controllers
     {
         private readonly UserManager<ApplicationUser> _user;
         private readonly IConfiguration _configuration;
+        private readonly JwtTokenHandler _jwtTokenHandler;
 
-        public UserController(UserManager<ApplicationUser> user, IConfiguration configuration)
+        public UserController(UserManager<ApplicationUser> user, IConfiguration configuration, JwtTokenHandler jwtTokenHandler)
         {
             _user = user;
+            _jwtTokenHandler = jwtTokenHandler;
             _configuration = configuration;
         }
 
@@ -31,9 +36,10 @@ namespace KomputerBudowanieAPI.Controllers
             {
                 var claims = new List<Claim>()
                 {
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                    new Claim(JwtRegisteredClaimNames.Sub, user.Id),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                    new Claim(ClaimTypes.Name, user.UserName)
                 };
 
                 var tokenLiftime = DateTime.UtcNow.AddMinutes(60);
@@ -45,15 +51,9 @@ namespace KomputerBudowanieAPI.Controllers
                         tokenLiftime = DateTime.UtcNow.AddHours(12);
                     }
                 }
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));
-                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-                var token = new JwtSecurityToken(
-                    issuer: _configuration["Tokens:Issuer"],
-                    audience: _configuration["Tokens:Audience"],
-                    claims: claims,
-                    expires: tokenLiftime,
-                    signingCredentials: creds
-                );
+
+                var token = _jwtTokenHandler.GenerateToken(claims, tokenLiftime);
+
                 return Ok(
                     new
                     {
@@ -98,6 +98,28 @@ namespace KomputerBudowanieAPI.Controllers
             }
 
             return Ok();
+        }
+
+        [Authorize]
+        [HttpGet("userinfo")]
+        public async Task<IActionResult> GetUserInfo()
+        {
+            var user = HttpContext.User;
+            
+            var userInfo = new UserDto()
+            {
+                Id = GetClaimValue(user, ClaimTypes.NameIdentifier), //Tu zamiast JwtRegisteredClaimNames.Sub musi być ClaimTypes.NameIdentifier. Jakieś dziwactwo ASP.NET Core Identity.
+                NickName = GetClaimValue(user, ClaimTypes.Name),
+                Email = GetClaimValue(user, ClaimTypes.Email)
+            };
+             
+            return Ok(userInfo);
+        }
+
+        private string GetClaimValue(ClaimsPrincipal user, string claimType)
+        {
+            var claim = user.FindFirst(claimType);
+            return claim?.Value ?? "";
         }
     }
 }
