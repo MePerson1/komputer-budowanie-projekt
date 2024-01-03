@@ -12,7 +12,7 @@ const Configurations = () => {
 
   function getAllConfigurations() {
     axios
-      .get("http://localhost:5198/api/configuration")
+      .get("http://localhost:5198/api/configuration/public")
       .then((res) => {
         setPcConfigurations(res.data);
       })

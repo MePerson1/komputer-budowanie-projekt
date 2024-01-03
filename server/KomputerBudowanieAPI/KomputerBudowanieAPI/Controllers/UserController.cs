@@ -1,7 +1,5 @@
 ﻿using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Models;
-
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -42,7 +40,7 @@ namespace KomputerBudowanieAPI.Controllers
                 foreach (var role in await _user.GetRolesAsync(user))
                 {
                     claims.Add(new Claim(ClaimTypes.Role, role));
-                    if(role == "Scraper")
+                    if (role == "Scraper")
                     {
                         tokenLiftime = DateTime.UtcNow.AddHours(12);
                     }
@@ -78,7 +76,7 @@ namespace KomputerBudowanieAPI.Controllers
             {
                 return BadRequest("User with this email already exists!");
             }
-            existingUser = await _user.FindByNameAsync(dto.NickName);
+            existingUser = await _user.FindByNameAsync(dto.Nickname);
             if (existingUser != null)
             {
                 return BadRequest("User with this nickname already exists!");
@@ -86,7 +84,7 @@ namespace KomputerBudowanieAPI.Controllers
 
             var newUser = new ApplicationUser
             {
-                UserName = dto.NickName,
+                UserName = dto.Nickname,
                 Email = dto.Email,
             };
 
