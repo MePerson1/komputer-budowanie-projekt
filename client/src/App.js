@@ -35,6 +35,7 @@ function App() {
         <AppRoutes
           pcConfiguration={pcConfiguration}
           setPcConfiguration={setPcConfiguration}
+          loggedUser={user}
         />
       </main>
       <Footer />

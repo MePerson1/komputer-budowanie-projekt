@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 const Info = ({
   configurationInfo,
   totalPrice,
@@ -7,10 +8,11 @@ const Info = ({
   setPcConfiguration,
 }) => {
   const [budget, setBudget] = useState(0);
-
+  const isLogged = localStorage.getItem("token") ? true : false;
   const handleBudgetChange = (event) => {
     const newValue = event.target.value;
     const newBudget = parseFloat(newValue.replace(".", ","));
+
     if (!isNaN(newBudget)) {
       setBudget(newBudget);
       localStorage.setItem("localBudget", JSON.stringify(budget));
@@ -74,9 +76,17 @@ const Info = ({
                 onClick={() =>
                   document.getElementById("my_modal_5").showModal()
                 }
+                disabled={isLogged ? false : true}
               >
                 Zapisz
               </button>
+              {!isLogged && (
+                <div>
+                  <Link to="/rejestracja" className="text-warning link">
+                    Aby zapisać konfiguracje musisz posiadać konto!
+                  </Link>
+                </div>
+              )}
               <dialog
                 id="my_modal_5"
                 className="modal modal-bottom sm:modal-middle"
