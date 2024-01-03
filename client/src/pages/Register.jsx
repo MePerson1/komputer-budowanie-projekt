@@ -35,7 +35,9 @@ const Register = () => {
       setErrorMessage(error.response.data);
     }
   };
-
+  // TODO:
+  // - wyswietlanie error o hasle itd pod danymi rzeczami
+  // -walidacja po stronie klienta
   return (
     <>
       <div class="flex flex-col justify-center h-screen overflow-hidden ">
