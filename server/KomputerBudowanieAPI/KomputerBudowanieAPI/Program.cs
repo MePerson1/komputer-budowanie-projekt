@@ -5,6 +5,7 @@ using KomputerBudowanieAPI.Models;
 using KomputerBudowanieAPI.Repository;
 using KomputerBudowanieAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -57,6 +58,14 @@ public class Program
         builder.Services.AddScoped<ICompatibilityPcConfigurationService, CompatibilityPcConfigurationService>();
         builder.Services.AddScoped<ICompatibilityDataFilterService, CompatibilityDataFilterService>();
 
+        var issuer = builder.Configuration["Tokens:Issuer"];
+        var audience = builder.Configuration["Tokens:Audience"];
+        var key = builder.Configuration["Tokens:Key"];
+
+        var jwtTokenHandler = new JwtTokenHandler(issuer, audience, key);
+
+        builder.Services.AddSingleton(jwtTokenHandler);
+
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
 
@@ -75,17 +84,17 @@ public class Program
 
             opt.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
                 {
-                    Type=ReferenceType.SecurityScheme,
-                    Id="Bearer"
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type=ReferenceType.SecurityScheme,
+                            Id="Bearer"
+                        }
+                    },
+                    new string[]{}
                 }
-            },
-            new string[]{}
-        }
             });
         });
 
@@ -94,21 +103,16 @@ public class Program
             .AddCookie()
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidIssuer = builder.Configuration["Tokens:Issuer"],
-                    ValidAudience = builder.Configuration["Tokens:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Tokens:Key"])),
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true
-                };
+                options.TokenValidationParameters = jwtTokenHandler.GetTokenValidationParameters();
             }
         );
 
         builder.Services.AddAuthorization(options =>
         {
+            options.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
+                .RequireAuthenticatedUser()
+                .Build();
+
             options.AddPolicy(IdentityData.AdminPolicyName, policy =>
                 policy
                 .RequireRole(IdentityData.AdminUserClaimName)
