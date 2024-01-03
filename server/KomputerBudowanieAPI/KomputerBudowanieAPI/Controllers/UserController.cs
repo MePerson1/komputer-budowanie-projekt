@@ -64,7 +64,7 @@ namespace KomputerBudowanieAPI.Controllers
             {
                 return BadRequest("User with this email already exists!");
             }
-            existingUser = await _user.FindByNameAsync(dto.Nickname);
+            existingUser = await _user.FindByNameAsync(dto.NickName);
             if (existingUser != null)
             {
                 return BadRequest("User with this nickname already exists!");
@@ -72,7 +72,7 @@ namespace KomputerBudowanieAPI.Controllers
 
             var newUser = new ApplicationUser
             {
-                UserName = dto.Nickname,
+                UserName = dto.NickName,
                 Email = dto.Email,
             };
 
