@@ -36,9 +36,9 @@ namespace KomputerBudowanieAPI.Controllers
             {
                 var claims = new List<Claim>()
                 {
+                    new Claim(JwtRegisteredClaimNames.Sub, user.Id),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                     new Claim(JwtRegisteredClaimNames.Sub, user.Id),
                     new Claim(ClaimTypes.Name, user.UserName)
                 };
 
