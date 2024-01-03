@@ -113,7 +113,7 @@ namespace KomputerBudowanieAPI.Controllers
         {
             try
             {
-                if (newPrices == null || newPrices.Prices == null)
+                if (newPrices is null || newPrices.Prices is null)
                 {
                     return BadRequest("Invalid or empty price data.");
                 }
@@ -122,7 +122,7 @@ namespace KomputerBudowanieAPI.Controllers
 
                 if (waterCooling is null)
                 {
-                    return BadRequest("Case with this ID does not exist.");
+                    return BadRequest("WaterCooling with this ID does not exist.");
                 }
 
                 foreach (var price in newPrices.Prices)

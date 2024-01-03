@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import PartPrices from "../shared/PartPrices";
+import { DetailButton } from "../shared/DetailButton";
 
 const ComponentRow = ({
   part,
@@ -27,6 +28,10 @@ const ComponentRow = ({
         break;
       case "cpu-cooling":
         setPcConfiguration({ ...pcConfiguration, cpuCooling: part });
+        navigate("/build");
+        break;
+      case "water-cooling":
+        setPcConfiguration({ ...pcConfiguration, waterCooling: part });
         navigate("/build");
         break;
       case "case":
@@ -63,12 +68,16 @@ const ComponentRow = ({
         <td>{part.name}</td>
         <td>{part.producer}</td>
         <td>
-          <PartPrices price={part.price} />
+          <PartPrices prices={part.prices} />
         </td>
-        <td>
-          <button onClick={handleAddPart} className="btn btn-primary">
-            +
+        <td className="flex-col">
+          <button
+            onClick={handleAddPart}
+            className="btn btn-outline btn-primary mr-2"
+          >
+            Dodaj
           </button>
+          <DetailButton id={part.id} />
         </td>
       </tr>
     </>

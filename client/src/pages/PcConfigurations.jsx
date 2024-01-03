@@ -5,14 +5,14 @@ import axios from "axios";
 import PcConfigurationCard from "../components/PcConfigurations/PcConfigurationCard";
 
 const Configurations = () => {
-  const [pcConfigrations, setPcConfigurations] = useState([]);
+  const [pcConfigurations, setPcConfigurations] = useState([]);
   useEffect(() => {
     getAllConfigurations();
   }, []);
 
   function getAllConfigurations() {
     axios
-      .get("http://localhost:5198/api/configuration")
+      .get("http://localhost:5198/api/configuration/public")
       .then((res) => {
         setPcConfigurations(res.data);
       })
@@ -20,43 +20,31 @@ const Configurations = () => {
   }
 
   return (
-    <div className="flex flex-col">
+    <>
       <Topic title="Konfiguracje" />
-      <div>
-        <div className="flex">
-          <div className="w-1/5 bg-base-300 border border-base-100">
-            <div>
-              <p>Filtry</p>
-              <div>Producent: </div>
-              <div>Rozmiar: </div>
-            </div>
-          </div>
-          <div>
-            <div className="flex">
-              <button className="btn">Sortuj</button>
-              <div>
-                <input
-                  type="text"
-                  placeholder="Szukaj"
-                  class="input input-bordered w-full max-w-xs"
-                />
-              </div>
-            </div>
-
-            <div className="overflow-auto border border-4 border-base-200 flex flex-wrap ">
-              {pcConfigrations.length !== 0 &&
-                pcConfigrations.map((pcConfigration, index) => (
-                  <PcConfigurationCard pcConfigration={pcConfigration} />
-                ))}
-            </div>
-            <div className="flex justify-center content-center  animate-bounce p-5">
-              <span class="loading loading-spinner loading-lg"></span>
-              <p className="content-cent p-5 text-3xl">Ładowanie</p>
-            </div>
+      <div className="flex flex-col justify-center items-center p-4">
+        <div className="flex flex-row justify-between mb-4 w-full items-start">
+          <button className="btn mb-2 sm:mb-0">Sortuj</button>
+          <div className="w-full sm:w-auto flex">
+            <input
+              type="text"
+              placeholder="Szukaj"
+              className="input input-bordered w-48 md:w-64 max-w-xs"
+            />
+            <button className="btn btn-info">Szukaj</button>
           </div>
         </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
+          {pcConfigurations.length !== 0 &&
+            pcConfigurations.map((pcConfiguration, index) => (
+              <div key={index} className="p-2">
+                <PcConfigurationCard pcConfiguration={pcConfiguration} />
+              </div>
+            ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -43,7 +43,7 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   return (
     <div>
       <Topic title={partType.namePL} />
-      <Breadcrumbs />
+
       <ReturnButton />
       <div className="flex ml-1 mr-2">
         <div className=" form-control ">
