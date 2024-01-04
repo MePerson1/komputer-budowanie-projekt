@@ -35,7 +35,7 @@ const Register = () => {
   };
   // TODO:
   // - wyswietlanie error o hasle itd pod danymi rzeczami
-  // -walidacja po stronie klienta
+  // - walidacja po stronie klienta
   return (
     <>
       <div class="flex flex-col justify-center h-screen overflow-hidden ">
