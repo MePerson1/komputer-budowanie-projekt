@@ -54,6 +54,7 @@ namespace KomputerBudowanieAPI.Controllers
 
 
         // GET api/users/5/configurations
+        [Authorize]
         [Route("users/{userId}")]
         [Authorize]
         [HttpGet]

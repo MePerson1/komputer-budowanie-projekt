@@ -26,7 +26,7 @@ function App() {
         .catch((err) => {
           console.log(err);
           localStorage.removeItem("token");
-          localStorage.removeItem("user");
+          localStorage.removeItem("loggedUser");
         });
     }
   }, []);

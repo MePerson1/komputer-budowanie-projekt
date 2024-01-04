@@ -14,6 +14,8 @@ export const NavUserMenu = ({ loggedUser }) => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("loggedUser");
+
     window.location.reload(false);
   };
 
