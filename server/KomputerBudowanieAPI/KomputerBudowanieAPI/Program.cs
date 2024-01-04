@@ -33,7 +33,9 @@ public class Program
             options.Password.RequiredLength = 8;
             options.Password.RequireDigit = true;
             options.Password.RequireNonAlphanumeric = true;
+            options.User.RequireUniqueEmail = true;
         })
+        .AddErrorDescriber<CustomIdentityErrorDescriber>()
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<KomBuildDbContext>();
 
