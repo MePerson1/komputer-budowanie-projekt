@@ -1,24 +1,20 @@
-import api_request from "./request";
+import axios from "axios";
 
+export function getUserInfo(token) {
+  if (token !== null) {
+    const config = { headers: { Authorization: `Bearer ${token}` } };
 
-export const register = async (data) => {
-    try {
-        return await api_request.post(`/authController/register`, data);
-        } catch (exception) {
-        return {
-            error: true,
-            exception,
-    };
-    }
-};
-  
-export const login = async (data) => {
-    try {
-        return await api_request.post(`/authController/login`, data);
-    } catch (exception) {
-        return {
-            error: true,
-            exception,
-    };
-    }
-};
+    return axios
+      .get("http://localhost:5198/api/user/userInfo", config)
+      .then((response) => {
+        console.log(response);
+        return response.data;
+      })
+      .catch((err) => {
+        console.log(err);
+        throw err;
+      });
+  } else {
+    return false;
+  }
+}

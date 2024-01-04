@@ -11,7 +11,8 @@ import Topic from "../components/shared/Topic";
 import { Alert } from "../components/shared/Alert";
 import { NameInput } from "../components/Build/NameInput";
 import { Navigate, useNavigate } from "react-router-dom";
-const Build = ({ pcConfiguration, setPcConfiguration }) => {
+import { getUserInfo } from "../utils/apiRequests";
+const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
   const navigate = useNavigate();
   const [totalPrice, setTotalPrice] = useState(0.0);
   const [isSaved, setIsSaved] = useState(false);
@@ -85,8 +86,13 @@ const Build = ({ pcConfiguration, setPcConfiguration }) => {
 
   async function savePcConfiguration(pcConfiguration) {
     if (pcConfiguration !== null && pcConfiguration.name !== "") {
-      console.log(pcConfiguration);
       var pcConfigurationIds = mapPcPartsToIds(pcConfiguration);
+      const token = JSON.parse(localStorage.getItem("token"));
+      const loggedUser = await getUserInfo(token);
+      console.log(loggedUser);
+      if (token && loggedUser) {
+        pcConfigurationIds.userId = loggedUser.id;
+      }
       console.log(pcConfigurationIds);
       await axios
         .post("http://localhost:5198/api/configuration", pcConfigurationIds)

@@ -61,6 +61,7 @@ namespace KomputerBudowanieAPI.Repository
                     .ThenInclude(ram => ram.Ram)
                 .Include(pc => pc.PcConfigurationStorages)
                     .ThenInclude(storage => storage.Storage)
+                .Include(pc => pc.User)
                 .ToListAsync();
         }
 
@@ -158,7 +159,7 @@ namespace KomputerBudowanieAPI.Repository
             pcConfiguration.GraphicCard = await _context.GraphicCards.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.GraphicCardId);
             pcConfiguration.PowerSupply = await _context.PowerSupplies.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.PowerSuplyId);
             pcConfiguration.WaterCooling = await _context.WaterCoolings.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.WaterCoolingId);
-
+            pcConfiguration.User = await _context.Users.FirstOrDefaultAsync(x => x.Id == dto.UserId);
 
             var storages = await _context.Storages.Include(s => s.Prices)
                 .Where(x => dto.StorageIds != null && dto.StorageIds.Contains(x.Id))

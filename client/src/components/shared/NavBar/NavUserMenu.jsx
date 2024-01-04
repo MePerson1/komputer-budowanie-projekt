@@ -54,7 +54,7 @@ export const NavUserMenu = ({ loggedUser }) => {
               <li>
                 <NavLink
                   className="truncate"
-                  to="/konfiguracje/{id}"
+                  to="/twoje-konfiguracje"
                   onClick={handleMenuItemClick}
                 >
                   Twoje konfiguracje

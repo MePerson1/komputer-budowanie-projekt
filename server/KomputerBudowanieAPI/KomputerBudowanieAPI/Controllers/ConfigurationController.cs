@@ -55,6 +55,7 @@ namespace KomputerBudowanieAPI.Controllers
 
         // GET api/users/5/configurations
         [Route("users/{userId}")]
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Get(string userId)
         {

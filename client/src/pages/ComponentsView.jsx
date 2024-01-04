@@ -28,7 +28,7 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
 
   async function getFilteredParts(partKey) {
     var pcConfigurationIds = mapPcPartsToIds(pcConfiguration);
-
+    console.log(pcConfigurationIds);
     await axios
       .post(
         `http://localhost:5198/api/${partKey}/compatible`,

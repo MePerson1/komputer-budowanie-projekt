@@ -1,3 +1,5 @@
+import { getUserInfo } from "../apiRequests";
+
 const mapPcPartsToIds = (pcConfiguration) => {
   var pcConfigurationIds = {
     name: pcConfiguration.name,
@@ -19,7 +21,7 @@ const mapPcPartsToIds = (pcConfiguration) => {
     powerSuplyId: pcConfiguration.powerSupply
       ? pcConfiguration.powerSupply.id
       : 0,
-    userId: 0,
+    userId: "",
     storageIds: pcConfiguration.storages
       ? pcConfiguration.storages.map((storage) => storage.id)
       : [],
@@ -28,7 +30,7 @@ const mapPcPartsToIds = (pcConfiguration) => {
       : [],
     fanIds: [],
   };
-  console.log(pcConfigurationIds);
+
   return pcConfigurationIds;
 };
 

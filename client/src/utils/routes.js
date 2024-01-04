@@ -13,11 +13,13 @@ import pcParts from "./constants/pcParts";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import PcConfigurationDetails from "../components/PcConfigurations/PcConfigurationDetails";
+import { UserConfigurations } from "../pages/UserConfiguration";
 
 const AppRoutes = ({
   pcConfiguration,
   setPcConfiguration,
   configurationInfo,
+  loggedUser,
 }) => (
   <Routes>
     <Route path="/" exect element={<Home />} />
@@ -29,6 +31,7 @@ const AppRoutes = ({
           pcConfiguration={pcConfiguration}
           setPcConfiguration={setPcConfiguration}
           configurationInfo={configurationInfo}
+          loggedUser={loggedUser}
         />
       }
     />
@@ -39,6 +42,11 @@ const AppRoutes = ({
       path="configurations/:id"
       exect
       element={<PcConfigurationDetails />}
+    />
+    <Route
+      path="twoje-konfiguracje"
+      exect
+      element={<UserConfigurations loggedUser={loggedUser} />}
     />
     <Route path="logowanie" exect element={<Login />} />
     <Route path="rejestracja" exect element={<Register />} />
