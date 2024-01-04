@@ -33,23 +33,20 @@ namespace KomputerBudowanieAPI.Controllers
         {
             var user = await _user.FindByEmailAsync(dto.Email);
             var result = await _user.CheckPasswordAsync(user, dto.Password);
-            if (result)
+            if (!result)
             {
-                //var token = await GenerateTokenForUserWithClaims(user);
-                var token = _jwtTokenHandler.GenerateTokenForUserWithClaims(user, await _user.GetRolesAsync(user));
+                return BadRequest("Niepoprawnie podane hasło lub email.");
+            }
 
-                return Ok(
-                    new
-                    {
-                        token = new JwtSecurityTokenHandler().WriteToken(token),
-                        expiration = token.ValidTo
-                    }
-                );
-            }
-            else
-            {
-                return BadRequest("Niepoprawnie podane hasło lub email!");
-            }
+            var token = _jwtTokenHandler.GenerateTokenForUserWithClaims(user, await _user.GetRolesAsync(user));
+
+            return Ok(
+                new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    expiration = token.ValidTo
+                }
+            );
         }
 
         [HttpPost]
@@ -62,17 +59,17 @@ namespace KomputerBudowanieAPI.Controllers
             var existingUser = await _user.FindByEmailAsync(dto.Email);
             if (existingUser != null)
             {
-                return BadRequest("User with this email already exists!");
+                return BadRequest("Użytkownik z tym emailem już istnieje.");
             }
-            existingUser = await _user.FindByNameAsync(dto.NickName);
+            existingUser = await _user.FindByNameAsync(dto.Nickname);
             if (existingUser != null)
             {
-                return BadRequest("User with this nickname already exists!");
+                return BadRequest("Użytkownik z taką nazwą już istnieje.");
             }
 
             var newUser = new ApplicationUser
             {
-                UserName = dto.NickName,
+                UserName = dto.Nickname,
                 Email = dto.Email,
             };
 
@@ -80,7 +77,7 @@ namespace KomputerBudowanieAPI.Controllers
 
             if (!result.Succeeded)
             {
-                return BadRequest(result);
+                return BadRequest(result.Errors);
             }
             //var user = await _user.FindByEmailAsync(dto.Email);
             //await _user.AddToRoleAsync(user, "Admin");
@@ -108,7 +105,7 @@ namespace KomputerBudowanieAPI.Controllers
             var userInfo = new UserDto()
             {
                 Id = GetClaimValue(user, ClaimTypes.NameIdentifier), //Tu zamiast JwtRegisteredClaimNames.Sub musi być ClaimTypes.NameIdentifier. Jakieś dziwactwo ASP.NET Core Identity.
-                NickName = GetClaimValue(user, ClaimTypes.Name),
+                Nickname = GetClaimValue(user, ClaimTypes.Name),
                 Email = GetClaimValue(user, ClaimTypes.Email)
             };
              
@@ -129,14 +126,14 @@ namespace KomputerBudowanieAPI.Controllers
 
             if (user == null)
             {
-                return NotFound("Użytkownik nieznaleziony!");
+                return NotFound("Nie udało się znaleźć użytkownika.");
             }
 
             var changePasswordResult = await _user.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
 
             if (changePasswordResult.Succeeded)
             {
-                return Ok("Hasło zostało zmienione!");
+                return Ok("Hasło zostało zmienione.");
             }
             else
             {
@@ -157,14 +154,14 @@ namespace KomputerBudowanieAPI.Controllers
 
             if (user == null)
             {
-                return NotFound("Użytkownik nieznaleziony!");
+                return NotFound("Nie udało się znaleźć użytkownika.");
             }
 
             var isPasswordValid = await _user.CheckPasswordAsync(user, dto.CurrentPassword);
 
             if (!isPasswordValid)
             {
-                return BadRequest("Niepoprawne hasło!");
+                return BadRequest("Niepoprawne hasło.");
             }
 
             user.Email = dto.NewEmail;
@@ -174,7 +171,7 @@ namespace KomputerBudowanieAPI.Controllers
 
             if (updateResult.Succeeded)
             {
-                return Ok("Email został zmieniony!");
+                return Ok("Email został zmieniony.");
             }
             else
             {
