@@ -1,5 +1,5 @@
 export const validateNickname = (nickname) => {
-  return nickname.length > 2 && nickname.length < 13;
+  return nickname.length > 2 && nickname.length < 32;
 };
 
 export const validateEmail = (email) => {
