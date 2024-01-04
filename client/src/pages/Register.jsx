@@ -3,43 +3,115 @@ import { Link } from "react-router-dom";
 import Topic from "../components/shared/Topic";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import {
+  validateEmail,
+  validateNickname,
+  validatePassword,
+  validateRegisterForm,
+} from "../utils/validators";
 
 const Register = () => {
   const navigate = useNavigate();
-  const [nickname, setNickname] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+
+  const initialValues = {
+    nickname: "",
+    email: "",
+    password: "",
+  };
+
+  const validationInfo = [
+    {
+      name: "email",
+      isValid: true,
+      info: "Podano nie poprawny email!",
+    },
+    {
+      name: "nickname",
+      isValid: true,
+      info: "Podana nazwa jest nie poprawna. Poprawna nazwa powinna składać się z od 3 do 15 znaków.",
+    },
+    {
+      name: "password",
+      isValid: true,
+      info: "Podane hasło jest nie poprawne. Odopowiednie hasło powinno składać się z minimum 8 znaków, zawierać 1 wielką literę, 1 cyfrę oraz 1 znak specjalny.",
+    },
+  ];
+  const [registerValues, setRegisterValues] = useState(initialValues);
+  const [validationMessages, setValidationMessages] = useState(validationInfo);
   const [errorMessage, setErrorMessage] = useState("");
   const [success, setSuccess] = useState("");
+
   useEffect(() => {
     setErrorMessage("");
-  }, [nickname, email, password]);
+  }, [registerValues]);
+
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem("token"));
     if (token !== null) navigate("/");
   }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setRegisterValues({ ...registerValues, [name]: value });
+  };
+
+  const handleValidation = () => {
+    const updatedValidationMessages = validationInfo.map((field) => {
+      const { name } = field;
+      const value = registerValues[name];
+      return {
+        ...field,
+        isValid:
+          name === "nickname"
+            ? validateNickname(value)
+            : name === "email"
+            ? validateEmail(value)
+            : validatePassword(value),
+      };
+    });
+
+    setValidationMessages(updatedValidationMessages);
+
+    return updatedValidationMessages.every((field) => field.isValid);
+  };
+
   const handleRegistration = async (e) => {
     e.preventDefault();
 
-    axios
-      .post("http://localhost:5198/api/user", { nickname, email, password })
-      .then((response) => {
-        console.log("Registration Successful", response.data);
-        setSuccess("Konto utworzone pomyślnie!");
-        setTimeout(() => navigate("/logowanie"), 3000);
-      })
-      .catch((error) => {
-        console.error("Registration Failed", error.response.data);
-        setErrorMessage(error.response.data);
-      });
+    const isFormValid = handleValidation();
+
+    console.log(validationMessages[1].isValid);
+
+    if (isFormValid) {
+      axios
+        .post("http://localhost:5198/api/user", { registerValues })
+        .then((response) => {
+          console.log("Registration Successful", response.data);
+          setSuccess("Konto utworzone pomyślnie!");
+          setTimeout(() => navigate("/logowanie"), 3000);
+        })
+        .catch((error) => {
+          if (error.response) {
+            console.error("Registration Failed", error.response);
+            setErrorMessage(error.response.data.errors);
+            console.log(error.response.data);
+          } else if (error.request) {
+            console.log(error.request);
+            setErrorMessage("Coś poszło nie tak :(");
+          } else {
+            console.log("Error", error.message);
+            setErrorMessage("Coś poszło nie tak :(");
+          }
+          console.log(error.config);
+        });
+    }
   };
-  // TODO:
-  // - wyswietlanie error o hasle itd pod danymi rzeczami
-  // - walidacja po stronie klienta
   return (
     <>
       <div class="flex flex-col justify-center h-screen overflow-hidden ">
         <Topic title="Rejestracja" />
+        <prev>{JSON.stringify(registerValues)}</prev>
+        <prev>{JSON.stringify(validationMessages)}</prev>
         {success && (
           <div role="alert" class="alert alert-success">
             <svg
@@ -72,10 +144,14 @@ const Register = () => {
                 placeholder="Podaj nazwę"
                 class="w-full input input-bordered input-primary"
                 autoComplete="off"
-                onChange={(e) => setNickname(e.target.value)}
-                value={nickname}
+                name="nickname"
+                onChange={handleChange}
+                value={registerValues.nickname}
                 required
               />
+              {!validationMessages[1].isValid && (
+                <div>{validationMessages[1].info}</div>
+              )}
             </div>
             <div>
               <label class="label">
@@ -86,10 +162,14 @@ const Register = () => {
                 placeholder="Adres Email"
                 class="w-full input input-bordered input-primary"
                 autoComplete="off"
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
+                name="email"
+                onChange={handleChange}
+                value={registerValues.email}
                 required
               />
+              {!validationMessages[0].isValid && (
+                <div>{validationMessages[0].info}</div>
+              )}
             </div>
             <div>
               <label class="label">
@@ -100,10 +180,14 @@ const Register = () => {
                 placeholder="Wprowadź hasło"
                 class="w-full input input-bordered input-primary"
                 autoComplete="off"
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
+                name="password"
+                onChange={handleChange}
+                value={registerValues.password}
                 required
               />
+              {!validationMessages[2].isValid && (
+                <div>{validationMessages[2].info}</div>
+              )}
             </div>
             <Link
               to="/logowanie"
