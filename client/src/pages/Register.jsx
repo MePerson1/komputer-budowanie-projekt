@@ -84,7 +84,7 @@ const Register = () => {
 
     if (isFormValid) {
       axios
-        .post("http://localhost:5198/api/user", { registerValues })
+        .post("http://localhost:5198/api/user", registerValues)
         .then((response) => {
           console.log("Registration Successful", response.data);
           setSuccess("Konto utworzone pomyślnie!");
@@ -93,7 +93,7 @@ const Register = () => {
         .catch((error) => {
           if (error.response) {
             console.error("Registration Failed", error.response);
-            setErrorMessage(error.response.data.errors);
+            setErrorMessage(error.response.data);
             console.log(error.response.data);
           } else if (error.request) {
             console.log(error.request);
@@ -110,8 +110,6 @@ const Register = () => {
     <>
       <div class="flex flex-col justify-center h-screen overflow-hidden ">
         <Topic title="Rejestracja" />
-        <prev>{JSON.stringify(registerValues)}</prev>
-        <prev>{JSON.stringify(validationMessages)}</prev>
         {success && (
           <div role="alert" class="alert alert-success">
             <svg
@@ -150,7 +148,7 @@ const Register = () => {
                 required
               />
               {!validationMessages[1].isValid && (
-                <div>{validationMessages[1].info}</div>
+                <p className="text-error">{validationMessages[1].info}</p>
               )}
             </div>
             <div>
@@ -168,7 +166,7 @@ const Register = () => {
                 required
               />
               {!validationMessages[0].isValid && (
-                <div>{validationMessages[0].info}</div>
+                <p className="text-error">{validationMessages[0].info}</p>
               )}
             </div>
             <div>
@@ -186,7 +184,7 @@ const Register = () => {
                 required
               />
               {!validationMessages[2].isValid && (
-                <div>{validationMessages[2].info}</div>
+                <p className="text-error">{validationMessages[2].info}</p>
               )}
             </div>
             <Link

@@ -25,7 +25,7 @@ export const NavUserMenu = ({ loggedUser }) => {
         className="btn btn-ghost flex"
         onClick={handleMenuToggle}
       >
-        {loggedUser ? loggedUser.nickName : "Konto"}
+        {loggedUser ? loggedUser.nickname : "Konto"}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
