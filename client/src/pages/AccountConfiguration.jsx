@@ -55,8 +55,10 @@ export const AccountConfiguration = () => {
   }, []);
   const changeEmail = async (e) => {
     e.preventDefault();
-    setValidationMessages(handleValidation(changeEmailValues));
-    const isFormValid = handleIsValid(validationMessages);
+    const validated = handleValidation(changeEmailValues);
+    setValidationMessages(validated);
+    const isFormValid = handleIsValid(validated);
+    console.log(isFormValid);
     if (
       changeEmailValues.email &&
       changeEmailValues.currentPassword &&
@@ -67,7 +69,10 @@ export const AccountConfiguration = () => {
       axios
         .put(
           "http://localhost:5198/api/user/changeemail",
-          changeEmailValues,
+          {
+            newEmail: changeEmailValues.email,
+            currentPassword: changeEmailValues.currentPassword,
+          },
           config
         )
         .then((response) => {
@@ -95,19 +100,24 @@ export const AccountConfiguration = () => {
 
   const changePassword = async (e) => {
     e.preventDefault();
-    setValidationMessages(handleValidation(changePasswordValues));
-    const isFormValid = handleIsValid(validationMessages);
+    const validated = handleValidation(changePasswordValues);
+    setValidationMessages(validated);
+    const isFormValid = handleIsValid(validated);
     if (
       changePasswordValues.password &&
       changePasswordValues.currentPassword &&
       token &&
       isFormValid
     ) {
+      console.log("test");
       const config = getTokenConfig(token);
       axios
         .put(
           "http://localhost:5198/api/user/changepassword",
-          changePasswordValues,
+          {
+            newPassword: changePasswordValues.password,
+            currentPassword: changePasswordValues.currentPassword,
+          },
           config
         )
         .then((response) => {
