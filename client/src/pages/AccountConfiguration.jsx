@@ -123,10 +123,10 @@ export const AccountConfiguration = () => {
 
   return (
     <>
-      {loggedUser && (
+      {loggedUser ? (
         <div>
           <Topic title={"Witaj " + loggedUser.nickname + "!"} />
-          <div className="bg-base-200 border m-2 p-5">
+          <div className="border w-full p-6 m-auto rounded-md shadow-md lg:max-w-lg border-secondary bg-base-200">
             <div className="bg-base-300 ">
               <table className="text-xl">
                 <tr>
@@ -138,6 +138,11 @@ export const AccountConfiguration = () => {
                   <td className="p-2">{loggedUser.email}</td>
                 </tr>
               </table>
+              <div className="flex justify-end">
+                <Link className="btn btn-info" to="/twoje-konfiguracje">
+                  Twoje konfiguracje
+                </Link>
+              </div>
             </div>
             <div className="divider" />
             <form onSubmit={changeEmail}>
@@ -236,10 +241,9 @@ export const AccountConfiguration = () => {
               </div>
             </form>
           </div>
-          <Link className="btn btn-info" to="/twoje-konfiguracje">
-            Twoje konfiguracje
-          </Link>
         </div>
+      ) : (
+        <div>Ładowanie</div>
       )}
     </>
   );
