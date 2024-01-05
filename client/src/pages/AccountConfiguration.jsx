@@ -10,6 +10,7 @@ import {
   handleValidation,
   validationInfo,
 } from "../utils/validators";
+import { ErrorAlert } from "../components/shared/ErrorAlert";
 
 export const AccountConfiguration = () => {
   const navigate = useNavigate();
@@ -190,6 +191,12 @@ export const AccountConfiguration = () => {
                   </span>
                 </div>
               )}
+              {emailChangeError && (
+                <ErrorAlert
+                  errorMessage={emailChangeError}
+                  extraMessage="Zmiana adresu email nie powiodła się!"
+                />
+              )}
               <div>
                 <TextInput
                   type="text"
@@ -266,6 +273,12 @@ export const AccountConfiguration = () => {
                     Zapisz
                   </button>
                 </div>
+                {passwordChangeError && (
+                  <ErrorAlert
+                    errorMessage={passwordChangeError}
+                    extraMessage="Zmiana hasła nie powiodła się!"
+                  />
+                )}
               </div>
             </form>
           </div>
