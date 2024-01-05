@@ -2,19 +2,124 @@ import { useEffect, useState } from "react";
 import Topic from "../components/shared/Topic";
 import { TextInput } from "../components/shared/TextInput";
 import { Link } from "react-router-dom";
+import { getTokenConfig } from "../utils/apiRequests";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const AccountConfiguration = () => {
+  const navigate = useNavigate();
   const [loggedUser, setLoggedUser] = useState(null);
-  const [newEmail, setNewEmail] = useState("");
-  const [newPassword, setNewPassword] = useState("");
+
+  const [changeEmailValues, setChangeEmailValues] = useState({
+    newEmail: "",
+    currentPassword: "",
+  });
+  const [emailChangeSucceed, setEmailChangeSuccseded] = useState();
+  const [emailChangeError, setEmailChangeError] = useState("");
+
+  const [changePasswordValues, setChangePasswordValues] = useState({
+    newPassword: "",
+    currentPassword: "",
+  });
+
+  const [passwordChangeSucceed, setPasswordChangeSuccseded] = useState();
+  const [passwordChangeError, setPasswordChangeError] = useState("");
+  const [token, setToken] = useState("");
+
+  const handleChangeEmailValues = (e) => {
+    const { name, value } = e.target;
+
+    setChangeEmailValues({ ...changeEmailValues, [name]: value });
+  };
+  const handleChangePaswordValues = (e) => {
+    const { name, value } = e.target;
+    setChangePasswordValues({ ...changePasswordValues, [name]: value });
+  };
 
   useEffect(() => {
-    var token = JSON.parse(localStorage.getItem("token"));
+    setToken(JSON.parse(localStorage.getItem("token")));
     setLoggedUser(JSON.parse(localStorage.getItem("loggedUser")));
+    if (
+      !JSON.parse(localStorage.getItem("token")) ||
+      !JSON.parse(localStorage.getItem("loggedUser"))
+    ) {
+      navigate("/logowanie");
+    }
   }, []);
-  async function changeEmail() {}
+  const changeEmail = async (e) => {
+    e.preventDefault();
 
-  async function changePassword() {}
+    if (
+      changeEmailValues.newEmail &&
+      changeEmailValues.currentPassword &&
+      token
+    ) {
+      const config = getTokenConfig(token);
+      axios
+        .put(
+          "http://localhost:5198/api/user/changeemail",
+          changeEmailValues,
+          config
+        )
+        .then((response) => {
+          console.log(response);
+          setEmailChangeSuccseded(response.data);
+          localStorage.removeItem("token");
+          localStorage.removeItem("loggedUser");
+          setTimeout(function () {
+            window.location.reload();
+          }, 5000);
+        })
+        .catch((err) => {
+          if (err.response && err.response.status === 401) {
+            console.log("Unauthorized access!");
+            localStorage.removeItem("token");
+            localStorage.removeItem("loggedUser");
+            window.location.reload();
+          } else {
+            console.log("Error occurred:", err);
+            setEmailChangeError(err);
+          }
+        });
+    }
+  };
+
+  const changePassword = async (e) => {
+    e.preventDefault();
+    if (
+      changePasswordValues.newPassword &&
+      changePasswordValues.currentPassword &&
+      token
+    ) {
+      const config = getTokenConfig(token);
+      axios
+        .put(
+          "http://localhost:5198/api/user/changepassword",
+          changePasswordValues,
+          config
+        )
+        .then((response) => {
+          console.log(response);
+          setPasswordChangeSuccseded(response.data);
+          localStorage.removeItem("token");
+          localStorage.removeItem("loggedUser");
+          setTimeout(function () {
+            window.location.reload();
+          }, 5000);
+        })
+        .catch((err) => {
+          if (err.response && err.response.status === 401) {
+            console.log("Unauthorized access!");
+            localStorage.removeItem("token");
+            localStorage.removeItem("loggedUser");
+            window.location.reload();
+          } else {
+            console.log("Error occurred:", err);
+            setPasswordChangeError(err);
+          }
+        });
+    }
+  };
 
   return (
     <>
@@ -35,30 +140,105 @@ export const AccountConfiguration = () => {
               </table>
             </div>
             <div className="divider" />
-            <div>
+            <form onSubmit={changeEmail}>
               <h2 className="text-2xl">Zmiana email</h2>
+              {emailChangeSucceed && (
+                <div role="alert" className="alert alert-success">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="stroke-current shrink-0 h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span>
+                    {emailChangeSucceed} Nastąpi wylogowanie z konta.
+                    <span class="loading loading-dots loading-sm align-bottom"></span>
+                  </span>
+                </div>
+              )}
               <div>
-                <TextInput name="email" />
-                <TextInput name="hasło" />
+                <TextInput
+                  type="text"
+                  title="Nowy email"
+                  name="newEmail"
+                  value={changeEmailValues.newEmail}
+                  onChange={handleChangeEmailValues}
+                  placeholder="Podaj nowy email"
+                />
+                <TextInput
+                  type="password"
+                  title="Hasło"
+                  name="currentPassword"
+                  value={changeEmailValues.currentPassword}
+                  onChange={handleChangeEmailValues}
+                  placeholder="Podaj swoje hasło"
+                />
                 <div className="pt-5">
-                  <button className="btn btn-primary ">Zapisz</button>
+                  <button className="btn btn-primary " type="submit">
+                    Zapisz
+                  </button>
                 </div>
               </div>
-            </div>
+            </form>
             <div className="divider" />
-            <div>
+            <form onSubmit={changePassword}>
               <h2 className="text-2xl">Zmiana hasła</h2>
+              {passwordChangeSucceed && (
+                <div role="alert" className="alert alert-success">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="stroke-current shrink-0 h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span>
+                    {passwordChangeSucceed} Nastąpi wylogowanie z konta.
+                    <span class="loading loading-dots loading-sm align-bottom"></span>
+                  </span>
+                </div>
+              )}
               <div>
-                <TextInput name="Nowe hasło" />
-                <TextInput name="Potwierdź hasło" />
-                <TextInput name="Stare hasło" />
+                <TextInput
+                  name="newPassword"
+                  title="Nowe hasło"
+                  type="password"
+                  placeholder="Podaj nowe hasło"
+                  value={changePasswordValues.newPassword}
+                  onChange={handleChangePaswordValues}
+                />
+                <TextInput
+                  name="currentPassword"
+                  title="Aktualne hasło"
+                  type="password"
+                  placeholder="Podaj aktualne hasło"
+                  value={changePasswordValues.currentPassword}
+                  onChange={handleChangePaswordValues}
+                />
                 <div className="pt-5">
-                  <button className="btn btn-primary ">Zapisz</button>
+                  <button className="btn btn-primary" type="submit">
+                    Zapisz
+                  </button>
                 </div>
               </div>
-            </div>
+            </form>
           </div>
-          <Link to="/twoje-konfiguracje">Twoje konfiguracje</Link>
+          <Link className="btn btn-info" to="/twoje-konfiguracje">
+            Twoje konfiguracje
+          </Link>
         </div>
       )}
     </>

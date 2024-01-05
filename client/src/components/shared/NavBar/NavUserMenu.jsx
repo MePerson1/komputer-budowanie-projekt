@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 
 export const NavUserMenu = ({ loggedUser }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  useEffect(() => {
+    console.log(loggedUser);
+  }, []);
   const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen);
   };

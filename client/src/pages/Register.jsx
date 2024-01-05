@@ -7,7 +7,6 @@ import {
   validateEmail,
   validateNickname,
   validatePassword,
-  validateRegisterForm,
 } from "../utils/validators";
 
 const Register = () => {
@@ -57,7 +56,7 @@ const Register = () => {
 
   const handleValidation = () => {
     const updatedValidationMessages = validationInfo.map((field) => {
-      const { name } = field;
+      const name = field.name;
       const value = registerValues[name];
       return {
         ...field,
@@ -79,8 +78,6 @@ const Register = () => {
     e.preventDefault();
 
     const isFormValid = handleValidation();
-
-    console.log(validationMessages[1].isValid);
 
     if (isFormValid) {
       axios

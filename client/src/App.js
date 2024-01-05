@@ -5,6 +5,7 @@ import { PcConfiguration, Toast } from "./utils/models";
 import axios from "axios";
 import { Footer } from "./components/shared/Footer";
 import { jwtDecode } from "jwt-decode";
+import { getUserInfo } from "./utils/apiRequests";
 function App() {
   let [pcConfiguration, setPcConfiguration] = useState(PcConfiguration);
   const [user, setUser] = useState(null);
@@ -25,8 +26,15 @@ function App() {
         })
         .catch((err) => {
           console.log(err);
-          localStorage.removeItem("token");
-          localStorage.removeItem("loggedUser");
+          if (err.response && err.response.status === 401) {
+            console.log("Unauthorized access!");
+            localStorage.removeItem("token");
+            localStorage.removeItem("loggedUser");
+          } else {
+            console.log("Error occurred:", err);
+            localStorage.removeItem("token");
+            localStorage.removeItem("loggedUser");
+          }
         });
     }
   }, []);
