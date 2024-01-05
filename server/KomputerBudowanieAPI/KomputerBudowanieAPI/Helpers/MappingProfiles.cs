@@ -45,6 +45,9 @@ namespace KomputerBudowanieAPI.Helpers
             CreateMap<Motherboard, ProductDto>();
             CreateMap<PowerSupply, ProductDto>();
 
+            CreateMap<ApplicationUser, UserDto>();
+            CreateMap<PcConfiguration, PcConfigurationViewModel>();
+
         }
     }
 }

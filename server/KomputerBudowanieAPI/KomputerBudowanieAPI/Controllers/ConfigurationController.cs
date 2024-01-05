@@ -1,4 +1,5 @@
-﻿using KomputerBudowanieAPI.Dto;
+﻿using AutoMapper;
+using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -13,10 +14,12 @@ namespace KomputerBudowanieAPI.Controllers
     public class ConfigurationController : ControllerBase
     {
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
+        private readonly IMapper _mapper;
 
-        public ConfigurationController(IPcConfigurationRepository pcConfigurationRepository)
+        public ConfigurationController(IPcConfigurationRepository pcConfigurationRepository, IMapper mapper)
         {
             _pcConfigurationRepository = pcConfigurationRepository;
+            _mapper = mapper;
         }
 
         // GET: api/<ConfigurationController>
@@ -40,7 +43,7 @@ namespace KomputerBudowanieAPI.Controllers
             {
                 return NotFound();
             }
-            return Ok(configs);
+            return Ok(_mapper.Map<ICollection<PcConfigurationViewModel>>(configs));
         }
 
         [HttpGet("{id}")]
@@ -49,14 +52,13 @@ namespace KomputerBudowanieAPI.Controllers
             var configuration = await _pcConfigurationRepository.GetByIdAsync(id);
             if (configuration is null)
                 return NotFound();
-            return Ok(configuration);
+            return Ok(_mapper.Map<ICollection<PcConfigurationViewModel>>(configuration));
         }
 
 
         // GET api/users/5/configurations
         [Authorize]
         [Route("users/{userId}")]
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Get(string userId)
         {
@@ -65,7 +67,7 @@ namespace KomputerBudowanieAPI.Controllers
             {
                 return NotFound();
             }
-            return Ok(configs);
+            return Ok(_mapper.Map<ICollection<PcConfigurationViewModel>>(configs));
         }
 
         // GET api/<ConfigurationController>/5
