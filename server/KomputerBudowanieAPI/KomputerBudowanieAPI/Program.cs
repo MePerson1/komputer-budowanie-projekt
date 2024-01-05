@@ -66,7 +66,7 @@ public class Program
 
         var jwtTokenHandler = new JwtTokenHandler(issuer, audience, key);
 
-        builder.Services.AddSingleton(jwtTokenHandler);
+        builder.Services.AddSingleton<IJwtTokenHandler>(jwtTokenHandler);
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
