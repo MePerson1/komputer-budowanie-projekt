@@ -1,14 +1,24 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { getUserInfo } from "../utils/apiRequests";
+
 import Topic from "../components/shared/Topic";
 import PcConfigurationCard from "../components/PcConfigurations/PcConfigurationCard";
+import { useNavigate } from "react-router-dom";
 
 export const UserConfigurations = () => {
+  const navigate = useNavigate();
   const [userConfigurations, setUserConfigurations] = useState([]);
+  const [isEmpty, setIsEmpty] = useState(false);
   useEffect(() => {
     var token = JSON.parse(localStorage.getItem("token"));
     var loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+    if (
+      !JSON.parse(localStorage.getItem("token")) ||
+      !JSON.parse(localStorage.getItem("loggedUser"))
+    ) {
+      navigate("/logowanie");
+    }
     if (token && loggedUser) {
       const config = { headers: { Authorization: `Bearer ${token}` } };
 
@@ -25,6 +35,8 @@ export const UserConfigurations = () => {
             console.log("Unauthorized access. Deleting token...");
             localStorage.removeItem("token");
             localStorage.removeItem("loggedUser");
+          } else if (err.response && err.response.status === 404) {
+            setIsEmpty(true);
           } else {
             console.log(err);
           }
@@ -47,15 +59,18 @@ export const UserConfigurations = () => {
             <button className="btn btn-info">Szukaj</button>
           </div>
         </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
-          {userConfigurations.length !== 0 &&
-            userConfigurations.map((pcConfiguration, index) => (
+        {userConfigurations.length !== 0 && !isEmpty && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
+            {userConfigurations.map((pcConfiguration, index) => (
               <div key={index} className="p-2">
                 <PcConfigurationCard pcConfiguration={pcConfiguration} />
               </div>
             ))}
-        </div>
+          </div>
+        )}
+        {isEmpty && (
+          <div className="flex justify-center text-2xl">Pusto {" :("}</div>
+        )}
       </div>
     </>
   );
