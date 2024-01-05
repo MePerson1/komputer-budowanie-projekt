@@ -5,20 +5,27 @@ import { Link } from "react-router-dom";
 import { getTokenConfig } from "../utils/apiRequests";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import {
+  handleIsValid,
+  handleValidation,
+  validationInfo,
+} from "../utils/validators";
 
 export const AccountConfiguration = () => {
   const navigate = useNavigate();
   const [loggedUser, setLoggedUser] = useState(null);
 
+  const [validationMessages, setValidationMessages] = useState(validationInfo);
+
   const [changeEmailValues, setChangeEmailValues] = useState({
-    newEmail: "",
+    email: "",
     currentPassword: "",
   });
   const [emailChangeSucceed, setEmailChangeSuccseded] = useState();
   const [emailChangeError, setEmailChangeError] = useState("");
 
   const [changePasswordValues, setChangePasswordValues] = useState({
-    newPassword: "",
+    password: "",
     currentPassword: "",
   });
 
@@ -48,11 +55,13 @@ export const AccountConfiguration = () => {
   }, []);
   const changeEmail = async (e) => {
     e.preventDefault();
-
+    setValidationMessages(handleValidation(changeEmailValues));
+    const isFormValid = handleIsValid(validationMessages);
     if (
-      changeEmailValues.newEmail &&
+      changeEmailValues.email &&
       changeEmailValues.currentPassword &&
-      token
+      token &&
+      isFormValid
     ) {
       const config = getTokenConfig(token);
       axios
@@ -86,10 +95,13 @@ export const AccountConfiguration = () => {
 
   const changePassword = async (e) => {
     e.preventDefault();
+    setValidationMessages(handleValidation(changePasswordValues));
+    const isFormValid = handleIsValid(validationMessages);
     if (
-      changePasswordValues.newPassword &&
+      changePasswordValues.password &&
       changePasswordValues.currentPassword &&
-      token
+      token &&
+      isFormValid
     ) {
       const config = getTokenConfig(token);
       axios
@@ -172,11 +184,14 @@ export const AccountConfiguration = () => {
                 <TextInput
                   type="text"
                   title="Nowy email"
-                  name="newEmail"
-                  value={changeEmailValues.newEmail}
+                  name="email"
+                  value={changeEmailValues.email}
                   onChange={handleChangeEmailValues}
                   placeholder="Podaj nowy email"
                 />
+                {!validationMessages[0].isValid && (
+                  <p className="text-error">{validationMessages[0].info}</p>
+                )}
                 <TextInput
                   type="password"
                   title="Hasło"
@@ -218,13 +233,16 @@ export const AccountConfiguration = () => {
               )}
               <div>
                 <TextInput
-                  name="newPassword"
+                  name="password"
                   title="Nowe hasło"
                   type="password"
                   placeholder="Podaj nowe hasło"
-                  value={changePasswordValues.newPassword}
+                  value={changePasswordValues.password}
                   onChange={handleChangePaswordValues}
                 />
+                {!validationMessages[2].isValid && (
+                  <p className="text-error">{validationMessages[2].info}</p>
+                )}
                 <TextInput
                   name="currentPassword"
                   title="Aktualne hasło"

@@ -4,9 +4,12 @@ import Topic from "../components/shared/Topic";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {
+  handleIsValid,
+  handleValidation,
   validateEmail,
   validateNickname,
   validatePassword,
+  validationInfo,
 } from "../utils/validators";
 
 const Register = () => {
@@ -18,23 +21,6 @@ const Register = () => {
     password: "",
   };
 
-  const validationInfo = [
-    {
-      name: "email",
-      isValid: true,
-      info: "Podano nie poprawny email!",
-    },
-    {
-      name: "nickname",
-      isValid: true,
-      info: "Podana nazwa jest nie poprawna. Poprawna nazwa powinna składać się z od 3 do 15 znaków.",
-    },
-    {
-      name: "password",
-      isValid: true,
-      info: "Podane hasło jest nie poprawne. Odopowiednie hasło powinno składać się z minimum 8 znaków, zawierać 1 wielką literę, 1 cyfrę oraz 1 znak specjalny.",
-    },
-  ];
   const [registerValues, setRegisterValues] = useState(initialValues);
   const [validationMessages, setValidationMessages] = useState(validationInfo);
   const [errorMessage, setErrorMessage] = useState("");
@@ -54,31 +40,11 @@ const Register = () => {
     setRegisterValues({ ...registerValues, [name]: value });
   };
 
-  const handleValidation = () => {
-    const updatedValidationMessages = validationInfo.map((field) => {
-      const name = field.name;
-      const value = registerValues[name];
-      return {
-        ...field,
-        isValid:
-          name === "nickname"
-            ? validateNickname(value)
-            : name === "email"
-            ? validateEmail(value)
-            : validatePassword(value),
-      };
-    });
-
-    setValidationMessages(updatedValidationMessages);
-
-    return updatedValidationMessages.every((field) => field.isValid);
-  };
-
   const handleRegistration = async (e) => {
     e.preventDefault();
-
-    const isFormValid = handleValidation();
-
+    setValidationMessages(handleValidation(registerValues));
+    const isFormValid = handleIsValid(validationMessages);
+    console.log(isFormValid);
     if (isFormValid) {
       axios
         .post("http://localhost:5198/api/user", registerValues)
