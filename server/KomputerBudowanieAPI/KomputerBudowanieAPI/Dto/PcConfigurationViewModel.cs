@@ -17,7 +17,7 @@ namespace KomputerBudowanieAPI.Dto
         public Case? Case { get; set; }
         public PowerSupply? PowerSupply { get; set; } = null;
         public WaterCooling? WaterCooling { get; set; }
-        public UserDto? User { get; set; } = null;
+        public UserDto User { get; set; }
         public double TotalPrice { get; set; } = 0;
         public ICollection<PcConfigurationStorage>? PcConfigurationStorages { get; set; }
         public ICollection<PcConfigurationRam>? PcConfigurationRams { get; set; }

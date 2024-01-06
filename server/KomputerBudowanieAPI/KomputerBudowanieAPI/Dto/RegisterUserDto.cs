@@ -8,7 +8,7 @@ namespace KomputerBudowanieAPI.Dto
         [MinLength(3, ErrorMessage = "Nazwa użytkownika musi wynosić minimum 3 znaki!")]
         [MaxLength(32, ErrorMessage = "Nazwa użytkownika nie może być dłuższa niż 32 znaki!")]
         [RegularExpression("^\\p{L}[\\p{L}0-9]*$", ErrorMessage = "Nazwa użytkownika musi zaczynać się od litery i zawierać tylko litery i cyfry!")]
-        public string Nickname { get; set; }
+        public string UserName { get; set; }
 
         [Required(ErrorMessage = "Adres email jest wymagany!")]
         [EmailAddress(ErrorMessage = "Adres email jest niepoprawny!!")]

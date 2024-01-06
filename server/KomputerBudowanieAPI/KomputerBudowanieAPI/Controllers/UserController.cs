@@ -57,7 +57,7 @@ namespace KomputerBudowanieAPI.Controllers
             {
                 return BadRequest("Użytkownik z tym emailem już istnieje.");
             }
-            existingUser = await _user.FindByNameAsync(dto.Nickname);
+            existingUser = await _user.FindByNameAsync(dto.UserName);
             if (existingUser != null)
             {
                 return BadRequest("Użytkownik z taką nazwą już istnieje.");
@@ -65,7 +65,7 @@ namespace KomputerBudowanieAPI.Controllers
 
             var newUser = new ApplicationUser
             {
-                UserName = dto.Nickname,
+                UserName = dto.UserName,
                 Email = dto.Email,
             };
 
@@ -101,7 +101,7 @@ namespace KomputerBudowanieAPI.Controllers
             var userInfo = new UserDto()
             {
                 Id = GetClaimValue(user, ClaimTypes.NameIdentifier), //Tu zamiast JwtRegisteredClaimNames.Sub musi być ClaimTypes.NameIdentifier. Jakieś dziwactwo ASP.NET Core Identity.
-                Nickname = GetClaimValue(user, ClaimTypes.Name),
+                UserName = GetClaimValue(user, ClaimTypes.Name),
                 Email = GetClaimValue(user, ClaimTypes.Email)
             };
 

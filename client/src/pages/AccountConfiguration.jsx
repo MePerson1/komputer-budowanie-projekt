@@ -148,13 +148,13 @@ export const AccountConfiguration = () => {
     <>
       {loggedUser ? (
         <div>
-          <Topic title={"Witaj " + loggedUser.nickname + "!"} />
+          <Topic title={"Witaj " + loggedUser.userName + "!"} />
           <div className="border w-full p-6 m-auto rounded-md shadow-md lg:max-w-lg border-secondary bg-base-200">
             <div className="bg-base-300 ">
               <table className="text-xl">
                 <tr>
                   <td className="font-bold">Nazwa:</td>
-                  <td className="p-2">{loggedUser.nickname}</td>
+                  <td className="p-2">{loggedUser.userName}</td>
                 </tr>
                 <tr>
                   <td className="font-bold">Email:</td>

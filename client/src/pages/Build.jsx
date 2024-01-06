@@ -18,6 +18,7 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
   const [isSaved, setIsSaved] = useState(false);
   let [configurationInfo, setConfigurationInfo] = useState(Toast);
   const [description, setDescription] = useState("");
+  const [isPrivate, setIsPrivate] = useState(false);
 
   useEffect(() => {
     if (pcConfiguration !== PcConfiguration) {
@@ -93,18 +94,20 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
       if (token && loggedUser) {
         pcConfigurationIds.userId = loggedUser.id;
       }
-      console.log(pcConfigurationIds);
-      await axios
-        .post("http://localhost:5198/api/configuration", pcConfigurationIds)
-        .then((res) => {
-          var data = res.data;
-          localStorage.removeItem("localConfiugration");
-          setPcConfiguration(PcConfiguration);
-          console.log("test");
-          setIsSaved(true);
-          navigate(`/configurations/${data.id}`);
-        })
-        .catch((err) => console.log(err));
+      pcConfigurationIds.isPrivate = isPrivate;
+      if (pcConfigurationIds.userId && token) {
+        await axios
+          .post("http://localhost:5198/api/configuration", pcConfigurationIds)
+          .then((res) => {
+            var data = res.data;
+            localStorage.removeItem("localConfiugration");
+            setPcConfiguration(PcConfiguration);
+            console.log("test");
+            setIsSaved(true);
+            navigate(`/configurations/${data.id}`);
+          })
+          .catch((err) => console.log(err));
+      }
     }
   }
 
@@ -139,6 +142,8 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
               description={description}
               setDescription={setDescription}
               setPcConfiguration={setPcConfiguration}
+              setIsPrivate={setIsPrivate}
+              isPrivate={isPrivate}
             />
             <ConfigurationInfo configurationInfo={configurationInfo} />
           </div>

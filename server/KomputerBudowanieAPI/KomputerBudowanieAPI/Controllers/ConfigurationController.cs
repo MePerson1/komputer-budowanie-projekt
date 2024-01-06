@@ -52,7 +52,7 @@ namespace KomputerBudowanieAPI.Controllers
             var configuration = await _pcConfigurationRepository.GetByIdAsync(id);
             if (configuration is null)
                 return NotFound();
-            return Ok(_mapper.Map<ICollection<PcConfigurationViewModel>>(configuration));
+            return Ok(_mapper.Map<PcConfigurationViewModel>(configuration));
         }
 
 
@@ -121,6 +121,7 @@ namespace KomputerBudowanieAPI.Controllers
 
         // DELETE api/<ConfigurationController>/5
         [HttpDelete("{id}")]
+
         public async Task<IActionResult> Delete(Guid id)
         {
             var pcConf = await _pcConfigurationRepository.GetByIdAsync(id);

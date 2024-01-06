@@ -6,6 +6,8 @@ const Info = ({
   savePcConfiguration,
   pcConfiguration,
   setPcConfiguration,
+  setIsPrivate,
+  isPrivate,
 }) => {
   const [budget, setBudget] = useState(0);
   const isLogged = localStorage.getItem("token") ? true : false;
@@ -31,6 +33,10 @@ const Info = ({
     const localBudget = JSON.parse(localStorage.getItem("localBudget"));
     if (localBudget !== null) setBudget(localBudget);
   }, []);
+
+  useEffect(() => {
+    console.log(isPrivate);
+  }, [isPrivate]);
 
   const inputWidth = `${(budget.toString().length + 1) * 9}px`;
   return (
@@ -113,6 +119,8 @@ const Info = ({
                         <input
                           type="checkbox"
                           className="checkbox checkbox-secondary"
+                          checked={isPrivate}
+                          onChange={() => setIsPrivate(!isPrivate)}
                         />
                       </label>
                     </div>

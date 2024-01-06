@@ -14,7 +14,7 @@ const Register = () => {
   const navigate = useNavigate();
 
   const initialValues = {
-    nickname: "",
+    userName: "",
     email: "",
     password: "",
   };
@@ -103,9 +103,9 @@ const Register = () => {
                 placeholder="Podaj nazwę"
                 class="w-full input input-bordered input-primary"
                 autoComplete="off"
-                name="nickname"
+                name="userName"
                 onChange={handleChange}
-                value={registerValues.nickname}
+                value={registerValues.userName}
                 required
               />
               {!validationMessages[1].isValid && (

@@ -5,7 +5,7 @@ export const validationInfo = [
     info: "Podano nie poprawny email!",
   },
   {
-    name: "nickname",
+    name: "userName",
     isValid: true,
     info: "Podana nazwa jest nie poprawna. Poprawna nazwa powinna składać się z od 3 do 15 znaków.",
   },
@@ -24,8 +24,8 @@ export const handleValidation = (values) => {
       return {
         ...field,
         isValid:
-          name === "nickname"
-            ? validateNickname(value)
+          name === "userName"
+            ? validateUserName(value)
             : name === "email"
             ? validateEmail(value)
             : validatePassword(value),
@@ -45,8 +45,8 @@ export const handleIsValid = (validationInfo) => {
   return validationInfo.every((field) => field.isValid);
 };
 
-export const validateNickname = (nickname) => {
-  return nickname.length > 2 && nickname.length < 32;
+export const validateUserName = (userName) => {
+  return userName.length > 2 && userName.length < 32;
 };
 
 export const validateEmail = (email) => {
