@@ -7,6 +7,9 @@ import Topic from "../components/shared/Topic";
 import Breadcrumbs from "../components/shared/Breadcrumbs";
 import { Pagination } from "../components/PartsTable/Pagination";
 import { Select } from "../components/shared/Select";
+import pcParts from "../utils/constants/pcParts";
+import { paginationParams } from "../utils/constants/paginationParams";
+import { SearchBar } from "../components/shared/SearchBar";
 const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   const sortOptions = [
     { value: "name", name: "Alfabetycznie" },
@@ -14,40 +17,13 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
     { value: "priceDesc", name: "Cena malejąco" },
   ];
 
-  const paginationParams = {
-    CurrentPage: 1,
-    PageSize: 10,
-    TotalCount: 0,
-    TotalPages: 0,
-  };
-
   const [parts, setParts] = useState([]);
   const [filter, setFilter] = useState(false);
   const [paginationInfo, setPaginationInfo] = useState(paginationParams);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const handlePageChange = (pageNumber) => {
-    setPaginationInfo({ ...paginationInfo, CurrentPage: pageNumber });
-    if (filter) {
-      getFilteredParts(partType.key, pageNumber, searchTerm, sortBy);
-    } else {
-      getParts(partType.key, pageNumber, searchTerm, sortBy);
-    }
-  };
-
-  const handleSearch = async () => {
-    if (filter) {
-      getFilteredParts(
-        partType.key,
-        paginationInfo.CurrentPage,
-        searchTerm,
-        sortBy
-      );
-    } else {
-      getParts(partType.key, paginationInfo.CurrentPage, searchTerm, sortBy);
-    }
-  };
   useEffect(() => {
     const localConfiugration = JSON.parse(
       localStorage.getItem("localConfiugration")
@@ -68,7 +44,57 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
     }
   }, [partType, filter]);
 
+  useEffect(() => {
+    setLoading(false);
+  }, [parts]);
+  const handlePageChange = async (pageNumber) => {
+    setPaginationInfo({ ...paginationInfo, CurrentPage: pageNumber });
+    if (filter) {
+      await getFilteredParts(partType.key, pageNumber, searchTerm, sortBy);
+    } else {
+      await getParts(partType.key, pageNumber, searchTerm, sortBy);
+    }
+  };
+
+  const handleSearch = async () => {
+    if (filter) {
+      await getFilteredParts(
+        partType.key,
+        paginationInfo.CurrentPage,
+        searchTerm,
+        sortBy
+      );
+    } else {
+      await getParts(
+        partType.key,
+        paginationInfo.CurrentPage,
+        searchTerm,
+        sortBy
+      );
+    }
+  };
+  const handleSort = async (sortValue) => {
+    setSortBy(sortValue);
+    if (filter) {
+      await getFilteredParts(
+        partType.key,
+        paginationInfo.CurrentPage,
+        searchTerm,
+        sortValue
+      );
+    } else {
+      await getParts(
+        partType.key,
+        paginationInfo.CurrentPage,
+        searchTerm,
+        sortValue
+      );
+    }
+  };
+
   async function getParts(partKey, pageNumber, searchTerm, sortBy) {
+    setLoading(true);
+
     const partsParams = {
       SortBy: sortBy ? sortBy : "",
       SearchTerm: searchTerm ? searchTerm : "",
@@ -76,14 +102,11 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
       PageSize: 10,
     };
 
-    console.log(partsParams);
     await axios
       .get(`http://localhost:5198/api/${partKey}/pagination`, {
         params: partsParams,
       })
       .then((res) => {
-        console.log(res);
-        console.log(JSON.parse(res.headers.pagination));
         setPaginationInfo(JSON.parse(res.headers.pagination));
         setParts(res.data);
       })
@@ -99,6 +122,8 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   }
 
   async function getFilteredParts(partKey, pageNumber, searchTerm, sortBy) {
+    setLoading(true);
+
     const partsParams = {
       SortBy: sortBy ? sortBy : "",
       SearchTerm: searchTerm ? searchTerm : "",
@@ -117,11 +142,18 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
         }
       )
       .then((res) => {
-        console.log(res);
         setPaginationInfo(JSON.parse(res.headers.pagination));
         setParts(res.data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        if (err.response && err.response.status === 404) {
+          console.error("404 Error: Nie znaleziono");
+          console.log(err.response);
+          setParts([]);
+        } else {
+          console.error("Error fetching parts:", err.message);
+        }
+      });
   }
 
   return (
@@ -143,20 +175,19 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
         </div>
       </div>
       <div className="flex flex-row justify-between mb-4 w-full items-start">
-        <Select items={sortOptions} />
-        <div className="w-full sm:w-auto flex">
-          <input
-            type="text"
-            placeholder="Szukaj"
-            className="input input-bordered w-48 md:w-64 max-w-xs"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <button className="btn btn-info" onClick={handleSearch}>
-            Szukaj
-          </button>
-        </div>
+        <Select items={sortOptions} handleOnChange={handleSort} />
+        <SearchBar
+          value={searchTerm}
+          setValue={setSearchTerm}
+          handleSearch={handleSearch}
+        />
       </div>
+      {loading && (
+        <div className="flex justify-center items-center">
+          <span class="loading loading-spinner loading-xs"></span>
+          <p>Ładowanie</p>
+        </div>
+      )}
       {parts && parts.length !== 0 && (
         <>
           <PartsTable
@@ -172,7 +203,6 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
         </>
       )}
       {parts.length == 0 && <div>Pusto </div>}
-      {!parts && <div>Ładowanie </div>}
     </div>
   );
 };

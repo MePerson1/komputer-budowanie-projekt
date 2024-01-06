@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Helpers;
+using KomputerBudowanieAPI.Helpers.Request;
 using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -46,6 +48,18 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(_mapper.Map<ICollection<PcConfigurationViewModel>>(configs));
         }
 
+        [HttpGet("public/pagination")]
+        public async Task<IActionResult> GetPublicPagination([FromQuery] PartsParams partsParams)
+        {
+            var configs = await _pcConfigurationRepository.GetAllAsyncPublicPagination(partsParams);
+            if (configs is null || !configs.Any())
+            {
+                return NotFound();
+            }
+            Response.AddPaginationHeader(configs.MetaData);
+            return Ok(_mapper.Map<ICollection<PcConfigurationViewModel>>(configs));
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -60,13 +74,27 @@ namespace KomputerBudowanieAPI.Controllers
         [Authorize]
         [Route("users/{userId}")]
         [HttpGet]
-        public async Task<IActionResult> Get(string userId)
+        public async Task<IActionResult> GetByUserId(string userId)
         {
             var configs = await _pcConfigurationRepository.GetAllAsync(userId);
             if (configs is null || !configs.Any())
             {
                 return NotFound();
             }
+            return Ok(_mapper.Map<ICollection<PcConfigurationViewModel>>(configs));
+        }
+
+        [Authorize]
+        [Route("users/{userId}/pagination")]
+        [HttpGet]
+        public async Task<IActionResult> GetByUserIdPagination(string userId, [FromQuery] PartsParams partsParams)
+        {
+            var configs = await _pcConfigurationRepository.GetAllAsyncByUserIdPagination(userId, partsParams);
+            if (configs is null || !configs.Any())
+            {
+                return NotFound();
+            }
+            Response.AddPaginationHeader(configs.MetaData);
             return Ok(_mapper.Map<ICollection<PcConfigurationViewModel>>(configs));
         }
 

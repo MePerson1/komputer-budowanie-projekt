@@ -111,7 +111,7 @@ namespace KomputerBudowanieAPI.Controllers
         {
             try
             {
-                var cases = await _caseRepository.GetAllAsync();
+                var cases = await _caseRepository.GetAllAsyncSortSearch(partsParams);
                 if (cases is null || !cases.Any())
                 {
                     return NotFound();

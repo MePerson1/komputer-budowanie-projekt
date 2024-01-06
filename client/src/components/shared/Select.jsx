@@ -1,10 +1,13 @@
-export const Select = ({ items }) => {
+export const Select = ({ items, handleOnChange }) => {
   return (
-    <label className="form-control w-full max-w-xs">
-      <div class="label">
-        <span class="label-text font-bold text-info">Sortuj</span>
+    <div className="w-full max-w-xs flex items-center">
+      <div className="mr-2">
+        <p className="font-bold text-info">Sortuj</p>
       </div>
-      <select className="select select-info w-full max-w-xs">
+      <select
+        className="select select-info w-full max-w-xs"
+        onChange={(e) => handleOnChange(e.target.value)}
+      >
         {items &&
           items.map((item, index) => (
             <option value={item.value} key={index}>
@@ -12,6 +15,6 @@ export const Select = ({ items }) => {
             </option>
           ))}
       </select>
-    </label>
+    </div>
   );
 };

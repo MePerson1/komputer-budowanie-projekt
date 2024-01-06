@@ -1,6 +1,6 @@
 ﻿using KomputerBudowanieAPI.Interfaces;
 
-namespace KomputerBudowanieAPI.Helpers.Request
+namespace KomputerBudowanieAPI.Helpers
 {
     public static class PartsExtensions
     {

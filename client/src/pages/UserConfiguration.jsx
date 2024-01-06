@@ -5,11 +5,64 @@ import { getUserInfo } from "../utils/apiRequests";
 import Topic from "../components/shared/Topic";
 import PcConfigurationCard from "../components/PcConfigurations/PcConfigurationCard";
 import { useNavigate } from "react-router-dom";
+import { paginationParams } from "../utils/constants/paginationParams";
+import { Pagination } from "../components/PartsTable/Pagination";
+import { Select } from "../components/shared/Select";
+import { SearchBar } from "../components/shared/SearchBar";
 
 export const UserConfigurations = () => {
   const navigate = useNavigate();
   const [userConfigurations, setUserConfigurations] = useState([]);
   const [isEmpty, setIsEmpty] = useState(false);
+
+  const sortOptions = [
+    { value: "name", name: "Alfabetycznie od A-Z" },
+    { value: "nameDesc", name: "Alfabetycznie od Z-A" },
+    { value: "price", name: "Cena rosnąco" },
+    { value: "priceDesc", name: "Cena malejąco" },
+  ];
+
+  const [paginationInfo, setPaginationInfo] = useState(paginationParams);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  const handlePageChange = async (pageNumber) => {
+    var token = JSON.parse(localStorage.getItem("token"));
+    var loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+    setPaginationInfo({ ...paginationInfo, CurrentPage: pageNumber });
+    await getUserConfigurations(
+      token,
+      loggedUser,
+      pageNumber,
+      searchTerm,
+      sortBy
+    );
+  };
+  const handleSearch = async () => {
+    var token = JSON.parse(localStorage.getItem("token"));
+    var loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+    await getUserConfigurations(
+      token,
+      loggedUser,
+      paginationInfo.CurrentPage,
+      searchTerm,
+      sortBy
+    );
+  };
+  const handleSort = async (sortValue) => {
+    var token = JSON.parse(localStorage.getItem("token"));
+    var loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+    setSortBy(sortValue);
+    await getUserConfigurations(
+      token,
+      loggedUser,
+      paginationInfo.CurrentPage,
+      searchTerm,
+      sortValue
+    );
+  };
+
   useEffect(() => {
     var token = JSON.parse(localStorage.getItem("token"));
     var loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
@@ -20,15 +73,43 @@ export const UserConfigurations = () => {
       navigate("/logowanie");
     }
     if (token && loggedUser) {
-      const config = { headers: { Authorization: `Bearer ${token}` } };
+      getUserConfigurations(
+        token,
+        loggedUser,
+        paginationInfo.CurrentPage,
+        searchTerm,
+        sortBy
+      );
+    }
+  }, []);
 
-      axios
+  async function getUserConfigurations(
+    token,
+    loggedUser,
+    pageNumber,
+    searchTerm,
+    sortBy
+  ) {
+    setLoading(true);
+
+    const partsParams = {
+      SortBy: sortBy ? sortBy : "",
+      SearchTerm: searchTerm ? searchTerm : "",
+      PageNumber: pageNumber ? pageNumber : 1,
+      PageSize: 8,
+    };
+    if (token && loggedUser) {
+      await axios
         .get(
-          `http://localhost:5198/api/configuration/users/${loggedUser.id}`,
-          config
+          `http://localhost:5198/api/configuration/users/${loggedUser.id}/pagination`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+            params: partsParams,
+          }
         )
-        .then((response) => {
-          setUserConfigurations(response.data);
+        .then((res) => {
+          setPaginationInfo(JSON.parse(res.headers.pagination));
+          setUserConfigurations(res.data);
         })
         .catch((err) => {
           if (err.response && err.response.status === 401) {
@@ -42,22 +123,19 @@ export const UserConfigurations = () => {
           }
         });
     }
-  }, []);
+  }
 
   return (
     <>
       <Topic title="Konfiguracje" />
       <div className="flex flex-col justify-center items-center p-4">
         <div className="flex flex-row justify-between mb-4 w-full items-start">
-          <button className="btn mb-2 sm:mb-0">Sortuj</button>
-          <div className="w-full sm:w-auto flex">
-            <input
-              type="text"
-              placeholder="Szukaj"
-              className="input input-bordered w-48 md:w-64 max-w-xs"
-            />
-            <button className="btn btn-info">Szukaj</button>
-          </div>
+          <Select items={sortOptions} handleOnChange={handleSort} />
+          <SearchBar
+            value={searchTerm}
+            setValue={setSearchTerm}
+            handleSearch={handleSearch}
+          />
         </div>
         {userConfigurations.length !== 0 && !isEmpty && (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
@@ -71,6 +149,10 @@ export const UserConfigurations = () => {
         {isEmpty && (
           <div className="flex justify-center text-2xl">Pusto {" :("}</div>
         )}
+        <Pagination
+          paginationInfo={paginationInfo}
+          handlePageChange={handlePageChange}
+        />
       </div>
     </>
   );
