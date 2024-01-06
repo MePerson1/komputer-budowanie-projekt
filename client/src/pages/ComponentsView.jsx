@@ -32,7 +32,7 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
     if (filter) {
       getFilteredParts(partType.key, pageNumber, searchTerm, sortBy);
     } else {
-      getParts(partType.key, paginationInfo.CurrentPage, searchTerm, sortBy);
+      getParts(partType.key, pageNumber, searchTerm, sortBy);
     }
   };
 
