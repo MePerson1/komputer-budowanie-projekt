@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace KomputerBudowanieAPI.Models
 {
-    public class GraphicCard : IProduct
+    public class GraphicCard : IPart
     {
         [Key]
         public int Id { get; set; }

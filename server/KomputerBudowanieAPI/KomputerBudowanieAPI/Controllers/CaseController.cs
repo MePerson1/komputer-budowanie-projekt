@@ -28,7 +28,20 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCases(int page = 1, int pageSize = 10, string sortBy = "", string searchKeyword = "")
+        public async Task<IActionResult> GetAllCases()
+        {
+            var cases = await _caseRepository.GetAllAsync();
+
+            if (cases is null || !cases.Any())
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<ICollection<CaseDto>>(cases));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllCasesPaginate(int page = 1, int pageSize = 10, string sortBy = "", string searchKeyword = "")
         {
             var cases = await _caseRepository.GetAllAsyncPagination(page, pageSize, sortBy, searchKeyword);
 
