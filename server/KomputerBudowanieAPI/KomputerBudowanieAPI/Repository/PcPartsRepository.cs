@@ -18,7 +18,11 @@ namespace KomputerBudowanieAPI.Repository
             await SaveChanges();
         }
 
-        public async Task<IEnumerable<TEntity>> GetAllAsync(int page = 1, int pageSize = 10, string sortBy = null, string searchTerm = null)
+        public async Task<IEnumerable<TEntity>> GetAllAsync()
+        {
+            return await _context.Set<TEntity>().ToListAsync();
+        }
+        public async Task<IEnumerable<TEntity>> GetAllAsyncPagination(int page = 1, int pageSize = 10, string sortBy = null, string searchTerm = null)
         {
             IQueryable<TEntity> query = _context.Set<TEntity>().Sort(sortBy).Search(searchTerm).AsQueryable();
 

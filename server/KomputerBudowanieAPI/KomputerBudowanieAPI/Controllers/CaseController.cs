@@ -30,7 +30,7 @@ namespace KomputerBudowanieAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllCases(int page = 1, int pageSize = 10, string sortBy = "", string searchKeyword = "")
         {
-            var cases = await _caseRepository.GetAllAsync(page, pageSize, sortBy, searchKeyword);
+            var cases = await _caseRepository.GetAllAsyncPagination(page, pageSize, sortBy, searchKeyword);
 
             if (cases is null || !cases.Any())
             {
