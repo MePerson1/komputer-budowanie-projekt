@@ -75,7 +75,7 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         [HttpPost("compatible")]
-        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails)
+        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails, [FromQuery] PartsParams partsParams)
         {
             try
             {
@@ -89,7 +89,10 @@ namespace KomputerBudowanieAPI.Controllers
                 await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
                 _compatibilityDataFilterService.GraphicCardFilter(configuration, ref graphicCards);
 
-                return Ok(graphicCards);
+                var paginationGraphicCards = await PagedList<GraphicCard>.ToPagedList(graphicCards, partsParams.PageNumber, partsParams.PageSize);
+                Response.AddPaginationHeader(paginationGraphicCards.MetaData);
+
+                return Ok(paginationGraphicCards);
             }
             catch (Exception ex)
             {

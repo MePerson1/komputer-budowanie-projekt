@@ -75,7 +75,7 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         [HttpPost("compatible")]
-        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails)
+        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails, [FromQuery] PartsParams partsParams)
         {
             try
             {
@@ -89,7 +89,10 @@ namespace KomputerBudowanieAPI.Controllers
                 await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
                 _compatibilityDataFilterService.MotherboardFilter(configuration, ref motherboards);
 
-                return Ok(motherboards);
+                var paginationMotherboards = await PagedList<Motherboard>.ToPagedList(motherboards, partsParams.PageNumber, partsParams.PageSize);
+                Response.AddPaginationHeader(paginationMotherboards.MetaData);
+
+                return Ok(paginationMotherboards);
             }
             catch (Exception ex)
             {

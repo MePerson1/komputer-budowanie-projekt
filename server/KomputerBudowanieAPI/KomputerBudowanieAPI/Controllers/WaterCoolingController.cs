@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Helpers;
+using KomputerBudowanieAPI.Helpers.Request;
 using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
@@ -59,7 +61,7 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         [HttpPost("compatible")]
-        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails)
+        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails, [FromQuery] PartsParams partsParams)
         {
             try
             {
@@ -73,7 +75,10 @@ namespace KomputerBudowanieAPI.Controllers
                 await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
                 _compatibilityDataFilterService.WaterCoolingFilter(configuration, ref waterCoolings);
 
-                return Ok(waterCoolings);
+                var paginationWaterCooling = await PagedList<WaterCooling>.ToPagedList(waterCoolings, partsParams.PageNumber, partsParams.PageSize);
+                Response.AddPaginationHeader(paginationWaterCooling.MetaData);
+
+                return Ok(paginationWaterCooling);
             }
             catch (Exception ex)
             {

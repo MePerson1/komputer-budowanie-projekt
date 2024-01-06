@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using KomputerBudowanieAPI.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace KomputerBudowanieAPI.Controllers
 {
@@ -6,9 +7,9 @@ namespace KomputerBudowanieAPI.Controllers
     [ApiController]
     public class ShopPriceController : ControllerBase
     {
-        /*private readonly IPcPartsRepository<ShopPrice> _shopPriceRepository;
+        private readonly IShopPriceRepository _shopPriceRepository;
 
-        public ShopPriceController(IPcPartsRepository<ShopPrice> shopPriceRepository)
+        public ShopPriceController(IShopPriceRepository shopPriceRepository)
         {
             _shopPriceRepository = shopPriceRepository;
         }
@@ -25,6 +26,6 @@ namespace KomputerBudowanieAPI.Controllers
                 return Ok();
             }
             catch (Exception ex) { return BadRequest(ex.Message); }
-        }*/
+        }
     }
 }
