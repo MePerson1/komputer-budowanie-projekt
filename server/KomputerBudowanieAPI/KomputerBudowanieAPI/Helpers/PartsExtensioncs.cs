@@ -22,11 +22,12 @@ namespace KomputerBudowanieAPI.Helpers
             query = sortBy switch
             {
                 "nameDesc" => query.OrderByDescending(p => p.Name),
-                "price" => query.OrderBy(p => p.Prices != null && p.Prices.Any() ? p.Prices.Min(price => price.Price) : double.MaxValue),
-                "priceDesc" => query.OrderByDescending(p => p.Prices != null && p.Prices.Any() ? p.Prices.Min(price => price.Price) : double.MaxValue),
+                "price" => query.OrderBy(p => p.Prices.Any() ? p.Prices.Min(price => price.Price) : double.MaxValue),
+                "priceDesc" => query.OrderByDescending(p => p.Prices.Any() ? p.Prices.Min(price => price.Price) : double.MaxValue),
                 _ => query.OrderBy(p => p.Name)
             };
             return query;
         }
+
     }
 }

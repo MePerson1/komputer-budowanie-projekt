@@ -4,7 +4,7 @@ using KomputerBudowanieAPI.Interfaces;
 using Microsoft.EntityFrameworkCore;
 namespace KomputerBudowanieAPI.Repository
 {
-    public class PcPartsRepository<TEntity> : IPcPartsRepository<TEntity> where TEntity : class
+    public class PcPartsRepository<TEntity> : IPcPartsRepository<TEntity> where TEntity : class, IProduct
     {
         protected KomBuildDbContext _context;
         public PcPartsRepository(KomBuildDbContext context)
