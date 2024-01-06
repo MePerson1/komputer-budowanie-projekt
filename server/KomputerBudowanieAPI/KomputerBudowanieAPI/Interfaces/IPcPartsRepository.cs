@@ -1,9 +1,11 @@
-﻿namespace KomputerBudowanieAPI.Interfaces
+﻿using KomputerBudowanieAPI.Helpers.Request;
+
+namespace KomputerBudowanieAPI.Interfaces
 {
     public interface IPcPartsRepository<TEntity> where TEntity : class, IPart
     {
         Task<IEnumerable<TEntity>> GetAllAsync();
-        Task<IEnumerable<TEntity>> GetAllAsyncPagination(int page = 1, int pageSize = 10, string sortBy = null, string searchTerm = null);
+        Task<PagedList<TEntity>> GetAllAsyncPagination(PartsParams partsParams);
 
         Task<TEntity?> GetByIdAsync(int id);
 

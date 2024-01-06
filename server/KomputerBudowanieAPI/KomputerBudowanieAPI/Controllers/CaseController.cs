@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Helpers;
+using KomputerBudowanieAPI.Helpers.Request;
 using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
@@ -40,17 +42,18 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(_mapper.Map<ICollection<CaseDto>>(cases));
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllCasesPaginate(int page = 1, int pageSize = 10, string sortBy = "", string searchKeyword = "")
+        [HttpGet("paginate")]
+        public async Task<IActionResult> GetAllCasesPaginate([FromQuery] PartsParams partsParams)
         {
-            var cases = await _caseRepository.GetAllAsyncPagination(page, pageSize, sortBy, searchKeyword);
+            var cases = await _caseRepository.GetAllAsyncPagination(partsParams);
 
             if (cases is null || !cases.Any())
             {
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<ICollection<CaseDto>>(cases));
+            Response.AddPaginationHeader(cases.MetaData);
+            return Ok(cases);
         }
 
         [HttpGet("{id:int}")]

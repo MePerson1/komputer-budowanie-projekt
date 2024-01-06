@@ -23,13 +23,11 @@ namespace KomputerBudowanieAPI.Repository
             return await _context.Set<TEntity>().ToListAsync();
         }
 
-        public async Task<IEnumerable<TEntity>> GetAllAsyncPagination(int page = 1, int pageSize = 10, string sortBy = null, string searchTerm = null)
+        public async Task<PagedList<TEntity>> GetAllAsyncPagination(PartsParams partsParams)
         {
-            IQueryable<TEntity> query = _context.Set<TEntity>().Sort(sortBy).Search(searchTerm).AsQueryable();
+            IQueryable<TEntity> query = _context.Set<TEntity>().Sort(partsParams.SortBy).Search(partsParams.SearchTerm).AsQueryable();
 
-            query = query.Skip((page - 1) * pageSize).Take(pageSize);
-
-            return await query.ToListAsync();
+            return await PagedList<TEntity>.ToPagedList(query, partsParams.PageNumber, partsParams.PageSize);
         }
 
 
