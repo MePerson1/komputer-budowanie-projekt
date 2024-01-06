@@ -38,6 +38,7 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(_mapper.Map<IEnumerable<GraphicCardDto>>(graphicCards));
         }
 
+        [Authorize(IdentityData.ScraperOrAdminPolicyName)]
         [HttpGet("scraper")]
         public async Task<IActionResult> GetAllGraphicCardsScraper()
         {

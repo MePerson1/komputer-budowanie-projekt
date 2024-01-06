@@ -39,6 +39,7 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(_mapper.Map<IEnumerable<CpuDto>>(cpus));
         }
 
+        [Authorize(IdentityData.ScraperOrAdminPolicyName)]
         [HttpGet("scraper")]
         public async Task<IActionResult> GetAllCpuScraper()
         {

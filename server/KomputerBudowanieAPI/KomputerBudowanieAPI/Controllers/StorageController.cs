@@ -46,6 +46,8 @@ namespace KomputerBudowanieAPI.Controllers
                 return NotFound();
             return Ok(_mapper.Map<StorageDto>(memory));
         }
+
+        [Authorize(IdentityData.ScraperOrAdminPolicyName)]
         [HttpGet("scraper")]
         public async Task<IActionResult> GetAllStoragesScraper()
         {
