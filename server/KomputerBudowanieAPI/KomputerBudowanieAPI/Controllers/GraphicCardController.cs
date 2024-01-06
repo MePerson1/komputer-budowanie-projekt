@@ -13,13 +13,13 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/graphic-card")]
     public class GraphicCardController : Controller
     {
-        private readonly IGenericRepository<GraphicCard> _graphicCardRepository;
+        private readonly IPcPartsRepository<GraphicCard> _graphicCardRepository;
         private readonly IMapper _mapper;
 
         private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
 
-        public GraphicCardController(IGenericRepository<GraphicCard> graphicCardRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
+        public GraphicCardController(IPcPartsRepository<GraphicCard> graphicCardRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _graphicCardRepository = graphicCardRepository;
             _mapper = mapper;

@@ -13,13 +13,13 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/power-supply")]
     public class PowerSupplyController : Controller
     {
-        private readonly IGenericRepository<PowerSupply> _powerSupplyRepository;
+        private readonly IPcPartsRepository<PowerSupply> _powerSupplyRepository;
         private readonly IMapper _mapper;
 
         private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
 
-        public PowerSupplyController(IGenericRepository<PowerSupply> powerSupplyRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
+        public PowerSupplyController(IPcPartsRepository<PowerSupply> powerSupplyRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _powerSupplyRepository = powerSupplyRepository;
             _mapper = mapper;

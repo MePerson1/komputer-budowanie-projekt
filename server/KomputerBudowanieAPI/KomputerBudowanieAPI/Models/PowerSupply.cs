@@ -1,23 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using KomputerBudowanieAPI.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace KomputerBudowanieAPI.Models
 {
-    //public enum Modulairty
-    //{
-    //    Non,
-    //    Semi,
-    //    Full
-    //}
-
-    //public enum PowerFactorCorrection
-    //{
-    //    None,
-    //    Active,
-    //    Pasive
-    //}
-
-    public class PowerSupply
+    public class PowerSupply : IProduct
     {
         [Key]
         public int Id { get; set; }

@@ -13,13 +13,13 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/water-cooling")]
     public class WaterCoolingController : Controller
     {
-        private readonly IGenericRepository<WaterCooling> _waterCoolingRepository;
+        private readonly IPcPartsRepository<WaterCooling> _waterCoolingRepository;
         private readonly IMapper _mapper;
 
         private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
 
-        public WaterCoolingController(IGenericRepository<WaterCooling> waterCoolingRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
+        public WaterCoolingController(IPcPartsRepository<WaterCooling> waterCoolingRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _waterCoolingRepository = waterCoolingRepository;
             _mapper = mapper;

@@ -13,13 +13,13 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/storage")]
     public class StorageController : Controller
     {
-        private readonly IGenericRepository<Storage> _storageRepository;
+        private readonly IPcPartsRepository<Storage> _storageRepository;
         private readonly IMapper _mapper;
 
         private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
 
-        public StorageController(IGenericRepository<Storage> storageRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
+        public StorageController(IPcPartsRepository<Storage> storageRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _storageRepository = storageRepository;
             _mapper = mapper;

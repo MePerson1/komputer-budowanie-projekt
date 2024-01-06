@@ -13,13 +13,13 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/cpu-cooling")]
     public class CpuCoolingController : Controller
     {
-        private readonly IGenericRepository<CpuCooling> _cpuCoolingRepository;
+        private readonly IPcPartsRepository<CpuCooling> _cpuCoolingRepository;
         private readonly IMapper _mapper;
 
         private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
 
-        public CpuCoolingController(IGenericRepository<CpuCooling> cpuCoolingRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
+        public CpuCoolingController(IPcPartsRepository<CpuCooling> cpuCoolingRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _cpuCoolingRepository = cpuCoolingRepository;
             _mapper = mapper;

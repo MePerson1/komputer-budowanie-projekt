@@ -13,13 +13,13 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/cpu")]
     public class CpuController : Controller
     {
-        private readonly IGenericRepository<Cpu> _cpuRepository;
+        private readonly IPcPartsRepository<Cpu> _cpuRepository;
         private readonly IMapper _mapper;
 
         private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
 
-        public CpuController(IGenericRepository<Cpu> cpuRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
+        public CpuController(IPcPartsRepository<Cpu> cpuRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _cpuRepository = cpuRepository;
             _mapper = mapper;

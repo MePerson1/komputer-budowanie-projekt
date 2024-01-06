@@ -13,13 +13,13 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/motherboard")]
     public class MotherboardController : Controller
     {
-        private readonly IGenericRepository<Motherboard> _motherboardRepository;
+        private readonly IPcPartsRepository<Motherboard> _motherboardRepository;
         private readonly IMapper _mapper;
 
         private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
 
-        public MotherboardController(IGenericRepository<Motherboard> motherboardRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
+        public MotherboardController(IPcPartsRepository<Motherboard> motherboardRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _motherboardRepository = motherboardRepository;
             _mapper = mapper;

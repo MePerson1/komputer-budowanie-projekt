@@ -51,7 +51,7 @@ public class Program
         //builder.Services.AddScoped<IPowerSupplyRepository, PowerSupplyRepository>();
         //builder.Services.AddScoped<IRamRepository, RamRepository>();
         //builder.Services.AddScoped<IUserRepository, UserRepository>();
-        builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(PcPartsRepository<>));
+        builder.Services.AddScoped(typeof(IPcPartsRepository<>), typeof(PcPartsRepository<>));
         builder.Services.AddScoped<IPcConfigurationRepository, PcConfigurationRepository>();
 
         builder.Services.AddScoped<ICompatibilityPartsService, CompatibilityPartsService>();

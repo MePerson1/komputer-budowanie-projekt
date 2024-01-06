@@ -13,13 +13,13 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/ram")]
     public class RamController : Controller
     {
-        private readonly IGenericRepository<Ram> _ramRepository;
+        private readonly IPcPartsRepository<Ram> _ramRepository;
         private readonly IMapper _mapper;
 
         private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
 
-        public RamController(IGenericRepository<Ram> ramRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
+        public RamController(IPcPartsRepository<Ram> ramRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _ramRepository = ramRepository;
             _mapper = mapper;

@@ -1,9 +1,10 @@
 ﻿using KomputerBudowanieAPI.Database;
+using KomputerBudowanieAPI.Helpers;
 using KomputerBudowanieAPI.Interfaces;
 using Microsoft.EntityFrameworkCore;
 namespace KomputerBudowanieAPI.Repository
 {
-    public class PcPartsRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
+    public class PcPartsRepository<TEntity> : IPcPartsRepository<TEntity> where TEntity : class
     {
         protected KomBuildDbContext _context;
         public PcPartsRepository(KomBuildDbContext context)
@@ -17,10 +18,16 @@ namespace KomputerBudowanieAPI.Repository
             await SaveChanges();
         }
 
-        public async Task<IEnumerable<TEntity>> GetAllAsync()
+        public async Task<IEnumerable<TEntity>> GetAllAsync(int page = 1, int pageSize = 10, string sortBy = null, string searchTerm = null)
         {
-            return await _context.Set<TEntity>().ToListAsync();
+            IQueryable<TEntity> query = _context.Set<TEntity>().Sort(sortBy).Search(searchTerm).AsQueryable();
+
+            query = query.Skip((page - 1) * pageSize).Take(pageSize);
+
+            return await query.ToListAsync();
         }
+
+
 
         public async Task<TEntity?> GetByIdAsync(int id)
         {
