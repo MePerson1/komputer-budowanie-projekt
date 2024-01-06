@@ -79,7 +79,7 @@ namespace KomputerBudowanieAPI.Controllers
         {
             try
             {
-                var motherboards = await _motherboardRepository.GetAllAsync();
+                var motherboards = await _motherboardRepository.GetAllAsyncSortSearch(partsParams);
                 if (motherboards is null || !motherboards.Any())
                 {
                     return NotFound();

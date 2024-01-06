@@ -82,7 +82,7 @@ namespace KomputerBudowanieAPI.Controllers
         {
             try
             {
-                var cpus = await _cpuRepository.GetAllAsync();
+                var cpus = await _cpuRepository.GetAllAsyncSortSearch(partsParams);
                 if (cpus is null || !cpus.Any())
                 {
                     return NotFound();

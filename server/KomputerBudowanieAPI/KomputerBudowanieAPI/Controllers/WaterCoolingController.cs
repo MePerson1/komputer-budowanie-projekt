@@ -40,6 +40,20 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(_mapper.Map<IEnumerable<WaterCoolingDto>>(fans));
         }
 
+        [HttpGet("pagination")]
+        public async Task<IActionResult> GetAllRamsPaginate([FromQuery] PartsParams partsParams)
+        {
+            var waterCoolings = await _waterCoolingRepository.GetAllAsyncPagination(partsParams);
+
+            if (waterCoolings is null || !waterCoolings.Any())
+            {
+                return NotFound();
+            }
+
+            Response.AddPaginationHeader(waterCoolings.MetaData);
+            return Ok(waterCoolings);
+        }
+
         [HttpGet("scraper")]
         public async Task<IActionResult> GetAllCpusCoolingsScraper()
         {
@@ -65,7 +79,7 @@ namespace KomputerBudowanieAPI.Controllers
         {
             try
             {
-                var waterCoolings = await _waterCoolingRepository.GetAllAsync();
+                var waterCoolings = await _waterCoolingRepository.GetAllAsyncSortSearch(partsParams);
                 if (waterCoolings is null || !waterCoolings.Any())
                 {
                     return NotFound();

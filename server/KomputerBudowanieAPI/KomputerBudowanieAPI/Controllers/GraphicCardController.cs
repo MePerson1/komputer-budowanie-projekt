@@ -79,7 +79,7 @@ namespace KomputerBudowanieAPI.Controllers
         {
             try
             {
-                var graphicCards = await _graphicCardRepository.GetAllAsync();
+                var graphicCards = await _graphicCardRepository.GetAllAsyncSortSearch(partsParams);
                 if (graphicCards is null || !graphicCards.Any())
                 {
                     return NotFound();

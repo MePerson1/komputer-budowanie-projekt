@@ -6,6 +6,7 @@ namespace KomputerBudowanieAPI.Interfaces
     {
         Task<IEnumerable<TEntity>> GetAllAsync();
         Task<PagedList<TEntity>> GetAllAsyncPagination(PartsParams partsParams);
+        Task<IEnumerable<TEntity>> GetAllAsyncSortSearch(PartsParams partsParams);
 
         Task<TEntity?> GetByIdAsync(int id);
 

@@ -79,7 +79,7 @@ namespace KomputerBudowanieAPI.Controllers
         {
             try
             {
-                var powerSupplies = await _powerSupplyRepository.GetAllAsync();
+                var powerSupplies = await _powerSupplyRepository.GetAllAsyncSortSearch(partsParams);
                 if (powerSupplies is null || !powerSupplies.Any())
                 {
                     return NotFound();

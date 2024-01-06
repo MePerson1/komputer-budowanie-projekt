@@ -79,7 +79,7 @@ namespace KomputerBudowanieAPI.Controllers
         {
             try
             {
-                var rams = await _ramRepository.GetAllAsync();
+                var rams = await _ramRepository.GetAllAsyncSortSearch(partsParams);
                 if (rams is null || !rams.Any())
                 {
                     return NotFound();

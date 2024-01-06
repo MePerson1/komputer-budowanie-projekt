@@ -78,7 +78,7 @@ namespace KomputerBudowanieAPI.Controllers
         {
             try
             {
-                var storages = await _storageRepository.GetAllAsync();
+                var storages = await _storageRepository.GetAllAsyncSortSearch(partsParams);
                 if (storages is null || !storages.Any())
                 {
                     return NotFound();

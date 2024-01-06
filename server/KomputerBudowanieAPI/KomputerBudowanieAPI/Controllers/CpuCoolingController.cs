@@ -81,7 +81,7 @@ namespace KomputerBudowanieAPI.Controllers
         {
             try
             {
-                var cpuCoolings = await _cpuCoolingRepository.GetAllAsync();
+                var cpuCoolings = await _cpuCoolingRepository.GetAllAsyncSortSearch(partsParams);
                 if (cpuCoolings is null || !cpuCoolings.Any())
                 {
                     return NotFound();
