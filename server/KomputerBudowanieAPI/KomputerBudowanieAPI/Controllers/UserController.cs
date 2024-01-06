@@ -1,4 +1,5 @@
 ﻿using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
 using KomputerBudowanieAPI.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -18,14 +19,12 @@ namespace KomputerBudowanieAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _user;
-        private readonly IConfiguration _configuration;
-        private readonly JwtTokenHandler _jwtTokenHandler;
+        private readonly IJwtTokenHandler _jwtTokenHandler;
 
-        public UserController(UserManager<ApplicationUser> user, IConfiguration configuration, JwtTokenHandler jwtTokenHandler)
+        public UserController(UserManager<ApplicationUser> user, IJwtTokenHandler jwtTokenHandler)
         {
             _user = user;
             _jwtTokenHandler = jwtTokenHandler;
-            _configuration = configuration;
         }
 
         [HttpPost("token")]

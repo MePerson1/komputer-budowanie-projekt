@@ -1,4 +1,5 @@
-﻿using KomputerBudowanieAPI.Models;
+﻿using KomputerBudowanieAPI.Interfaces;
+using KomputerBudowanieAPI.Models;
 using Microsoft.IdentityModel.Tokens;
 using NuGet.Common;
 using System.IdentityModel.Tokens.Jwt;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace KomputerBudowanieAPI.Services
 {
-    public class JwtTokenHandler
+    public class JwtTokenHandler : IJwtTokenHandler
     {
         private readonly string _issuer;
         private readonly string _audience;
@@ -47,6 +48,29 @@ namespace KomputerBudowanieAPI.Services
             return token;
         }
 
+        public JwtSecurityToken GenerateTokenForUserWithClaims(ApplicationUser user, IList<string> userRoles)
+        {
+            var claims = new List<Claim>()
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.UserName)
+            };
+
+            var tokenLiftime = DateTime.UtcNow.AddMinutes(60);
+            foreach (var role in userRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+                if (role == "Scraper")
+                {
+                    tokenLiftime = DateTime.UtcNow.AddHours(12);
+                }
+            }
+
+            return GenerateToken(claims, tokenLiftime);
+        }
+
         public ClaimsPrincipal? GetPrincipalFromToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -61,29 +85,6 @@ namespace KomputerBudowanieAPI.Services
             {
                 return null;
             }
-        }
-
-        public JwtSecurityToken GenerateTokenForUserWithClaims(ApplicationUser user, IList<string> userRoles)
-        {
-            var claims = new List<Claim>()
-                {
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                    new Claim(ClaimTypes.Name, user.UserName)
-                };
-
-            var tokenLiftime = DateTime.UtcNow.AddMinutes(60);
-            foreach (var role in userRoles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-                if (role == "Scraper")
-                {
-                    tokenLiftime = DateTime.UtcNow.AddHours(12);
-                }
-            }
-
-            return GenerateToken(claims, tokenLiftime);
         }
 
         public TokenValidationParameters GetTokenValidationParameters()
