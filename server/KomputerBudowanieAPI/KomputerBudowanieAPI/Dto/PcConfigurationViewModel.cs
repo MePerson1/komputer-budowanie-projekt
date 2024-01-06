@@ -5,23 +5,22 @@ namespace KomputerBudowanieAPI.Dto
     public class PcConfigurationViewModel
     {
         public Guid Id { get; set; }
-
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public string? Description { get; set; }
+        public bool isPrivate { get; set; } = true;
 
-        public MotherboardDto Motherboard { get; set; }
-        public GraphicCardDto GraphicCard { get; set; }
-        public CpuDto Cpu { get; set; }
-        public CpuCoolingDto CPU_Cooling { get; set; }
+        public Motherboard? Motherboard { get; set; }
+        public GraphicCard? GraphicCard { get; set; }
+        public Cpu? Cpu { get; set; }
+        public CpuCooling? CpuCooling { get; set; } = null;
 
-        public CaseDto Case { get; set; }
-        public WaterCoolingDto Fan { get; set; } // tutaj tez many to many raczej
-        public PowerSupplyDto PowerSupply { get; set; }
-
-        public ApplicationUser? User { get; set; } = null;
-
-        public ICollection<StorageDto> Memories { get; set; }
-        public ICollection<RamDto> Rams { get; set; }
+        public Case? Case { get; set; }
+        public PowerSupply? PowerSupply { get; set; } = null;
+        public WaterCooling? WaterCooling { get; set; }
+        public UserDto User { get; set; }
+        public double TotalPrice { get; set; } = 0;
+        public ICollection<PcConfigurationStorage>? PcConfigurationStorages { get; set; }
+        public ICollection<PcConfigurationRam>? PcConfigurationRams { get; set; }
 
     }
 }

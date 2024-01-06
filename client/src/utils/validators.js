@@ -1,27 +1,60 @@
-export const validateLoginForm = ({ email, password }) => {
-    const isEmailValid = validateEmail(email);
-    const isPasswordValid = validatePassword(password);
+export const validationInfo = [
+  {
+    name: "email",
+    isValid: true,
+    info: "Podano nie poprawny email!",
+  },
+  {
+    name: "userName",
+    isValid: true,
+    info: "Podana nazwa jest nie poprawna. Poprawna nazwa powinna składać się z od 3 do 15 znaków.",
+  },
+  {
+    name: "password",
+    isValid: true,
+    info: "Podane hasło jest nie poprawne. Odopowiednie hasło powinno składać się z minimum 8 znaków, zawierać 1 wielką literę, 1 cyfrę oraz 1 znak specjalny.",
+  },
+];
 
-    return isEmailValid && isPasswordValid;
-};
-  
-export const validateRegisterForm = ({ email, password, username }) => {
-    return (
-        validateEmail(email) &&
-        validatePassword(password) &&
-        validateUsername(username)
-    );
+export const handleValidation = (values) => {
+  const updatedValidationMessages = validationInfo.map((field) => {
+    const name = field.name;
+    const value = values[name];
+    if (value !== undefined) {
+      return {
+        ...field,
+        isValid:
+          name === "userName"
+            ? validateUserName(value)
+            : name === "email"
+            ? validateEmail(value)
+            : validatePassword(value),
+      };
+    } else {
+      return {
+        ...field,
+        isValid: true,
+      };
+    }
+  });
+
+  return updatedValidationMessages;
 };
 
-export const validateUsername = (username) => {
-    return username.length > 2 && username.length < 13;
+export const handleIsValid = (validationInfo) => {
+  return validationInfo.every((field) => field.isValid);
+};
+
+export const validateUserName = (userName) => {
+  return userName.length > 2 && userName.length < 32;
 };
 
 export const validateEmail = (email) => {
-    const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-    return emailRegex.test(email);
+  const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+  return emailRegex.test(email);
 };
 
 export const validatePassword = (password) => {
-    return password.length > 5 && password.length < 13;
+  const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*[0-9]).{8,}$/;
+  return passwordRegex.test(password);
 };

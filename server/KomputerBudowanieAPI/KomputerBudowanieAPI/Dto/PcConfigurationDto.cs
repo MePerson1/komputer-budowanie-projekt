@@ -15,7 +15,7 @@
         public int? PowerSuplyId { get; set; }
 
         //[Required]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         public bool isPrivate { get; set; } = true;
 

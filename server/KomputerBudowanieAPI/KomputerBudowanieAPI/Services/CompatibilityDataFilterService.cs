@@ -1,7 +1,5 @@
 ﻿using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
-using Microsoft.Extensions.Configuration;
-using System.Text.RegularExpressions;
 
 namespace KomputerBudowanieAPI.Services
 {
@@ -9,7 +7,7 @@ namespace KomputerBudowanieAPI.Services
     {
         private readonly ICompatibilityPartsService _compatibilityPartsService;
 
-        public CompatibilityDataFilterService(ICompatibilityPartsService compatibilityPartsService) 
+        public CompatibilityDataFilterService(ICompatibilityPartsService compatibilityPartsService)
         {
             _compatibilityPartsService = compatibilityPartsService;
         }
@@ -26,7 +24,7 @@ namespace KomputerBudowanieAPI.Services
             }
             if (configuration.WaterCooling is not null)
             {
-                cpus = cpus.Where(cpu => Cpu_WaterCooling(cpu, configuration.WaterCooling));   
+                cpus = cpus.Where(cpu => Cpu_WaterCooling(cpu, configuration.WaterCooling));
             }
             cpus = cpus.ToList();
         }
@@ -48,7 +46,7 @@ namespace KomputerBudowanieAPI.Services
             if (configuration.PcConfigurationRams is not null)
             {
                 int ramsCount = RamCount(configuration.PcConfigurationRams);
-                
+
                 foreach (PcConfigurationRam ram in configuration.PcConfigurationRams)
                 {
                     motherboards = motherboards.Where(motherboard => Ram_Motherboard(ram.Ram, motherboard, ramsCount));
@@ -128,7 +126,7 @@ namespace KomputerBudowanieAPI.Services
                 Dictionary<string, int> connectors = ExtractConnectorInfoService.ExtractsStorageSlotsFromMotherboard(configuration.Motherboard.DriveConnectors);
                 storages = storages.Where(storage => Storage_To_Motherboard(storage, connectors, m2Count, sataCount));
             }
-            if(configuration.PowerSupply is not null)
+            if (configuration.PowerSupply is not null)
             {
                 if (sataCount <= configuration.PowerSupply.Sata)
                 {
@@ -362,7 +360,7 @@ namespace KomputerBudowanieAPI.Services
         {
             Toast toast = new Toast();
             _compatibilityPartsService.GraphicCard_PowerSupply(ref toast, graphicCard, powerSupply);
-            if(toast.Problems.Any()) return false;
+            if (toast.Problems.Any()) return false;
             return true;
         }
 
@@ -466,6 +464,6 @@ namespace KomputerBudowanieAPI.Services
             motherboard.MemoryStandard == ram.MemoryType
             && motherboard.MemoryConnectorType == ram.PinType
             && motherboard.MemorySlotsCount >= slotsUsed;
-                
+
     }
 }

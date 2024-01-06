@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import ReturnButton from "./ReturnButton";
+import PartPrices from "./PartPrices";
 
 const PartDetail = () => {
   const location = useLocation();
@@ -52,7 +53,11 @@ const PartDetail = () => {
         <div>
           <p>Nazwa: {part.name}</p>
           <p>Producent: {part.producer}</p>
-          <p>Cena: {part.price} zł</p>
+          <div className="flex item-center">
+            <p>Cena: </p>
+            <PartPrices prices={part.prices} />
+          </div>
+
           <p>Kod producenta: {part.producerCode}</p>
           <div>
             <h3>Specyfikacje:</h3>

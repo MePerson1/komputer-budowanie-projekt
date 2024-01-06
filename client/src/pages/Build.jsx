@@ -11,12 +11,14 @@ import Topic from "../components/shared/Topic";
 import { Alert } from "../components/shared/Alert";
 import { NameInput } from "../components/Build/NameInput";
 import { Navigate, useNavigate } from "react-router-dom";
-const Build = ({ pcConfiguration, setPcConfiguration }) => {
+import { getUserInfo } from "../utils/apiRequests";
+const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
   const navigate = useNavigate();
   const [totalPrice, setTotalPrice] = useState(0.0);
   const [isSaved, setIsSaved] = useState(false);
   let [configurationInfo, setConfigurationInfo] = useState(Toast);
   const [description, setDescription] = useState("");
+  const [isPrivate, setIsPrivate] = useState(false);
 
   useEffect(() => {
     if (pcConfiguration !== PcConfiguration) {
@@ -85,20 +87,27 @@ const Build = ({ pcConfiguration, setPcConfiguration }) => {
 
   async function savePcConfiguration(pcConfiguration) {
     if (pcConfiguration !== null && pcConfiguration.name !== "") {
-      console.log(pcConfiguration);
       var pcConfigurationIds = mapPcPartsToIds(pcConfiguration);
-      console.log(pcConfigurationIds);
-      await axios
-        .post("http://localhost:5198/api/configuration", pcConfigurationIds)
-        .then((res) => {
-          var data = res.data;
-          localStorage.removeItem("localConfiugration");
-          setPcConfiguration(PcConfiguration);
-          console.log("test");
-          setIsSaved(true);
-          navigate(`/configurations/${data.id}`);
-        })
-        .catch((err) => console.log(err));
+      const token = JSON.parse(localStorage.getItem("token"));
+      const loggedUser = await getUserInfo(token);
+      console.log(loggedUser);
+      if (token && loggedUser) {
+        pcConfigurationIds.userId = loggedUser.id;
+      }
+      pcConfigurationIds.isPrivate = isPrivate;
+      if (pcConfigurationIds.userId && token) {
+        await axios
+          .post("http://localhost:5198/api/configuration", pcConfigurationIds)
+          .then((res) => {
+            var data = res.data;
+            localStorage.removeItem("localConfiugration");
+            setPcConfiguration(PcConfiguration);
+            console.log("test");
+            setIsSaved(true);
+            navigate(`/configurations/${data.id}`);
+          })
+          .catch((err) => console.log(err));
+      }
     }
   }
 
@@ -133,6 +142,8 @@ const Build = ({ pcConfiguration, setPcConfiguration }) => {
               description={description}
               setDescription={setDescription}
               setPcConfiguration={setPcConfiguration}
+              setIsPrivate={setIsPrivate}
+              isPrivate={isPrivate}
             />
             <ConfigurationInfo configurationInfo={configurationInfo} />
           </div>

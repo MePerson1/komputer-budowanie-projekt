@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DetailButton } from "../shared/DetailButton";
 
 const PcConfigurationCard = ({ pcConfiguration }) => {
@@ -10,10 +10,10 @@ const PcConfigurationCard = ({ pcConfiguration }) => {
   const toggleDescription = () => {
     setShowFullDescription(!showFullDescription);
   };
-
   return (
     <div className="p-5 m-2 rounded-lg justify-center bg-base-200 shadow-base-300 hover:scale-105 transform transition duration-300">
       <div className="shadow-lg p-4">
+        <div>Twórca: {pcConfiguration.user.userName}</div>
         <figure className="">
           <img
             src="images/parts/computer.png"

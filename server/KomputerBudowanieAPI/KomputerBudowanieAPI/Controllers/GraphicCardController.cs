@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Helpers;
+using KomputerBudowanieAPI.Helpers.Request;
 using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
@@ -13,13 +15,13 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/graphic-card")]
     public class GraphicCardController : Controller
     {
-        private readonly IGenericRepository<GraphicCard> _graphicCardRepository;
+        private readonly IPcPartsRepository<GraphicCard> _graphicCardRepository;
         private readonly IMapper _mapper;
 
         private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
 
-        public GraphicCardController(IGenericRepository<GraphicCard> graphicCardRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
+        public GraphicCardController(IPcPartsRepository<GraphicCard> graphicCardRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _graphicCardRepository = graphicCardRepository;
             _mapper = mapper;
@@ -38,7 +40,20 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(_mapper.Map<IEnumerable<GraphicCardDto>>(graphicCards));
         }
 
-        [Authorize(IdentityData.ScraperOrAdminPolicyName)]
+        [HttpGet("pagination")]
+        public async Task<IActionResult> GetAllGraphicCardsPaginate([FromQuery] PartsParams partsParams)
+        {
+            var graphicCards = await _graphicCardRepository.GetAllAsyncPagination(partsParams);
+
+            if (graphicCards is null || !graphicCards.Any())
+            {
+                return NotFound();
+            }
+
+            Response.AddPaginationHeader(graphicCards.MetaData);
+            return Ok(graphicCards);
+        }
+
         [HttpGet("scraper")]
         public async Task<IActionResult> GetAllGraphicCardsScraper()
         {
@@ -60,11 +75,11 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         [HttpPost("compatible")]
-        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails)
+        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails, [FromQuery] PartsParams partsParams)
         {
             try
             {
-                var graphicCards = await _graphicCardRepository.GetAllAsync();
+                var graphicCards = await _graphicCardRepository.GetAllAsyncSortSearch(partsParams);
                 if (graphicCards is null || !graphicCards.Any())
                 {
                     return NotFound();
@@ -74,7 +89,10 @@ namespace KomputerBudowanieAPI.Controllers
                 await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
                 _compatibilityDataFilterService.GraphicCardFilter(configuration, ref graphicCards);
 
-                return Ok(graphicCards);
+                var paginationGraphicCards = await PagedList<GraphicCard>.ToPagedList(graphicCards, partsParams.PageNumber, partsParams.PageSize);
+                Response.AddPaginationHeader(paginationGraphicCards.MetaData);
+
+                return Ok(paginationGraphicCards);
             }
             catch (Exception ex)
             {

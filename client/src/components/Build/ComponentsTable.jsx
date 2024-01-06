@@ -154,7 +154,7 @@ const ComponentsTable = ({ setPcConfiguration, pcConfiguration, pcParts }) => {
         {pcConfiguration.case !== undefined && pcConfiguration.case !== null ? (
           <ComponentView
             key={pcParts[8].key}
-            pcPart={pcConfiguration.pcCase}
+            pcPart={pcConfiguration.case}
             handleSetToNull={handleSetToNull}
             partKey={"case"}
             partType={pcParts[8]}

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Helpers;
+using KomputerBudowanieAPI.Helpers.Request;
 using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
@@ -13,13 +15,13 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/water-cooling")]
     public class WaterCoolingController : Controller
     {
-        private readonly IGenericRepository<WaterCooling> _waterCoolingRepository;
+        private readonly IPcPartsRepository<WaterCooling> _waterCoolingRepository;
         private readonly IMapper _mapper;
 
         private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
 
-        public WaterCoolingController(IGenericRepository<WaterCooling> waterCoolingRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
+        public WaterCoolingController(IPcPartsRepository<WaterCooling> waterCoolingRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _waterCoolingRepository = waterCoolingRepository;
             _mapper = mapper;
@@ -38,7 +40,20 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(_mapper.Map<IEnumerable<WaterCoolingDto>>(fans));
         }
 
-        [Authorize(IdentityData.ScraperOrAdminPolicyName)]
+        [HttpGet("pagination")]
+        public async Task<IActionResult> GetAllRamsPaginate([FromQuery] PartsParams partsParams)
+        {
+            var waterCoolings = await _waterCoolingRepository.GetAllAsyncPagination(partsParams);
+
+            if (waterCoolings is null || !waterCoolings.Any())
+            {
+                return NotFound();
+            }
+
+            Response.AddPaginationHeader(waterCoolings.MetaData);
+            return Ok(waterCoolings);
+        }
+
         [HttpGet("scraper")]
         public async Task<IActionResult> GetAllCpusCoolingsScraper()
         {
@@ -60,11 +75,11 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         [HttpPost("compatible")]
-        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails)
+        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails, [FromQuery] PartsParams partsParams)
         {
             try
             {
-                var waterCoolings = await _waterCoolingRepository.GetAllAsync();
+                var waterCoolings = await _waterCoolingRepository.GetAllAsyncSortSearch(partsParams);
                 if (waterCoolings is null || !waterCoolings.Any())
                 {
                     return NotFound();
@@ -74,7 +89,10 @@ namespace KomputerBudowanieAPI.Controllers
                 await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
                 _compatibilityDataFilterService.WaterCoolingFilter(configuration, ref waterCoolings);
 
-                return Ok(waterCoolings);
+                var paginationWaterCooling = await PagedList<WaterCooling>.ToPagedList(waterCoolings, partsParams.PageNumber, partsParams.PageSize);
+                Response.AddPaginationHeader(paginationWaterCooling.MetaData);
+
+                return Ok(paginationWaterCooling);
             }
             catch (Exception ex)
             {

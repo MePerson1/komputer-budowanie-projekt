@@ -1,9 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using KomputerBudowanieAPI.Interfaces;
 using System.Text.Json.Serialization;
 
 namespace KomputerBudowanieAPI.Models
 {
-    public class Case
+    public class Case : IPart
     {
         public int Id { get; set; }
         public string Name { get; set; }

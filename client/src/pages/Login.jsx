@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Topic from "../components/shared/Topic";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { ErrorAlert } from "../components/shared/ErrorAlert";
 
 const Login = () => {
   const [remember, setRemember] = useState(false);
@@ -9,7 +10,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState();
   const [success, setSuccess] = useState("");
 
   useEffect(() => {
@@ -80,14 +81,13 @@ const Login = () => {
               >
                 Nie masz konta?
               </Link>
-              <a
-                href="#"
-                class="text-xs text-gray-600 hover:underline hover:text-blue-600"
-              >
-                Zapomniałeś hasła?
-              </a>
             </div>
-
+            {errorMessage && (
+              <ErrorAlert
+                errorMessage={errorMessage}
+                extraMessage="Logowanie nie powiodło się!"
+              />
+            )}
             <div>
               <button class="btn btn-primary" type="submit">
                 Zaloguj się

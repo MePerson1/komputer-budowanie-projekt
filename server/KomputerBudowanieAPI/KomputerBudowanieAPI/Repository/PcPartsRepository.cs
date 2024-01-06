@@ -1,9 +1,11 @@
 ﻿using KomputerBudowanieAPI.Database;
+using KomputerBudowanieAPI.Helpers;
+using KomputerBudowanieAPI.Helpers.Request;
 using KomputerBudowanieAPI.Interfaces;
 using Microsoft.EntityFrameworkCore;
 namespace KomputerBudowanieAPI.Repository
 {
-    public class PcPartsRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
+    public class PcPartsRepository<TEntity> : IPcPartsRepository<TEntity> where TEntity : class, IPart
     {
         protected KomBuildDbContext _context;
         public PcPartsRepository(KomBuildDbContext context)
@@ -21,6 +23,21 @@ namespace KomputerBudowanieAPI.Repository
         {
             return await _context.Set<TEntity>().ToListAsync();
         }
+
+        public async Task<IEnumerable<TEntity>> GetAllAsyncSortSearch(PartsParams partsParams)
+        {
+            return await _context.Set<TEntity>().Sort(partsParams.SortBy).Search(partsParams.SearchTerm).ToListAsync();
+        }
+
+        public async Task<PagedList<TEntity>> GetAllAsyncPagination(PartsParams partsParams)
+        {
+            IQueryable<TEntity> query = _context.Set<TEntity>().Sort(partsParams.SortBy).Search(partsParams.SearchTerm).AsQueryable();
+
+            return await PagedList<TEntity>.ToPagedList(query, partsParams.PageNumber, partsParams.PageSize);
+        }
+
+
+
 
         public async Task<TEntity?> GetByIdAsync(int id)
         {
