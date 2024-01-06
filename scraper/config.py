@@ -14,6 +14,12 @@ product_categories_and_links = {
     "water-cooling": "https://www.morele.net/kategoria/chlodzenie-wodne-zestawy-662/"
 }
 
+# Informacje potrzebne do zdobycia tokena autoryzacyjnego
+scraper_credentials = {
+  "email": "scraper@gmail.com",
+  "password": "(Scr4puScr4pu)"
+}
+
 # Nazwy sklepow wykorzystanych do scrapowania cen
 shop_names = {
     "morele": "Morele.net",

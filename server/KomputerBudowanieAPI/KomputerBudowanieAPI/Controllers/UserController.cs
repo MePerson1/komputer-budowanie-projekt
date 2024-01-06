@@ -78,8 +78,9 @@ namespace KomputerBudowanieAPI.Controllers
             {
                 return BadRequest(result.Errors);
             }
-            //var user = await _user.FindByEmailAsync(dto.Email);
-            //await _user.AddToRoleAsync(user, "Admin");
+
+            var user = await _user.FindByEmailAsync(dto.Email);
+            await _user.AddToRoleAsync(user, "Scraper");
 
             //var user = await _user.FindByEmailAsync(dto.Email);
 

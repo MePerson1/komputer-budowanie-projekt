@@ -192,11 +192,11 @@ def add_or_update_price(db_price_records, new_price):
 # 3. okazalo sie ze ceny w sklepie nie ma
 # 4. okazalo sie ze w produkcie jest cena z tego sklepu
 # Wowczas przestarzala cena zostaje wykryta i usunieta
-def check_for_obsolete_price(db_product, shop_name):
+def check_for_obsolete_price(db_product, shop_name, auth_token):
     for db_price_record in db_product["prices"]:
         if shop_name == db_price_record["shopName"]:
             print(f"Obsolete price found in product {db_product['name']}, shop {db_price_record['shopName']}")
-            DatabaseOperations.delete_obsolete_price(db_price_record["id"])
+            DatabaseOperations.delete_obsolete_price(db_price_record["id"], auth_token)
             db_product["prices"].remove(db_price_record)
 
     return db_product
@@ -212,7 +212,8 @@ if __name__ == "__main__":
     # Glowna petla do dodawania cen z morele i innych sklepow dla kazdej kategorii
     for category, link in database_categories_and_links.items():
         print(f"Now scraping for category {category}...")
-        category_products = DatabaseOperations.get_products_from_category(category)
+        token = DatabaseOperations.get_special_token()
+        category_products = DatabaseOperations.get_products_from_category(category, token)
         if not category_products:
             break
 
@@ -229,7 +230,7 @@ if __name__ == "__main__":
 
         # Sprawdzenie pod katem przestarzalych cen produktow ktore nie mialy zadnego matcha
         for product in category_products_no_match:
-            product = check_for_obsolete_price(product, shop_names["morele"])
+            product = check_for_obsolete_price(product, shop_names["morele"], token)
 
         # Dodawanie cen dla pojedynczych produktow
         for product in category_products:
@@ -239,16 +240,16 @@ if __name__ == "__main__":
             if komputronik_price:
                 product["prices"] = add_or_update_price(product["prices"], komputronik_price)
             else:
-                product = check_for_obsolete_price(product, shop_names["komputronik"])
+                product = check_for_obsolete_price(product, shop_names["komputronik"], token)
 
             euro_com_price = get_euro_com_price(product["producerCode"], product["name"])
             if euro_com_price:
                 product["prices"] = add_or_update_price(product["prices"], euro_com_price)
             else:
-                product = check_for_obsolete_price(product, shop_names["euro.com"])
+                product = check_for_obsolete_price(product, shop_names["euro.com"], token)
 
             time.sleep(2)  # Chwila oddechu dla stron
             if product["prices"]:  # Produktow bez cen nie wysylac
-                DatabaseOperations.update_product(product, category)
+                DatabaseOperations.update_product(product, category, token)
             else:
                 print(f"Product {product['name']} does not have any prices\n")

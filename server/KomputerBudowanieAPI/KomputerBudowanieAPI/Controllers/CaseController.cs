@@ -50,6 +50,7 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(_mapper.Map<CaseDto>(pcCase));
         }
 
+        [Authorize(IdentityData.ScraperOrAdminPolicyName)]
         [HttpGet("scraper")]
         public async Task<IActionResult> GetAllCasesScraper()
         {
