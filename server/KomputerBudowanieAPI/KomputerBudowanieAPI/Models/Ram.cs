@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace KomputerBudowanieAPI.Models
 {
-    public class Ram : IPart
+    public class Ram : IProduct
     {
         [Key]
         public int Id { get; set; }

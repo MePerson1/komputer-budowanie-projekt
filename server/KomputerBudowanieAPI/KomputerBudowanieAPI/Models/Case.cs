@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace KomputerBudowanieAPI.Models
 {
-    public class Case : IPart
+    public class Case : IProduct
     {
         public int Id { get; set; }
         public string Name { get; set; }

@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace KomputerBudowanieAPI.Models
 {
-    public class PowerSupply : IPart
+    public class PowerSupply : IProduct
     {
         [Key]
         public int Id { get; set; }
