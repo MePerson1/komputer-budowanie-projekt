@@ -25,14 +25,7 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const localConfiugration = JSON.parse(
-      localStorage.getItem("localConfiugration")
-    );
-    setPcConfiguration(localConfiugration);
-  }, []);
-
-  useEffect(() => {
-    if (filter) {
+    if (filter && pcConfiguration) {
       getFilteredParts(
         partType.key,
         paginationInfo.CurrentPage,
@@ -49,7 +42,7 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   }, [parts]);
   const handlePageChange = async (pageNumber) => {
     setPaginationInfo({ ...paginationInfo, CurrentPage: pageNumber });
-    if (filter) {
+    if (filter && pcConfiguration) {
       await getFilteredParts(partType.key, pageNumber, searchTerm, sortBy);
     } else {
       await getParts(partType.key, pageNumber, searchTerm, sortBy);
@@ -57,7 +50,7 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   };
 
   const handleSearch = async () => {
-    if (filter) {
+    if (filter && pcConfiguration) {
       await getFilteredParts(
         partType.key,
         paginationInfo.CurrentPage,
@@ -75,7 +68,7 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   };
   const handleSort = async (sortValue) => {
     setSortBy(sortValue);
-    if (filter) {
+    if (filter && pcConfiguration) {
       await getFilteredParts(
         partType.key,
         paginationInfo.CurrentPage,
