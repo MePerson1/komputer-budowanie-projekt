@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Helpers;
+using KomputerBudowanieAPI.Helpers.Request;
 using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
@@ -36,6 +38,20 @@ namespace KomputerBudowanieAPI.Controllers
                 return NotFound();
             }
             return Ok(_mapper.Map<IEnumerable<PowerSupplyDto>>(powerSupplies));
+        }
+
+        [HttpGet("pagination")]
+        public async Task<IActionResult> GetAllPowerSuppliesPaginate([FromQuery] PartsParams partsParams)
+        {
+            var powerSupplies = await _powerSupplyRepository.GetAllAsyncPagination(partsParams);
+
+            if (powerSupplies is null || !powerSupplies.Any())
+            {
+                return NotFound();
+            }
+
+            Response.AddPaginationHeader(powerSupplies.MetaData);
+            return Ok(powerSupplies);
         }
 
         [HttpGet("scraper")]

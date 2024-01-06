@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Helpers;
+using KomputerBudowanieAPI.Helpers.Request;
 using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
@@ -28,7 +30,7 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllRam()
+        public async Task<IActionResult> GetAllRams()
         {
             var rams = await _ramRepository.GetAllAsync();
             if (rams is null || !rams.Any())
@@ -36,6 +38,20 @@ namespace KomputerBudowanieAPI.Controllers
                 return NotFound();
             }
             return Ok(_mapper.Map<IEnumerable<RamDto>>(rams));
+        }
+
+        [HttpGet("pagination")]
+        public async Task<IActionResult> GetAllRamsPaginate([FromQuery] PartsParams partsParams)
+        {
+            var rams = await _ramRepository.GetAllAsyncPagination(partsParams);
+
+            if (rams is null || !rams.Any())
+            {
+                return NotFound();
+            }
+
+            Response.AddPaginationHeader(rams.MetaData);
+            return Ok(rams);
         }
 
         [HttpGet("scraper")]

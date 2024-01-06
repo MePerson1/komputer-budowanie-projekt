@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Helpers;
+using KomputerBudowanieAPI.Helpers.Request;
 using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
@@ -36,6 +38,20 @@ namespace KomputerBudowanieAPI.Controllers
                 return NotFound();
             }
             return Ok(_mapper.Map<IEnumerable<GraphicCardDto>>(graphicCards));
+        }
+
+        [HttpGet("pagination")]
+        public async Task<IActionResult> GetAllGraphicCardsPaginate([FromQuery] PartsParams partsParams)
+        {
+            var graphicCards = await _graphicCardRepository.GetAllAsyncPagination(partsParams);
+
+            if (graphicCards is null || !graphicCards.Any())
+            {
+                return NotFound();
+            }
+
+            Response.AddPaginationHeader(graphicCards.MetaData);
+            return Ok(graphicCards);
         }
 
         [HttpGet("scraper")]

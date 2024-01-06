@@ -42,7 +42,7 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(_mapper.Map<ICollection<CaseDto>>(cases));
         }
 
-        [HttpGet("paginate")]
+        [HttpGet("pagination")]
         public async Task<IActionResult> GetAllCasesPaginate([FromQuery] PartsParams partsParams)
         {
             var cases = await _caseRepository.GetAllAsyncPagination(partsParams);
@@ -93,6 +93,32 @@ namespace KomputerBudowanieAPI.Controllers
                 var configuration = new PcConfiguration();
                 await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
                 _compatibilityDataFilterService.CaseFilter(configuration, ref cases);
+
+
+                return Ok(cases);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPost("compatible/pagination")]
+        public async Task<IActionResult> GetCompatiblePagination([FromBody] PcConfigurationDto configurationDetails, [FromQuery] PartsParams partsParams)
+        {
+            try
+            {
+                var cases = await _caseRepository.GetAllAsync();
+                if (cases is null || !cases.Any())
+                {
+                    return NotFound();
+                }
+
+                var configuration = new PcConfiguration();
+                await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
+                _compatibilityDataFilterService.CaseFilter(configuration, ref cases);
+
 
                 return Ok(cases);
             }

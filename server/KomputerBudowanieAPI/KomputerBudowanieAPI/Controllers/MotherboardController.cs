@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Helpers;
+using KomputerBudowanieAPI.Helpers.Request;
 using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
@@ -36,6 +38,20 @@ namespace KomputerBudowanieAPI.Controllers
                 return NotFound();
             }
             return Ok(_mapper.Map<IEnumerable<MotherboardDto>>(motherboards));
+        }
+
+        [HttpGet("pagination")]
+        public async Task<IActionResult> GetAllMotherboardsPaginate([FromQuery] PartsParams partsParams)
+        {
+            var motherboards = await _motherboardRepository.GetAllAsyncPagination(partsParams);
+
+            if (motherboards is null || !motherboards.Any())
+            {
+                return NotFound();
+            }
+
+            Response.AddPaginationHeader(motherboards.MetaData);
+            return Ok(motherboards);
         }
 
         [HttpGet("scraper")]

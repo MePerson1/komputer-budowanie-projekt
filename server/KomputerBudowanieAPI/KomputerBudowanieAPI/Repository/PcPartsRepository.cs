@@ -32,6 +32,7 @@ namespace KomputerBudowanieAPI.Repository
 
 
 
+
         public async Task<TEntity?> GetByIdAsync(int id)
         {
             var model = await _context.Set<TEntity>().FindAsync(id);

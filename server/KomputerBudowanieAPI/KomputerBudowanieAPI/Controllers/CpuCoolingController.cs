@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Helpers;
+using KomputerBudowanieAPI.Helpers.Request;
 using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
@@ -36,6 +38,19 @@ namespace KomputerBudowanieAPI.Controllers
                 return NotFound();
             }
             return Ok(_mapper.Map<IEnumerable<CpuCoolingDto>>(cpuCoolings));
+        }
+        [HttpGet("pagination")]
+        public async Task<IActionResult> GetAllCpusCollingsPaginate([FromQuery] PartsParams partsParams)
+        {
+            var cpuCoolings = await _cpuCoolingRepository.GetAllAsyncPagination(partsParams);
+
+            if (cpuCoolings is null || !cpuCoolings.Any())
+            {
+                return NotFound();
+            }
+
+            Response.AddPaginationHeader(cpuCoolings.MetaData);
+            return Ok(cpuCoolings);
         }
 
         [HttpGet("scraper")]
