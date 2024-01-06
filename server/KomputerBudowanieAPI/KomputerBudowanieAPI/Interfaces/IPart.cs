@@ -2,7 +2,7 @@
 
 namespace KomputerBudowanieAPI.Interfaces
 {
-    public interface IProduct
+    public interface IPart
     {
         string Name { get; set; }
         ICollection<ShopPrice>? Prices { get; set; }

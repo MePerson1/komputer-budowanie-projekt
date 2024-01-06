@@ -1,11 +1,11 @@
 ﻿using KomputerBudowanieAPI.Interfaces;
 
-namespace KomputerBudowanieAPI.Helpers
+namespace KomputerBudowanieAPI.Helpers.Request
 {
     public static class PartsExtensions
     {
         public static IQueryable<TEntity> Search<TEntity>(this IQueryable<TEntity> query, string searchTerm)
-            where TEntity : class, IProduct
+            where TEntity : class, IPart
         {
             if (string.IsNullOrWhiteSpace(searchTerm)) return query;
 
@@ -15,7 +15,7 @@ namespace KomputerBudowanieAPI.Helpers
         }
 
         public static IQueryable<TEntity> Sort<TEntity>(this IQueryable<TEntity> query, string sortBy)
-            where TEntity : class, IProduct
+            where TEntity : class, IPart
         {
             if (string.IsNullOrWhiteSpace(sortBy)) return query.OrderBy(p => p.Name);
 
