@@ -37,11 +37,18 @@ def add_products_from_category(products, category, token):
     url = f"http://localhost:5198/api/{category}"
     headers = {"Authorization": f"Bearer {token}"}
 
-    for product in products:
-        response = requests.post(url, json=product, headers=headers)
+    products_from_category = get_products_from_category(category, token)
+    products_from_category_dict = {prod["producerCode"]: prod for prod in products_from_category}
 
+    for product in products:
+        product_already_added = products_from_category_dict.get(product["ProducerCode"])
+        if product_already_added:
+            print(f"Product {product['Name']} is already in the database")
+            continue
+
+        response = requests.post(url, json=product, headers=headers)
         if response.status_code == 200:
-            print(f"Request for {product['name']} on {url} was successful.")
+            print(f"Request for {product['Name']} on {url} was successful.")
         else:
             print(f"Request failed on {url} with status code: {response.status_code}")
             print(f"for product: {product}")
