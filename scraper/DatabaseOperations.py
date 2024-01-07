@@ -1,5 +1,9 @@
 import requests
-from config import scraper_credentials
+import configparser
+
+config = configparser.ConfigParser()
+config.read('config.ini')
+scraper_credentials = dict(config.items('ScraperCredentials'))
 
 
 def get_special_token():

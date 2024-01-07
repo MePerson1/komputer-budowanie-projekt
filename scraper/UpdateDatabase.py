@@ -1,9 +1,14 @@
 import requests
 from bs4 import BeautifulSoup
 import time
-from config import product_categories_and_links, shop_names
+import configparser
 from FillDatabase import find_morele_page_limit
 import DatabaseOperations
+
+config = configparser.ConfigParser()
+config.read('config.ini')
+shop_names = dict(config.items('ShopNames'))
+product_categories_and_links = dict(config.items('ProductCategoriesAndLinks'))
 
 
 def get_euro_com_price(producer_code, product_name):

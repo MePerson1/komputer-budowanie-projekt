@@ -1,9 +1,20 @@
 import requests
 from bs4 import BeautifulSoup
 from requests import exceptions
-from config import *
+import configparser
 import ParseProduct
 import DatabaseOperations
+
+# poczatkowe ustalenie niezbednych wartosci z config.ini
+config = configparser.ConfigParser()
+config.read('config.ini')
+product_categories_and_links = dict(config.items('ProductCategoriesAndLinks'))
+choose_all_product_categories = config.getboolean('Options', 'choose_all_product_categories')
+chosen_product_category = config.get('Options', 'chosen_product_category')
+how_many_pages = config.getint('Options', 'how_many_pages')
+add_to_database = config.getboolean('Options', 'add_to_database')
+show_raw_data_in_console = config.getboolean('Options', 'show_raw_data_in_console')
+show_translated_data_in_console = config.getboolean('Options', 'show_translated_data_in_console')
 
 
 def find_morele_page_limit(soup):
@@ -126,4 +137,4 @@ if __name__ == "__main__":
         if chosen_product_category in product_categories_and_links:
             scrape_product_category(chosen_product_category, product_categories_and_links[chosen_product_category])
         else:
-            print("Variable chosen_product_category in config.py is not equal to any product_categories_and_links key")
+            print("Variable chosen_product_category in config.ini is not equal to any product_categories_and_links key")
