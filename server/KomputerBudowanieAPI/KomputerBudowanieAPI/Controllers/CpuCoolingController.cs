@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Helpers;
+using KomputerBudowanieAPI.Helpers.Request;
 using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
@@ -13,13 +15,13 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/cpu-cooling")]
     public class CpuCoolingController : Controller
     {
-        private readonly IGenericRepository<CpuCooling> _cpuCoolingRepository;
+        private readonly IPcPartsRepository<CpuCooling> _cpuCoolingRepository;
         private readonly IMapper _mapper;
 
         private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
 
-        public CpuCoolingController(IGenericRepository<CpuCooling> cpuCoolingRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
+        public CpuCoolingController(IPcPartsRepository<CpuCooling> cpuCoolingRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _cpuCoolingRepository = cpuCoolingRepository;
             _mapper = mapper;
@@ -36,6 +38,19 @@ namespace KomputerBudowanieAPI.Controllers
                 return NotFound();
             }
             return Ok(_mapper.Map<IEnumerable<CpuCoolingDto>>(cpuCoolings));
+        }
+        [HttpGet("pagination")]
+        public async Task<IActionResult> GetAllCpusCollingsPaginate([FromQuery] PartsParams partsParams)
+        {
+            var cpuCoolings = await _cpuCoolingRepository.GetAllAsyncPagination(partsParams);
+
+            if (cpuCoolings is null || !cpuCoolings.Any())
+            {
+                return NotFound();
+            }
+
+            Response.AddPaginationHeader(cpuCoolings.MetaData);
+            return Ok(cpuCoolings);
         }
 
         [Authorize(IdentityData.ScraperOrAdminPolicyName)]
@@ -63,11 +78,11 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         [HttpPost("compatible")]
-        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails)
+        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails, [FromQuery] PartsParams partsParams)
         {
             try
             {
-                var cpuCoolings = await _cpuCoolingRepository.GetAllAsync();
+                var cpuCoolings = await _cpuCoolingRepository.GetAllAsyncSortSearch(partsParams);
                 if (cpuCoolings is null || !cpuCoolings.Any())
                 {
                     return NotFound();
@@ -77,7 +92,10 @@ namespace KomputerBudowanieAPI.Controllers
                 await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
                 _compatibilityDataFilterService.CpuCoolingFilter(configuration, ref cpuCoolings);
 
-                return Ok(cpuCoolings);
+                var paginationCpuCoolings = await PagedList<CpuCooling>.ToPagedList(cpuCoolings, partsParams.PageNumber, partsParams.PageSize);
+                Response.AddPaginationHeader(paginationCpuCoolings.MetaData);
+
+                return Ok(paginationCpuCoolings);
             }
             catch (Exception ex)
             {

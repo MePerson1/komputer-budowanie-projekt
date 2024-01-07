@@ -8,9 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
 
 public class Program
 {
@@ -53,7 +51,9 @@ public class Program
         //builder.Services.AddScoped<IPowerSupplyRepository, PowerSupplyRepository>();
         //builder.Services.AddScoped<IRamRepository, RamRepository>();
         //builder.Services.AddScoped<IUserRepository, UserRepository>();
-        builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(PcPartsRepository<>));
+
+        builder.Services.AddScoped<IShopPriceRepository, ShopPriceRepository>();
+        builder.Services.AddScoped(typeof(IPcPartsRepository<>), typeof(PcPartsRepository<>));
         builder.Services.AddScoped<IPcConfigurationRepository, PcConfigurationRepository>();
 
         builder.Services.AddScoped<ICompatibilityPartsService, CompatibilityPartsService>();
@@ -144,11 +144,11 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-
+        app.UseCors("CorsPolicy");
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.UseCors("CorsPolicy");
+
         app.MapControllers();
 
         app.Run();

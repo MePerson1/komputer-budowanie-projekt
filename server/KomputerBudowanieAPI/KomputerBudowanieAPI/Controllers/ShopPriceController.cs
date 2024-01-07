@@ -1,5 +1,4 @@
 ﻿using KomputerBudowanieAPI.Interfaces;
-using KomputerBudowanieAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KomputerBudowanieAPI.Controllers
@@ -8,9 +7,9 @@ namespace KomputerBudowanieAPI.Controllers
     [ApiController]
     public class ShopPriceController : ControllerBase
     {
-        private readonly IGenericRepository<ShopPrice> _shopPriceRepository;
+        private readonly IShopPriceRepository _shopPriceRepository;
 
-        public ShopPriceController(IGenericRepository<ShopPrice> shopPriceRepository)
+        public ShopPriceController(IShopPriceRepository shopPriceRepository)
         {
             _shopPriceRepository = shopPriceRepository;
         }

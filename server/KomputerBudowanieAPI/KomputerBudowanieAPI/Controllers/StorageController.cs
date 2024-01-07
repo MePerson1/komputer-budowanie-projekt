@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Helpers;
+using KomputerBudowanieAPI.Helpers.Request;
 using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
@@ -13,13 +15,13 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/storage")]
     public class StorageController : Controller
     {
-        private readonly IGenericRepository<Storage> _storageRepository;
+        private readonly IPcPartsRepository<Storage> _storageRepository;
         private readonly IMapper _mapper;
 
         private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
 
-        public StorageController(IGenericRepository<Storage> storageRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
+        public StorageController(IPcPartsRepository<Storage> storageRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _storageRepository = storageRepository;
             _mapper = mapper;
@@ -28,43 +30,57 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllMemories()
+        public async Task<IActionResult> GetAllStorages()
         {
-            var memories = await _storageRepository.GetAllAsync();
-            if (memories is null || !memories.Any())
+            var storages = await _storageRepository.GetAllAsync();
+            if (storages is null || !storages.Any())
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<IEnumerable<StorageDto>>(memories));
+            return Ok(_mapper.Map<IEnumerable<StorageDto>>(storages));
+        }
+
+        [HttpGet("pagination")]
+        public async Task<IActionResult> GetAllStoragesPaginate([FromQuery] PartsParams partsParams)
+        {
+            var storages = await _storageRepository.GetAllAsyncPagination(partsParams);
+
+            if (storages is null || !storages.Any())
+            {
+                return NotFound();
+            }
+
+            Response.AddPaginationHeader(storages.MetaData);
+            return Ok(storages);
         }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetMemoryById(int id)
         {
-            var memory = await _storageRepository.GetByIdAsync(id);
-            if (memory is null)
+            var storages = await _storageRepository.GetByIdAsync(id);
+            if (storages is null)
                 return NotFound();
-            return Ok(_mapper.Map<StorageDto>(memory));
+            return Ok(_mapper.Map<StorageDto>(storages));
         }
 
         [Authorize(IdentityData.ScraperOrAdminPolicyName)]
         [HttpGet("scraper")]
         public async Task<IActionResult> GetAllStoragesScraper()
         {
-            var cases = await _storageRepository.GetAllAsync();
-            if (cases is null || !cases.Any())
+            var storages = await _storageRepository.GetAllAsync();
+            if (storages is null || !storages.Any())
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<ICollection<ProductDto>>(cases));
+            return Ok(_mapper.Map<ICollection<ProductDto>>(storages));
         }
 
         [HttpPost("compatible")]
-        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails)
+        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails, [FromQuery] PartsParams partsParams)
         {
             try
             {
-                var storages = await _storageRepository.GetAllAsync();
+                var storages = await _storageRepository.GetAllAsyncSortSearch(partsParams);
                 if (storages is null || !storages.Any())
                 {
                     return NotFound();
@@ -74,7 +90,10 @@ namespace KomputerBudowanieAPI.Controllers
                 await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
                 _compatibilityDataFilterService.StorageFilter(configuration, ref storages);
 
-                return Ok(storages);
+                var paginationStorage = await PagedList<Storage>.ToPagedList(storages, partsParams.PageNumber, partsParams.PageSize);
+                Response.AddPaginationHeader(paginationStorage.MetaData);
+
+                return Ok(paginationStorage);
             }
             catch (Exception ex)
             {
@@ -84,12 +103,12 @@ namespace KomputerBudowanieAPI.Controllers
 
         [Authorize(IdentityData.ScraperOrAdminPolicyName)]
         [HttpPost]
-        public async Task<IActionResult> CreateMemory([FromBody] StorageDto memory)
+        public async Task<IActionResult> CreateMemory([FromBody] StorageDto storage)
         {
-            var newMemory = _mapper.Map<Storage>(memory);
+            var newStorage = _mapper.Map<Storage>(storage);
             try
             {
-                await _storageRepository.Create(newMemory);
+                await _storageRepository.Create(newStorage);
                 return Ok();
             }
             catch (Exception ex) { return BadRequest(ex.Message); }
@@ -97,9 +116,9 @@ namespace KomputerBudowanieAPI.Controllers
 
         [Authorize(IdentityData.ScraperOrAdminPolicyName)]
         [HttpPut]
-        public async Task<IActionResult> UpdateMemory([FromBody] StorageDto memory)
+        public async Task<IActionResult> UpdateMemory([FromBody] StorageDto storages)
         {
-            var newMemory = _mapper.Map<Storage>(memory);
+            var newMemory = _mapper.Map<Storage>(storages);
             try
             {
                 await _storageRepository.Update(newMemory);

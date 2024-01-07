@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Helpers;
+using KomputerBudowanieAPI.Helpers.Request;
 using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
@@ -13,13 +15,13 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/ram")]
     public class RamController : Controller
     {
-        private readonly IGenericRepository<Ram> _ramRepository;
+        private readonly IPcPartsRepository<Ram> _ramRepository;
         private readonly IMapper _mapper;
 
         private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
 
-        public RamController(IGenericRepository<Ram> ramRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
+        public RamController(IPcPartsRepository<Ram> ramRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _ramRepository = ramRepository;
             _mapper = mapper;
@@ -28,7 +30,7 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllRam()
+        public async Task<IActionResult> GetAllRams()
         {
             var rams = await _ramRepository.GetAllAsync();
             if (rams is null || !rams.Any())
@@ -38,7 +40,20 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(_mapper.Map<IEnumerable<RamDto>>(rams));
         }
 
-        [Authorize(IdentityData.ScraperOrAdminPolicyName)]
+        [HttpGet("pagination")]
+        public async Task<IActionResult> GetAllRamsPaginate([FromQuery] PartsParams partsParams)
+        {
+            var rams = await _ramRepository.GetAllAsyncPagination(partsParams);
+
+            if (rams is null || !rams.Any())
+            {
+                return NotFound();
+            }
+
+            Response.AddPaginationHeader(rams.MetaData);
+            return Ok(rams);
+        }
+
         [HttpGet("scraper")]
         public async Task<IActionResult> GetAllRamsScraper()
         {
@@ -60,11 +75,11 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         [HttpPost("compatible")]
-        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails)
+        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails, [FromQuery] PartsParams partsParams)
         {
             try
             {
-                var rams = await _ramRepository.GetAllAsync();
+                var rams = await _ramRepository.GetAllAsyncSortSearch(partsParams);
                 if (rams is null || !rams.Any())
                 {
                     return NotFound();
@@ -74,7 +89,11 @@ namespace KomputerBudowanieAPI.Controllers
                 await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
                 _compatibilityDataFilterService.RamFilter(configuration, ref rams);
 
-                return Ok(rams);
+
+                var paginationRam = await PagedList<Ram>.ToPagedList(rams, partsParams.PageNumber, partsParams.PageSize);
+                Response.AddPaginationHeader(paginationRam.MetaData);
+
+                return Ok(paginationRam);
             }
             catch (Exception ex)
             {

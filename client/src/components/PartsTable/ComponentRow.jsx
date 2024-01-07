@@ -35,6 +35,8 @@ const ComponentRow = ({
         navigate("/build");
         break;
       case "case":
+        console.log(part);
+        console.log({ ...pcConfiguration, case: part });
         setPcConfiguration({ ...pcConfiguration, case: part });
         navigate("/build");
         break;

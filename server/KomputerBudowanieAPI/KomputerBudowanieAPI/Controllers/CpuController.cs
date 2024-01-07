@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Helpers;
+using KomputerBudowanieAPI.Helpers.Request;
 using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
@@ -13,13 +15,13 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/cpu")]
     public class CpuController : Controller
     {
-        private readonly IGenericRepository<Cpu> _cpuRepository;
+        private readonly IPcPartsRepository<Cpu> _cpuRepository;
         private readonly IMapper _mapper;
 
         private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
 
-        public CpuController(IGenericRepository<Cpu> cpuRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
+        public CpuController(IPcPartsRepository<Cpu> cpuRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _cpuRepository = cpuRepository;
             _mapper = mapper;
@@ -39,7 +41,20 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(_mapper.Map<IEnumerable<CpuDto>>(cpus));
         }
 
-        [Authorize(IdentityData.ScraperOrAdminPolicyName)]
+        [HttpGet("pagination")]
+        public async Task<IActionResult> GetAllCpusPaginate([FromQuery] PartsParams partsParams)
+        {
+            var cpus = await _cpuRepository.GetAllAsyncPagination(partsParams);
+
+            if (cpus is null || !cpus.Any())
+            {
+                return NotFound();
+            }
+
+            Response.AddPaginationHeader(cpus.MetaData);
+            return Ok(cpus);
+        }
+
         [HttpGet("scraper")]
         public async Task<IActionResult> GetAllCpuScraper()
         {
@@ -63,11 +78,11 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         [HttpPost("compatible")]
-        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails)
+        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails, [FromQuery] PartsParams partsParams)
         {
             try
             {
-                var cpus = await _cpuRepository.GetAllAsync();
+                var cpus = await _cpuRepository.GetAllAsyncSortSearch(partsParams);
                 if (cpus is null || !cpus.Any())
                 {
                     return NotFound();
@@ -77,7 +92,10 @@ namespace KomputerBudowanieAPI.Controllers
                 await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
                 _compatibilityDataFilterService.CpuFilter(configuration, ref cpus);
 
-                return Ok(cpus);
+                var paginationCpu = await PagedList<Cpu>.ToPagedList(cpus, partsParams.PageNumber, partsParams.PageSize);
+                Response.AddPaginationHeader(paginationCpu.MetaData);
+
+                return Ok(paginationCpu);
             }
             catch (Exception ex)
             {

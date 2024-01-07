@@ -19,12 +19,12 @@ namespace Tests.Controllers
 {
     public class CustomWebApplicationMockFactory : WebApplicationFactory<Program>
     {
-        public Mock<IGenericRepository<Cpu>> CpuRepositoryMock { get; }
+        public Mock<IPcPartsRepository<Cpu>> CpuRepositoryMock { get; }
         public Mock<IPcConfigurationRepository> PcConfigurationRepositoryMock { get; }
 
         public CustomWebApplicationMockFactory()
         {
-            CpuRepositoryMock = new Mock<IGenericRepository<Cpu>>();
+            CpuRepositoryMock = new Mock<IPcPartsRepository<Cpu>>();
             PcConfigurationRepositoryMock = new Mock<IPcConfigurationRepository>();
         }
 

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Helpers;
+using KomputerBudowanieAPI.Helpers.Request;
 using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
@@ -13,13 +15,13 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/motherboard")]
     public class MotherboardController : Controller
     {
-        private readonly IGenericRepository<Motherboard> _motherboardRepository;
+        private readonly IPcPartsRepository<Motherboard> _motherboardRepository;
         private readonly IMapper _mapper;
 
         private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
 
-        public MotherboardController(IGenericRepository<Motherboard> motherboardRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
+        public MotherboardController(IPcPartsRepository<Motherboard> motherboardRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _motherboardRepository = motherboardRepository;
             _mapper = mapper;
@@ -38,7 +40,20 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(_mapper.Map<IEnumerable<MotherboardDto>>(motherboards));
         }
 
-        [Authorize(IdentityData.ScraperOrAdminPolicyName)]
+        [HttpGet("pagination")]
+        public async Task<IActionResult> GetAllMotherboardsPaginate([FromQuery] PartsParams partsParams)
+        {
+            var motherboards = await _motherboardRepository.GetAllAsyncPagination(partsParams);
+
+            if (motherboards is null || !motherboards.Any())
+            {
+                return NotFound();
+            }
+
+            Response.AddPaginationHeader(motherboards.MetaData);
+            return Ok(motherboards);
+        }
+
         [HttpGet("scraper")]
         public async Task<IActionResult> GetAllMotherboardScraper()
         {
@@ -60,11 +75,11 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         [HttpPost("compatible")]
-        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails)
+        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails, [FromQuery] PartsParams partsParams)
         {
             try
             {
-                var motherboards = await _motherboardRepository.GetAllAsync();
+                var motherboards = await _motherboardRepository.GetAllAsyncSortSearch(partsParams);
                 if (motherboards is null || !motherboards.Any())
                 {
                     return NotFound();
@@ -74,7 +89,10 @@ namespace KomputerBudowanieAPI.Controllers
                 await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
                 _compatibilityDataFilterService.MotherboardFilter(configuration, ref motherboards);
 
-                return Ok(motherboards);
+                var paginationMotherboards = await PagedList<Motherboard>.ToPagedList(motherboards, partsParams.PageNumber, partsParams.PageSize);
+                Response.AddPaginationHeader(paginationMotherboards.MetaData);
+
+                return Ok(paginationMotherboards);
             }
             catch (Exception ex)
             {

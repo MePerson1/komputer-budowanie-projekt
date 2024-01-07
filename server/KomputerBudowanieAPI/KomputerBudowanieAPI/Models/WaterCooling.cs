@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using KomputerBudowanieAPI.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace KomputerBudowanieAPI.Models
 {
-    public class WaterCooling
+    public class WaterCooling : IPart
     {
         [Key]
         public int Id { get; set; }

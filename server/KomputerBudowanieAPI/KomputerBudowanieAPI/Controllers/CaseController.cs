@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Helpers;
+using KomputerBudowanieAPI.Helpers.Request;
 using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
@@ -13,13 +15,13 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/case")]
     public class CaseController : Controller
     {
-        private readonly IGenericRepository<Case> _caseRepository;
+        private readonly IPcPartsRepository<Case> _caseRepository;
         private readonly IMapper _mapper;
 
         private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
 
-        public CaseController(IGenericRepository<Case> caseRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
+        public CaseController(IPcPartsRepository<Case> caseRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _caseRepository = caseRepository;
             _mapper = mapper;
@@ -31,11 +33,27 @@ namespace KomputerBudowanieAPI.Controllers
         public async Task<IActionResult> GetAllCases()
         {
             var cases = await _caseRepository.GetAllAsync();
+
             if (cases is null || !cases.Any())
             {
                 return NotFound();
             }
+
             return Ok(_mapper.Map<ICollection<CaseDto>>(cases));
+        }
+
+        [HttpGet("pagination")]
+        public async Task<IActionResult> GetAllCasesPaginate([FromQuery] PartsParams partsParams)
+        {
+            var cases = await _caseRepository.GetAllAsyncPagination(partsParams);
+
+            if (cases is null || !cases.Any())
+            {
+                return NotFound();
+            }
+
+            Response.AddPaginationHeader(cases.MetaData);
+            return Ok(cases);
         }
 
         [HttpGet("{id:int}")]
@@ -63,11 +81,11 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         [HttpPost("compatible")]
-        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails)
+        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails, [FromQuery] PartsParams partsParams)
         {
             try
             {
-                var cases = await _caseRepository.GetAllAsync();
+                var cases = await _caseRepository.GetAllAsyncSortSearch(partsParams);
                 if (cases is null || !cases.Any())
                 {
                     return NotFound();
@@ -76,6 +94,34 @@ namespace KomputerBudowanieAPI.Controllers
                 var configuration = new PcConfiguration();
                 await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
                 _compatibilityDataFilterService.CaseFilter(configuration, ref cases);
+
+                var paginationCases = await PagedList<Case>.ToPagedList(cases, partsParams.PageNumber, partsParams.PageSize);
+                Response.AddPaginationHeader(paginationCases.MetaData);
+
+                return Ok(paginationCases);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPost("compatible/pagination")]
+        public async Task<IActionResult> GetCompatiblePagination([FromBody] PcConfigurationDto configurationDetails, [FromQuery] PartsParams partsParams)
+        {
+            try
+            {
+                var cases = await _caseRepository.GetAllAsyncSortSearch(partsParams);
+                if (cases is null || !cases.Any())
+                {
+                    return NotFound();
+                }
+
+                var configuration = new PcConfiguration();
+                await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
+                _compatibilityDataFilterService.CaseFilter(configuration, ref cases);
+
 
                 return Ok(cases);
             }

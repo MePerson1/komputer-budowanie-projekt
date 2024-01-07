@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 
 export const NavUserMenu = ({ loggedUser }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  useEffect(() => {
+    console.log(loggedUser);
+  }, []);
   const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -14,6 +16,8 @@ export const NavUserMenu = ({ loggedUser }) => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("loggedUser");
+
     window.location.reload(false);
   };
 
@@ -25,7 +29,7 @@ export const NavUserMenu = ({ loggedUser }) => {
         className="btn btn-ghost flex"
         onClick={handleMenuToggle}
       >
-        {loggedUser ? loggedUser.nickName : "Konto"}
+        {loggedUser ? loggedUser.userName : "Konto"}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -54,7 +58,7 @@ export const NavUserMenu = ({ loggedUser }) => {
               <li>
                 <NavLink
                   className="truncate"
-                  to="/konfiguracje/{id}"
+                  to="/twoje-konfiguracje"
                   onClick={handleMenuItemClick}
                 >
                   Twoje konfiguracje

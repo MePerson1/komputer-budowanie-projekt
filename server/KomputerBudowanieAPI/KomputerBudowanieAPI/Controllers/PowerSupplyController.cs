@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Helpers;
+using KomputerBudowanieAPI.Helpers.Request;
 using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
@@ -13,13 +15,13 @@ namespace KomputerBudowanieAPI.Controllers
     [Route("api/power-supply")]
     public class PowerSupplyController : Controller
     {
-        private readonly IGenericRepository<PowerSupply> _powerSupplyRepository;
+        private readonly IPcPartsRepository<PowerSupply> _powerSupplyRepository;
         private readonly IMapper _mapper;
 
         private readonly ICompatibilityDataFilterService _compatibilityDataFilterService;
         private readonly IPcConfigurationRepository _pcConfigurationRepository;
 
-        public PowerSupplyController(IGenericRepository<PowerSupply> powerSupplyRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
+        public PowerSupplyController(IPcPartsRepository<PowerSupply> powerSupplyRepository, IMapper mapper, ICompatibilityDataFilterService compatibilityDataFilterService, IPcConfigurationRepository pcConfigurationRepository)
         {
             _powerSupplyRepository = powerSupplyRepository;
             _mapper = mapper;
@@ -38,7 +40,20 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(_mapper.Map<IEnumerable<PowerSupplyDto>>(powerSupplies));
         }
 
-        [Authorize(IdentityData.ScraperOrAdminPolicyName)]
+        [HttpGet("pagination")]
+        public async Task<IActionResult> GetAllPowerSuppliesPaginate([FromQuery] PartsParams partsParams)
+        {
+            var powerSupplies = await _powerSupplyRepository.GetAllAsyncPagination(partsParams);
+
+            if (powerSupplies is null || !powerSupplies.Any())
+            {
+                return NotFound();
+            }
+
+            Response.AddPaginationHeader(powerSupplies.MetaData);
+            return Ok(powerSupplies);
+        }
+
         [HttpGet("scraper")]
         public async Task<IActionResult> GetAllCpusCoolingsScraper()
         {
@@ -60,11 +75,11 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         [HttpPost("compatible")]
-        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails)
+        public async Task<IActionResult> GetCompatible([FromBody] PcConfigurationDto configurationDetails, [FromQuery] PartsParams partsParams)
         {
             try
             {
-                var powerSupplies = await _powerSupplyRepository.GetAllAsync();
+                var powerSupplies = await _powerSupplyRepository.GetAllAsyncSortSearch(partsParams);
                 if (powerSupplies is null || !powerSupplies.Any())
                 {
                     return NotFound();
@@ -74,7 +89,10 @@ namespace KomputerBudowanieAPI.Controllers
                 await _pcConfigurationRepository.GetDataFromIds(configurationDetails, configuration);
                 _compatibilityDataFilterService.PowerSupplyFilter(configuration, ref powerSupplies);
 
-                return Ok(powerSupplies);
+                var paginationPowerSupplies = await PagedList<PowerSupply>.ToPagedList(powerSupplies, partsParams.PageNumber, partsParams.PageSize);
+                Response.AddPaginationHeader(paginationPowerSupplies.MetaData);
+
+                return Ok(paginationPowerSupplies);
             }
             catch (Exception ex)
             {

@@ -1,5 +1,7 @@
 ﻿using KomputerBudowanieAPI.Database;
 using KomputerBudowanieAPI.Dto;
+using KomputerBudowanieAPI.Helpers;
+using KomputerBudowanieAPI.Helpers.Request;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +31,27 @@ namespace KomputerBudowanieAPI.Repository
                 .Include(pc => pc.PcConfigurationStorages)
                     .ThenInclude(storage => storage.Storage)
                 .ToListAsync();
+        }
+
+        public async Task<PagedList<PcConfiguration>> GetAllAsyncPagination(PartsParams partsParams)
+        {
+            IQueryable<PcConfiguration> query = _context.PcConfigurations
+                .Sort(partsParams.SortBy)
+                .Search(partsParams.SearchTerm)
+                .Include(pc => pc.Motherboard)
+                .Include(pc => pc.Case)
+                .Include(pc => pc.Cpu)
+                .Include(pc => pc.CpuCooling)
+                .Include(pc => pc.GraphicCard)
+                .Include(pc => pc.PowerSupply)
+                .Include(pc => pc.WaterCooling)
+                .Include(pc => pc.PcConfigurationRams)
+                    .ThenInclude(ram => ram.Ram)
+                .Include(pc => pc.PcConfigurationStorages)
+                    .ThenInclude(storage => storage.Storage)
+            .AsQueryable();
+
+            return await PagedList<PcConfiguration>.ToPagedList(query, partsParams.PageNumber, partsParams.PageSize);
         }
         public async Task<IEnumerable<PcConfiguration>> GetAllAsyncPublic()
         {
@@ -61,12 +84,14 @@ namespace KomputerBudowanieAPI.Repository
                     .ThenInclude(ram => ram.Ram)
                 .Include(pc => pc.PcConfigurationStorages)
                     .ThenInclude(storage => storage.Storage)
+                .Include(pc => pc.User)
                 .ToListAsync();
         }
 
         public async Task<PcConfiguration?> GetByIdAsync(Guid id)
         {
-            return await _context.Set<PcConfiguration>().Include(pc => pc.Motherboard)
+            return await _context.Set<PcConfiguration>()
+                .Include(pc => pc.Motherboard)
                 .Include(pc => pc.Case)
                 .Include(pc => pc.Cpu)
                 .Include(pc => pc.CpuCooling)
@@ -78,6 +103,50 @@ namespace KomputerBudowanieAPI.Repository
                 .Include(pc => pc.PcConfigurationStorages)
                     .ThenInclude(storage => storage.Storage)
                 .FirstOrDefaultAsync(pc => pc.Id == id);
+        }
+
+        public async Task<PagedList<PcConfiguration>> GetAllAsyncPublicPagination(PartsParams partsParams)
+        {
+            IQueryable<PcConfiguration> query = _context.PcConfigurations
+                .Where(pc => pc.isPrivate == false)
+                .Sort(partsParams.SortBy)
+                .Search(partsParams.SearchTerm)
+                .Include(pc => pc.Motherboard)
+                .Include(pc => pc.Case)
+                .Include(pc => pc.Cpu)
+                .Include(pc => pc.CpuCooling)
+                .Include(pc => pc.GraphicCard)
+                .Include(pc => pc.PowerSupply)
+                .Include(pc => pc.WaterCooling)
+                .Include(pc => pc.PcConfigurationRams)
+                    .ThenInclude(ram => ram.Ram)
+                .Include(pc => pc.PcConfigurationStorages)
+                    .ThenInclude(storage => storage.Storage)
+            .AsQueryable();
+
+            return await PagedList<PcConfiguration>.ToPagedList(query, partsParams.PageNumber, partsParams.PageSize);
+        }
+
+        public async Task<PagedList<PcConfiguration>> GetAllAsyncByUserIdPagination(string userId, PartsParams partsParams)
+        {
+            IQueryable<PcConfiguration> query = _context.PcConfigurations
+                   .Where(config => config.User.Id == userId)
+                   .Sort(partsParams.SortBy)
+                   .Search(partsParams.SearchTerm)
+                   .Include(pc => pc.Motherboard)
+                   .Include(pc => pc.Case)
+                   .Include(pc => pc.Cpu)
+                   .Include(pc => pc.CpuCooling)
+                   .Include(pc => pc.GraphicCard)
+                   .Include(pc => pc.PowerSupply)
+                   .Include(pc => pc.WaterCooling)
+                   .Include(pc => pc.PcConfigurationRams)
+                       .ThenInclude(ram => ram.Ram)
+                   .Include(pc => pc.PcConfigurationStorages)
+                       .ThenInclude(storage => storage.Storage)
+               .AsQueryable();
+
+            return await PagedList<PcConfiguration>.ToPagedList(query, partsParams.PageNumber, partsParams.PageSize);
         }
 
         public async Task<PcConfiguration> Create(PcConfigurationDto newConfigurationDto)
@@ -92,13 +161,13 @@ namespace KomputerBudowanieAPI.Repository
                 await SaveChanges();
                 return pcConfiguration;
             }
-            catch (DbUpdateException ex) // Catch specific database update exceptions if using Entity Framework
+            catch (DbUpdateException ex)
             {
-                throw new Exception("Failed to update the database. Please check your data.");
+                throw new Exception("Nie udało się utworzyć konfiguracji. Sprawdź swoje dane!");
             }
             catch (Exception ex)
             {
-                throw new Exception($"Failed to create PC configuration: {ex.Message}");
+                throw new Exception($"Nie udało się utworzyć konfiguracji: {ex.Message}");
             }
         }
 
@@ -158,7 +227,7 @@ namespace KomputerBudowanieAPI.Repository
             pcConfiguration.GraphicCard = await _context.GraphicCards.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.GraphicCardId);
             pcConfiguration.PowerSupply = await _context.PowerSupplies.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.PowerSuplyId);
             pcConfiguration.WaterCooling = await _context.WaterCoolings.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.WaterCoolingId);
-
+            pcConfiguration.User = await _context.Users.FirstOrDefaultAsync(x => x.Id == dto.UserId);
 
             var storages = await _context.Storages.Include(s => s.Prices)
                 .Where(x => dto.StorageIds != null && dto.StorageIds.Contains(x.Id))
@@ -249,5 +318,8 @@ namespace KomputerBudowanieAPI.Repository
 
             return totalPrice;
         }
+
     }
+
+
 }
