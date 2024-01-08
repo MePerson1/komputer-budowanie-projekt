@@ -1,6 +1,6 @@
 const PcConfigurationPart = ({ pcPart }) => {
   return (
-    <div className="card card-bordered card-side bg-base-200 shadow-xl m-5 flex justify-between items-center">
+    <div className="card card-bordered card-side bg-base-200 shadow-xl flex justify-between items-center">
       <figure className="m-10">Zdjecie</figure>
       <div className="card-body">
         <h2 className="card-title">{pcPart.name}</h2>
