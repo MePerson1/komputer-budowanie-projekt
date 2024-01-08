@@ -36,9 +36,6 @@ namespace KomputerBudowanieAPI.Repository
             return await PagedList<TEntity>.ToPagedList(query, partsParams.PageNumber, partsParams.PageSize);
         }
 
-
-
-
         public async Task<TEntity?> GetByIdAsync(int id)
         {
             var model = await _context.Set<TEntity>().FindAsync(id);
