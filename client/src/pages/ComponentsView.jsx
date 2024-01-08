@@ -18,7 +18,7 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   ];
 
   const [parts, setParts] = useState([]);
-  const [filter, setFilter] = useState(false);
+  const [filter, setFilter] = useState(true);
   const [paginationInfo, setPaginationInfo] = useState(paginationParams);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("");
