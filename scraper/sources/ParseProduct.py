@@ -6,10 +6,10 @@ class ImportantSpecNotFound(Exception):
     pass
 
 
-def parse_parts(chosen_cat, specs):
+def parse_parts(chosen_category, specs):
     typical_problems = ["Brak danych", "Nie dotyczy", "Nie posiada"]
     
-    if chosen_cat == "storage-hdd":
+    if chosen_category == "storage-hdd":
         translated = {
             "Name": specs["Nazwa"].replace('"', " cala"),
             "Producer": specs["Producent"],
@@ -26,7 +26,7 @@ def parse_parts(chosen_cat, specs):
             "RotatingSpeedRPM": int(specs["Prędkość obrotowa"].split()[0]),
             "WeightG": float(specs["Waga [g]"]) if specs["Waga [g]"] not in typical_problems else None
         }
-    elif chosen_cat == "storage-ssd":
+    elif chosen_category == "storage-ssd":
         translated = {
             "Name": specs["Nazwa"].replace('"', " cala"),
             "Producer": specs["Producent"],
@@ -51,7 +51,7 @@ def parse_parts(chosen_cat, specs):
             "Controler": specs["Kontroler"] if specs["Kontroler"] not in typical_problems else None,
             "HardwareEncryption": True if specs["Szyfrowanie sprzętowe"] == "Tak" else False
         }
-    elif chosen_cat == "graphic-card":
+    elif chosen_category == "graphic-card":
         if specs["Długość karty"] in typical_problems:
             raise ImportantSpecNotFound("GraphicCard: CardLengthMM not found")
 
@@ -90,7 +90,7 @@ def parse_parts(chosen_cat, specs):
             "PowerConnectors": specs["Złącza zasilania"],
             "Description": None
         }
-    elif chosen_cat == "case":
+    elif chosen_category == "case":
         if specs["Maksymalna długość karty graficznej [cm]"] in typical_problems:
             raise ImportantSpecNotFound("Case: MaxGPULengthCM not found")
         if specs["Maksymalna wysokość układu chłodzenia CPU [cm]"] in typical_problems:
@@ -135,7 +135,7 @@ def parse_parts(chosen_cat, specs):
             "PowerSupplyPower": specs["Moc zasilacza"].split()[0] if specs["Moc zasilacza"] != "Brak zasilacza" else None,
             "Description": None
         }
-    elif chosen_cat == "ram":
+    elif chosen_category == "ram":
         translated = {
             "Name": specs["Nazwa"],
             "Producer": specs["Producent"],
@@ -154,7 +154,7 @@ def parse_parts(chosen_cat, specs):
             "Color": specs["Kolor"],
             "HasLighting": True if specs["Podświetlenie"] == "Tak" else False
         }
-    elif chosen_cat == "motherboard":
+    elif chosen_category == "motherboard":
         translated = {
             "Name": specs["Nazwa"],
             "Producer": specs["Producent"],
@@ -186,7 +186,7 @@ def parse_parts(chosen_cat, specs):
             "RearPanelConnectors": specs["Panel tylny"].replace("\n", ""),
             "IncludedAccessories": specs["Załączone wyposażenie"].replace("\n", "") if specs.get("Załączone wyposażenie") else None,
         }
-    elif chosen_cat == "cpu":
+    elif chosen_category == "cpu":
         translated = {
             "Name": specs["Nazwa"],
             "Producer": specs["Producent"],
@@ -211,7 +211,7 @@ def parse_parts(chosen_cat, specs):
             "L3Cache": specs["Pamięć podręczna L3"],
             "AddedEquipment": specs.get("Załączone wyposażenie")
         }
-    elif chosen_cat == "power-supply":
+    elif chosen_category == "power-supply":
         translated = {
             "Name": specs["Nazwa"],
             "Producer": specs["Producent"],
@@ -240,7 +240,7 @@ def parse_parts(chosen_cat, specs):
             "DepthMM": float(specs["Głębokość [mm]"]) if specs.get("Głębokość [mm]") not in typical_problems else None,
             "HasLighting": True if specs["Podświetlenie"] == "Tak" else False
         }
-    elif chosen_cat == "cpu-cooling":
+    elif chosen_category == "cpu-cooling":
         translated = {
             "Name": specs["Nazwa"],
             "Producer": specs["Producent"],
@@ -264,7 +264,7 @@ def parse_parts(chosen_cat, specs):
             "AirflowCFM": float(specs["Przepływ powietrza [CFM]"]) if specs["Przepływ powietrza [CFM]"] not in typical_problems else None,
             "LifespanHours": int(specs["Żywotność"].split()[0]) if specs["Żywotność"] not in typical_problems else None,
         }
-    elif chosen_cat == "water-cooling":
+    elif chosen_category == "water-cooling":
         translated = {
             "Name": specs["Nazwa"],
             "Producer": specs["Producent"],

@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from time import sleep
 import configparser
-from AddProducts import find_morele_page_limit
+from AddProducts import find_product_page_limit
 import DatabaseOperations
 
 config = configparser.ConfigParser()
@@ -118,7 +118,7 @@ def match_morele_products(db_category_products, category_link):
 
     link_base = "https://www.morele.net"
     page_current = 1
-    page_limit = find_morele_page_limit(first_soup)
+    page_limit = find_product_page_limit(first_soup)
     matched_products_count = 0
     all_products_count = len(db_category_products)
     # Slownik stworzony na potrzeby dopasowywania rekordow w czasie O(1), dodane slowniki wskazuja na te same obiekty co te w db_category_products
@@ -180,9 +180,6 @@ def match_morele_products(db_category_products, category_link):
 
 
 def add_or_update_price(db_price_records, new_price):
-    if not new_price:  # Jesli cena jest pusta wyjdz od razu
-        return db_price_records
-
     for db_record in db_price_records:  # Jesli cena juz istnieje zaktualizuj ja
         if db_record["shopName"] == new_price["shopName"]:
             db_record["price"] = new_price["price"]
@@ -199,7 +196,7 @@ def add_or_update_price(db_price_records, new_price):
 # 3. okazalo sie ze ceny w sklepie nie ma
 # 4. okazalo sie ze w produkcie jest cena z tego sklepu
 # Wowczas przestarzala cena zostaje wykryta i usunieta
-def check_for_obsolete_price(db_product, shop_name, auth_token):
+def check_and_delete_obsolete_price(db_product, shop_name, auth_token):
     for db_price_record in db_product["prices"]:
         if shop_name == db_price_record["shopName"]:
             print(f"Obsolete price found in product {db_product['name']}, shop {db_price_record['shopName']}")
@@ -212,7 +209,7 @@ def check_for_obsolete_price(db_product, shop_name, auth_token):
 if __name__ == "__main__":
     # Dostowanie slownika z configu do wygladu bardziej odpowiadajacego bazie danych
     database_categories_and_links = product_categories_and_links.copy()
-    if database_categories_and_links.get("storage-ssd"):
+    if database_categories_and_links.get("storage-ssd") and database_categories_and_links.get("storage-hdd"):
         database_categories_and_links["storage"] = [product_categories_and_links["storage-hdd"], product_categories_and_links["storage-ssd"]]
         database_categories_and_links.pop("storage-hdd")
         database_categories_and_links.pop("storage-ssd")
@@ -239,7 +236,7 @@ if __name__ == "__main__":
 
         # Sprawdzenie pod katem przestarzalych cen produktow ktore nie mialy zadnego matcha
         for product in category_products_no_match:
-            product = check_for_obsolete_price(product, shop_names["morele"], token)
+            product = check_and_delete_obsolete_price(product, shop_names["morele"], token)
 
         # Dodawanie cen dla pojedynczych produktow
         for product in category_products:
@@ -249,13 +246,13 @@ if __name__ == "__main__":
             if komputronik_price:
                 product["prices"] = add_or_update_price(product["prices"], komputronik_price)
             else:
-                product = check_for_obsolete_price(product, shop_names["komputronik"], token)
+                product = check_and_delete_obsolete_price(product, shop_names["komputronik"], token)
 
             euro_com_price = get_euro_com_price(product["producerCode"], product["name"])
             if euro_com_price:
                 product["prices"] = add_or_update_price(product["prices"], euro_com_price)
             else:
-                product = check_for_obsolete_price(product, shop_names["euro.com"], token)
+                product = check_and_delete_obsolete_price(product, shop_names["euro.com"], token)
 
             sleep(2)  # Chwila oddechu dla stron
             if product["prices"]:  # Produktow bez cen nie wysylac

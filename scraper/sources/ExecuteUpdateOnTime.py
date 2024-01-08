@@ -11,7 +11,7 @@ if __name__ == "__main__":
     while True:
         current_date = datetime.now()
         current_date = current_date.replace(second=0, microsecond=0)
-        if current_date == target_date:
+        if current_date >= target_date:
             print(f"Updating the database at {target_date}")
             system("UpdateProducts.exe")
 

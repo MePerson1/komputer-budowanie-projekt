@@ -11,13 +11,13 @@ config.read('config.ini')
 product_categories_and_links = dict(config.items('ProductCategoriesAndLinks'))
 choose_all_product_categories = config.getboolean('Options', 'choose_all_product_categories')
 chosen_product_category = config.get('Options', 'chosen_product_category')
-how_many_pages = config.getint('Options', 'how_many_pages')
+how_many_pages_to_scrap = config.getint('Options', 'how_many_pages_to_scrap')
 add_to_database = config.getboolean('Options', 'add_to_database')
 show_raw_data_in_console = config.getboolean('Options', 'show_raw_data_in_console')
 show_translated_data_in_console = config.getboolean('Options', 'show_translated_data_in_console')
 
 
-def find_morele_page_limit(soup):
+def find_product_page_limit(soup):
     # ustal ilosc wszystkich stron na podstawie szarego przycisku oznaczajacego ostatnia strone
     # bo morele nie zwraca bledu jak sie poda nieistniejaca ilosc stron, tylko wywala na pierwsza -.-
     page_limit = soup.find("div", class_="pagination-btn-nolink-anchor")
@@ -44,16 +44,16 @@ def collect_product_links(cat_link):
     for prod_link in product_links_raw:
         prod_links.append(link_base + prod_link['href'])
 
-    page_limit = find_morele_page_limit(soup)
+    page_limit = find_product_page_limit(soup)
     if page_limit == 1:
         return prod_links
 
     # wejdz na kazda nastepna strone z konkretnymi produktami, zbierz do nich linki
-    for page_current in range(2, how_many_pages+1):
+    for page_current in range(2, how_many_pages_to_scrap + 1):
         html_product_search = requests.get(f"{cat_link},,,,,,,,0,,,,/{page_current}/").text
         soup = BeautifulSoup(html_product_search, "lxml")
         product_links_raw = soup.find_all('a', class_='cat-product-image productLink')
-        # utworz na tej podstawie linki do kazdego produktu dla kazdej strony w liczbie okreslonej w how_many_pages
+        # utworz na tej podstawie linki do kazdego produktu dla kazdej strony w liczbie okreslonej w how_many_pages_to_scrap
         for prod_link in product_links_raw:
             prod_links.append(link_base + prod_link['href'])
         if page_current == page_limit:
@@ -61,8 +61,7 @@ def collect_product_links(cat_link):
     return prod_links
 
 
-def get_product_specs(chosen_cat, prod_links):
-    i = 1
+def get_products_from_morele(chosen_cat, prod_links):
     all_products = []
     for prod_link in prod_links:
         try:
@@ -93,7 +92,7 @@ def get_product_specs(chosen_cat, prod_links):
 
             # wyswietl rzeczy przed tlumaczeniem
             if show_raw_data_in_console:
-                print(f"\nProduct {i}: {prod_link}")
+                print(f"\nProduct {product_specs['Nazwa']}: {prod_link}")
                 for key, value in product_specs.items():
                     print(key, ':', value)
 
@@ -101,13 +100,12 @@ def get_product_specs(chosen_cat, prod_links):
 
             # wyswietl rzeczy po tlumaczeniu
             if show_translated_data_in_console:
-                print(f"\n(TRANSLATED) Product {i}: {prod_link}")
+                print(f"\n(TRANSLATED) Product {translated_product_specs['Name']}: {prod_link}")
                 for key, value in translated_product_specs.items():
                     print(key, ':', value)
 
             # dodaj speki produktu do listy ze wszystkimi
             all_products.append(translated_product_specs)
-            i += 1
         except exceptions.RequestException as req_error:
             print(f"RequestException error occured for {prod_link}: {req_error}")
         except ParseProduct.ProductNotAvailable:
@@ -121,9 +119,9 @@ def get_product_specs(chosen_cat, prod_links):
 
 
 def scrape_product_category(product_category, category_link):
-    print(f"Now scraping {how_many_pages} pages of {product_category}...")
+    print(f"Now scraping {how_many_pages_to_scrap} pages of {product_category}...")
     product_links = collect_product_links(category_link)
-    products = get_product_specs(product_category, product_links)
+    products = get_products_from_morele(product_category, product_links)
     if add_to_database:
         token = DatabaseOperations.get_special_token()
         DatabaseOperations.add_products_from_category(products, product_category, token)
