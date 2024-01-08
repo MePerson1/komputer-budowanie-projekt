@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import PcConfigurationPart from "./PcConfigurationPart";
 import { componentKeys } from "../../utils/constants/componentKeys";
+import Topic from "../shared/Topic";
 
 const PcConfigurationDetails = () => {
   const { id } = useParams();
@@ -28,15 +29,29 @@ const PcConfigurationDetails = () => {
 
   // fix ram and storages
   return (
-    <div>
-      {pcConfigurationById !== undefined && pcConfigurationById !== null ? (
-        <>
-          <h1 className="text-5xl m-5">{pcConfigurationById.name}</h1>
-          <div>
-            <table className="table table-sm text-xs ">
-              <tbody>
+    <>
+      {pcConfigurationById !== undefined && pcConfigurationById !== null && (
+        <Topic
+          title={"Tytuł: " + pcConfigurationById.name}
+          autor={pcConfigurationById.user.userName}
+        />
+      )}
+
+      <div className="m-5">
+        {pcConfigurationById !== undefined && pcConfigurationById !== null ? (
+          <>
+            {pcConfigurationById.description && (
+              <div className="flex flex-col ">
+                <p className="text-xl font-bold text-info">Opis</p>
+                <p className="text-lg border border-double border-info p-5">
+                  {pcConfigurationById.description}
+                </p>
+              </div>
+            )}
+            <div className="mt-5">
+              <div className="grid grid-cols-1 gap-5">
                 {componentKeys.map((key, index) => (
-                  <tr key={index} id={key}>
+                  <div key={index} id={key}>
                     {pcConfigurationById[key] !== undefined &&
                       pcConfigurationById[key] !== null &&
                       !(
@@ -45,31 +60,40 @@ const PcConfigurationDetails = () => {
                       ) &&
                       (key === "pcConfigurationRam" || key === "storages" ? (
                         pcConfigurationById[key].map((part, idx) => (
+                          <>
+                            <h2 className=" text-sm lg:text-2xl font-bold hover:text-info">
+                              {pcParts[index].namePL}
+                            </h2>
+                            <PcConfigurationPart
+                              key={idx}
+                              pcPart={part}
+                              partKey={key}
+                              partType={pcParts[index]}
+                            />
+                          </>
+                        ))
+                      ) : (
+                        <>
+                          <h2 className=" text-sm lg:text-2xl font-bold">
+                            {pcParts[index].namePL}
+                          </h2>
                           <PcConfigurationPart
-                            key={idx}
-                            pcPart={part}
+                            pcPart={pcConfigurationById[key]}
                             partKey={key}
                             partType={pcParts[index]}
                           />
-                        ))
-                      ) : (
-                        <PcConfigurationPart
-                          pcPart={pcConfigurationById[key]}
-                          partKey={key}
-                          partType={pcParts[index]}
-                        />
+                        </>
                       ))}
-                  </tr>
+                  </div>
                 ))}
-              </tbody>
-            </table>
-            <h2>{pcConfigurationById.description}</h2>
-          </div>
-        </>
-      ) : (
-        <h1>xd</h1>
-      )}
-    </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <h1>xd</h1>
+        )}
+      </div>
+    </>
   );
 };
 
