@@ -7,7 +7,7 @@ export const validationInfo = [
   {
     name: "userName",
     isValid: true,
-    info: "Podana nazwa jest nie poprawna. Poprawna nazwa powinna składać się z od 3 do 15 znaków.",
+    info: "Podana nazwa jest nie poprawna. Poprawna nazwa powinna składać się z od 3 do 15 znaków, zaczynać się od litery oraz zawierać tylko litery i cyfry!",
   },
   {
     name: "password",
@@ -46,7 +46,8 @@ export const handleIsValid = (validationInfo) => {
 };
 
 export const validateUserName = (userName) => {
-  return userName.length > 2 && userName.length < 32;
+  const userNameRegex = /^[a-zA-Z][a-zA-Z0-9]{2,14}$/;
+  return userNameRegex.test(userName);
 };
 
 export const validateEmail = (email) => {

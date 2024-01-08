@@ -3,35 +3,37 @@ import Topic from "../components/shared/Topic";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { ErrorAlert } from "../components/shared/ErrorAlert";
+import { TextInput } from "../components/shared/TextInput";
 
 const Login = () => {
-  const [remember, setRemember] = useState(false);
-
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+
   const [errorMessage, setErrorMessage] = useState();
   const [success, setSuccess] = useState("");
 
-  useEffect(() => {
-    const token = JSON.parse(localStorage.getItem("token"));
-    if (token !== null) navigate("/");
-  }, []);
+  const [loginValues, setLoginValues] = useState({
+    email: "",
+    password: "",
+  });
 
   useEffect(() => {
-    setErrorMessage("");
-  }, [email, password]);
+    const token = JSON.parse(localStorage.getItem("token"));
+    if (token !== null) navigate("/build");
+  }, []);
+
+  const handleLoginValues = (e) => {
+    const { name, value } = e.target;
+    setLoginValues({ ...loginValues, [name]: value });
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+    setErrorMessage("");
     axios
-      .post("http://localhost:5198/api/user/token", { email, password })
+      .post("http://localhost:5198/api/user/token", loginValues)
       .then((response) => {
-        console.log("Registration Successful", response.data);
         setSuccess("Zalogowano pomyślnie!");
         localStorage.setItem("token", JSON.stringify(response.data.token));
-
         window.location.reload(false);
       })
       .catch((error) => {
@@ -42,36 +44,29 @@ const Login = () => {
 
   return (
     <>
-      <div class="flex flex-col justify-center h-screen ">
-        <Topic title="Logowanie" />
+      <Topic title="Logowanie" />
+      <div class="flex flex-col justify-center mt-5 sm:mt-10 overflow-hidden">
         <div class="w-full p-6 m-auto  rounded-md shadow-md lg:max-w-lg border border-secondary bg-base-200">
           <h1 class="text-3xl font-semibold text-center ">Witaj z powrotem!</h1>
           <form class="space-y-4" onSubmit={handleLogin}>
             <div>
-              <label class="label">
-                <span class="text-base label-text">Email</span>
-              </label>
-              <input
+              <TextInput
                 type="text"
-                placeholder="Podaj email"
-                class="w-full input input-bordered input-primary"
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
-                required
+                title="E-mail"
+                name="email"
+                value={loginValues.email}
+                onChange={handleLoginValues}
+                placeholder="Podaj swój adres e-mail."
               />
             </div>
             <div>
-              <label class="label">
-                <span class="text-base label-text">Hasło</span>
-              </label>
-              <input
+              <TextInput
                 type="password"
+                title="Hasło"
+                name="password"
+                value={loginValues.password}
+                onChange={handleLoginValues}
                 placeholder="Wprowadź hasło"
-                class="w-full input input-bordered input-primary"
-                autoComplete="off"
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-                required
               />
             </div>
             <div className="flex justify-between ">
