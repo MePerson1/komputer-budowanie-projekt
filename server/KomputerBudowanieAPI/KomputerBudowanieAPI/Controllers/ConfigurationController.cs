@@ -112,6 +112,7 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         // POST api/<ConfigurationController>
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] PcConfigurationDto newConfigurationDetails)
         {
@@ -132,6 +133,7 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         // PUT api/<ConfigurationController>/5
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(Guid id, [FromBody] PcConfigurationDto editedConfigurationDto)
         {
@@ -148,6 +150,7 @@ namespace KomputerBudowanieAPI.Controllers
         }
 
         // DELETE api/<ConfigurationController>/5
+        [Authorize]
         [HttpDelete("{id}")]
 
         public async Task<IActionResult> Delete(Guid id)

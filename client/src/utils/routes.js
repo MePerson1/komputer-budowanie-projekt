@@ -51,6 +51,11 @@ const AppRoutes = ({
       exect
       element={<UserConfigurations loggedUser={loggedUser} />}
     />
+    <Route
+      path="configurations/:id"
+      exect
+      element={<UserConfigurations loggedUser={loggedUser} />}
+    />
 
     <Route path="logowanie" exect element={<Login />} />
     <Route path="rejestracja" exect element={<Register />} />

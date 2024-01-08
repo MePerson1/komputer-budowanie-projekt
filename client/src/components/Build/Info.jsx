@@ -34,10 +34,6 @@ const Info = ({
     if (localBudget !== null) setBudget(localBudget);
   }, []);
 
-  useEffect(() => {
-    console.log(isPrivate);
-  }, [isPrivate]);
-
   const inputWidth = `${(budget.toString().length + 1) * 9}px`;
   return (
     <div className="m-5 rounded-md inline-block border-black border-2 shadow-lg shadow-black ">

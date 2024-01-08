@@ -11,7 +11,7 @@ import Topic from "../components/shared/Topic";
 import { Alert } from "../components/shared/Alert";
 import { NameInput } from "../components/Build/NameInput";
 import { Navigate, useNavigate } from "react-router-dom";
-import { getUserInfo } from "../utils/apiRequests";
+import { getTokenConfig, getUserInfo } from "../utils/apiRequests";
 const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
   const navigate = useNavigate();
   const [totalPrice, setTotalPrice] = useState(0.0);
@@ -20,7 +20,9 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
   const [description, setDescription] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
 
+  //TODO:Problem z dodawaniem jak nie ma rzeczy
   useEffect(() => {
+    console.log(pcConfiguration);
     if (pcConfiguration !== PcConfiguration) {
       localStorage.setItem(
         "localConfiugration",
@@ -49,19 +51,8 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
   }
 
   useEffect(() => {
-    let totalPrice = 0;
+    countTotalPrice();
 
-    Object.keys(pcConfiguration).forEach((key) => {
-      if (pcConfiguration[key] && pcConfiguration[key].prices !== undefined) {
-        totalPrice += pcConfiguration[key].prices[0].price;
-      } else if (key === "rams" || key === "storages") {
-        pcConfiguration[key].map(
-          (part) => (totalPrice += part.prices[0].price)
-        );
-      }
-    });
-
-    setTotalPrice(totalPrice);
     if (pcConfiguration !== PcConfiguration) {
       getInfo(pcConfiguration);
     }
@@ -85,6 +76,22 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
     setPcConfiguration({ ...pcConfiguration, name: newName });
   };
 
+  function countTotalPrice() {
+    let totalPrice = 0;
+
+    Object.keys(pcConfiguration).forEach((key) => {
+      if (pcConfiguration[key] && pcConfiguration[key].prices !== undefined) {
+        totalPrice += pcConfiguration[key].prices[0].price;
+      } else if (key === "rams" || key === "storages") {
+        pcConfiguration[key].map(
+          (part) => (totalPrice += part.prices[0].price)
+        );
+      }
+    });
+
+    setTotalPrice(totalPrice);
+  }
+
   async function savePcConfiguration(pcConfiguration) {
     if (pcConfiguration !== null && pcConfiguration.name !== "") {
       var pcConfigurationIds = mapPcPartsToIds(pcConfiguration);
@@ -96,8 +103,14 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
       }
       pcConfigurationIds.isPrivate = isPrivate;
       if (pcConfigurationIds.userId && token) {
+        const config = getTokenConfig(token);
         await axios
-          .post("http://localhost:5198/api/configuration", pcConfigurationIds)
+          .post(
+            "http://localhost:5198/api/configuration",
+
+            pcConfigurationIds,
+            config
+          )
           .then((res) => {
             var data = res.data;
             localStorage.removeItem("localConfiugration");

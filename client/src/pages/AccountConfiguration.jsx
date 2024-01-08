@@ -36,9 +36,9 @@ export const AccountConfiguration = () => {
 
   const handleChangeEmailValues = (e) => {
     const { name, value } = e.target;
-
     setChangeEmailValues({ ...changeEmailValues, [name]: value });
   };
+
   const handleChangePaswordValues = (e) => {
     const { name, value } = e.target;
     setChangePasswordValues({ ...changePasswordValues, [name]: value });
@@ -200,11 +200,11 @@ export const AccountConfiguration = () => {
               <div>
                 <TextInput
                   type="text"
-                  title="Nowy email"
+                  title="Nowy e-mail"
                   name="email"
                   value={changeEmailValues.email}
                   onChange={handleChangeEmailValues}
-                  placeholder="Podaj nowy email"
+                  placeholder="Podaj nowy e-mail"
                 />
                 {!validationMessages[0].isValid && (
                   <p className="text-error">{validationMessages[0].info}</p>
