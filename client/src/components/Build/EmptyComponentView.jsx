@@ -15,7 +15,7 @@ const EmptyComponentView = ({ pcPart }) => {
                 className="m-3 w-10 sm:w-20 h-auto invert"
                 style={{ minWidth: "2rem", maxWidth: "5rem" }}
                 src={pcPart.icon}
-                alt="Movie"
+                alt={pcPart.key}
               />
             </figure>
 
