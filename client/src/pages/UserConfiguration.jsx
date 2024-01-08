@@ -82,7 +82,9 @@ export const UserConfigurations = () => {
       );
     }
   }, []);
-
+  useEffect(() => {
+    setLoading(false);
+  }, [userConfigurations]);
   async function getUserConfigurations(
     token,
     loggedUser,
@@ -137,6 +139,12 @@ export const UserConfigurations = () => {
             handleSearch={handleSearch}
           />
         </div>
+        {loading && (
+          <div className="flex justify-center items-center">
+            <span class="loading loading-spinner loading-xs"></span>
+            <p>Ładowanie</p>
+          </div>
+        )}
         {userConfigurations.length !== 0 && !isEmpty && (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
             {userConfigurations.map((pcConfiguration, index) => (

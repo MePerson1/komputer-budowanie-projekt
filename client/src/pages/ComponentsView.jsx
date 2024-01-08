@@ -18,17 +18,18 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   ];
 
   const [parts, setParts] = useState([]);
-  const [filter, setFilter] = useState(false);
+  const [filter, setFilter] = useState(true);
   const [paginationInfo, setPaginationInfo] = useState(paginationParams);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log(pcConfiguration);
     const localConfiugration = JSON.parse(
       localStorage.getItem("localConfiugration")
     );
-    setPcConfiguration(localConfiugration);
+    if (localConfiugration != null) setPcConfiguration(localConfiugration);
   }, []);
 
   useEffect(() => {
@@ -132,7 +133,6 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
     };
 
     var pcConfigurationIds = mapPcPartsToIds(pcConfiguration);
-    console.log(pcConfigurationIds);
     await axios
       .post(
         `http://localhost:5198/api/${partKey}/compatible`,
@@ -151,7 +151,7 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
           console.log(err.response);
           setParts([]);
         } else {
-          console.error("Error fetching parts:", err.message);
+          console.log("Error fetching parts:", err);
         }
       });
   }

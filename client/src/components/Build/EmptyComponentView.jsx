@@ -9,17 +9,13 @@ const EmptyComponentView = ({ pcPart }) => {
     <>
       {pcPart && (
         <div>
-          <div className="tooltip" data-tip={pcPart.tip}>
-            <h2 className=" text-sm lg:text-2xl font-bold">{pcPart.namePL}</h2>
-          </div>
-
           <div className="bg-base-200 shadow-xl flex justify-between items-center rounded-xl p-2">
             <figure>
               <img
                 className="m-3 w-10 sm:w-20 h-auto invert"
                 style={{ minWidth: "2rem", maxWidth: "5rem" }}
                 src={pcPart.icon}
-                alt="Movie"
+                alt={pcPart.key}
               />
             </figure>
 

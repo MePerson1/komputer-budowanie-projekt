@@ -9,17 +9,17 @@ import {
   validationInfo,
 } from "../utils/validators";
 import { ErrorAlert } from "../components/shared/ErrorAlert";
+import { TextInput } from "../components/shared/TextInput";
 
 const Register = () => {
   const navigate = useNavigate();
 
-  const initialValues = {
+  const [registerValues, setRegisterValues] = useState({
     userName: "",
     email: "",
     password: "",
-  };
+  });
 
-  const [registerValues, setRegisterValues] = useState(initialValues);
   const [validationMessages, setValidationMessages] = useState(validationInfo);
   const [errorMessage, setErrorMessage] = useState("");
   const [success, setSuccess] = useState("");
@@ -30,7 +30,7 @@ const Register = () => {
 
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem("token"));
-    if (token !== null) navigate("/");
+    if (token !== null) navigate("/build");
   }, []);
 
   const handleChange = (e) => {
@@ -42,14 +42,15 @@ const Register = () => {
     e.preventDefault();
     setValidationMessages(handleValidation(registerValues));
     const isFormValid = handleIsValid(validationMessages);
-    console.log(isFormValid);
+    console.log(registerValues);
     if (isFormValid) {
       axios
         .post("http://localhost:5198/api/user", registerValues)
         .then((response) => {
           console.log("Registration Successful", response.data);
           setSuccess("Konto utworzone pomyślnie!");
-          setTimeout(() => navigate("/logowanie"), 3000);
+          localStorage.setItem("token", JSON.stringify(response.data.token));
+          setTimeout(() => window.location.reload(false), 3000);
         })
         .catch((error) => {
           if (error.response) {
@@ -69,8 +70,8 @@ const Register = () => {
   };
   return (
     <>
-      <div class="flex flex-col justify-center h-screen overflow-hidden ">
-        <Topic title="Rejestracja" />
+      <Topic title="Rejestracja" />
+      <div class="flex flex-col justify-center mt-5 sm:mt-10 overflow-hidden ">
         {success && (
           <div role="alert" class="alert alert-success">
             <svg
@@ -95,54 +96,39 @@ const Register = () => {
           </h1>
           <form class="space-y-4" onSubmit={handleRegistration}>
             <div>
-              <label class="label">
-                <span class="text-base label-text">Nazwa</span>
-              </label>
-              <input
+              <TextInput
                 type="text"
-                placeholder="Podaj nazwę"
-                class="w-full input input-bordered input-primary"
-                autoComplete="off"
+                title="Nazwa"
                 name="userName"
-                onChange={handleChange}
                 value={registerValues.userName}
-                required
+                onChange={handleChange}
+                placeholder="Podaj nazwę użytkownika"
               />
               {!validationMessages[1].isValid && (
                 <p className="text-error">{validationMessages[1].info}</p>
               )}
             </div>
             <div>
-              <label class="label">
-                <span class="text-base label-text">Email</span>
-              </label>
-              <input
+              <TextInput
                 type="text"
-                placeholder="Adres Email"
-                class="w-full input input-bordered input-primary"
-                autoComplete="off"
+                title="E-mail"
                 name="email"
-                onChange={handleChange}
                 value={registerValues.email}
-                required
+                onChange={handleChange}
+                placeholder="Podaj adres e-mail"
               />
               {!validationMessages[0].isValid && (
                 <p className="text-error">{validationMessages[0].info}</p>
               )}
             </div>
             <div>
-              <label class="label">
-                <span class="text-base label-text">Hasło</span>
-              </label>
-              <input
+              <TextInput
                 type="password"
-                placeholder="Wprowadź hasło"
-                class="w-full input input-bordered input-primary"
-                autoComplete="off"
+                title="Hasło"
                 name="password"
-                onChange={handleChange}
                 value={registerValues.password}
-                required
+                onChange={handleChange}
+                placeholder="Wprowadź hasło"
               />
               {!validationMessages[2].isValid && (
                 <p className="text-error">{validationMessages[2].info}</p>
