@@ -222,7 +222,7 @@ namespace KomputerBudowanieAPI.Repository
             pcConfiguration.Description = dto.Description;
             pcConfiguration.isPrivate = dto.isPrivate;
 
-            pcConfiguration.Case = await _context.Cases.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.CpuId);
+            pcConfiguration.Case = await _context.Cases.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.CaseId);
             pcConfiguration.Cpu = await _context.Cpus.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.CpuId);
             pcConfiguration.CpuCooling = await _context.CpuCoolings.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.CpuCoolingId);
             pcConfiguration.Motherboard = await _context.Motherboards.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.MotherboadId);
@@ -278,7 +278,7 @@ namespace KomputerBudowanieAPI.Repository
             pcConfiguration.Description = dto.Description;
             pcConfiguration.isPrivate = dto.isPrivate;
 
-            pcConfiguration.Case = await _context.Cases.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.CpuId);
+            pcConfiguration.Case = await _context.Cases.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.CaseId);
             pcConfiguration.Cpu = await _context.Cpus.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.CpuId);
             pcConfiguration.CpuCooling = await _context.CpuCoolings.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.CpuCoolingId);
             pcConfiguration.Motherboard = await _context.Motherboards.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.MotherboadId);

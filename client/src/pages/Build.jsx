@@ -107,6 +107,7 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
         pcConfigurationIds.userId = loggedUser.id;
       }
       pcConfigurationIds.isPrivate = isPrivate;
+      console.log(pcConfigurationIds);
       if (pcConfigurationIds.userId && token) {
         const config = getTokenConfig(token);
         await axios
