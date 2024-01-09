@@ -24,10 +24,12 @@ export async function getUserInfo(token) {
         console.log("Unauthorized access!");
         localStorage.removeItem("token");
         localStorage.removeItem("loggedUser");
+        window.location.reload();
       } else {
         console.log("Error occurred:", err);
         localStorage.removeItem("token");
         localStorage.removeItem("loggedUser");
+        window.location.reload();
       }
     }
   } else {

@@ -1,8 +1,10 @@
 import ComponentView from "../Build/ComponentView";
 import { PartsTooltip } from "../shared/PartsTooltip";
 import EmptyComponentView from "./EmptyComponentView";
+import { useNavigate } from "react-router-dom";
 
 const ComponentsTable = ({ setPcConfiguration, pcConfiguration, pcParts }) => {
+  const navigate = useNavigate();
   const handleSetToNull = (key, partId) => {
     console.log(key + " " + partId);
     if (key === "rams" || key === "storages") {
@@ -25,8 +27,8 @@ const ComponentsTable = ({ setPcConfiguration, pcConfiguration, pcParts }) => {
   //TODO: zmienic troche dodatkowe informacje itd
   return (
     <>
-      <div className="grid grid-cols-1 gap-5">
-        <div>
+      <div className="grid grid-cols-1">
+        <div className="scale-90">
           <PartsTooltip name={pcParts[0].namePL} tip={pcParts[0].tip} />
           {pcConfiguration.cpu !== undefined && pcConfiguration.cpu !== null ? (
             <ComponentView
@@ -41,7 +43,7 @@ const ComponentsTable = ({ setPcConfiguration, pcConfiguration, pcParts }) => {
           )}
         </div>
 
-        <div>
+        <div className="scale-90">
           <PartsTooltip name={"Chłodzenie procesora"} tip={pcParts[1].tip} />
           {pcConfiguration.cpuCooling !== null && (
             <ComponentView
@@ -75,7 +77,7 @@ const ComponentsTable = ({ setPcConfiguration, pcConfiguration, pcParts }) => {
             )}
         </div>
 
-        <div>
+        <div className="scale-90">
           <PartsTooltip name={pcParts[3].namePL} tip={pcParts[3].tip} />
           {pcConfiguration.motherboard !== undefined &&
           pcConfiguration.motherboard !== null ? (
@@ -91,7 +93,7 @@ const ComponentsTable = ({ setPcConfiguration, pcConfiguration, pcParts }) => {
           )}
         </div>
 
-        <div>
+        <div className="scale-90">
           <PartsTooltip name={pcParts[4].namePL} tip={pcParts[4].tip} />
 
           {pcConfiguration.graphicCard !== undefined &&
@@ -108,29 +110,38 @@ const ComponentsTable = ({ setPcConfiguration, pcConfiguration, pcParts }) => {
           )}
         </div>
 
-        <div>
+        <div className="scale-90">
           <PartsTooltip name={pcParts[5].namePL} tip={pcParts[5].tip} />
-
           {pcConfiguration.rams !== undefined &&
           pcConfiguration.rams !== null &&
           !(
             Array.isArray(pcConfiguration.rams) &&
             pcConfiguration.rams.length === 0
           ) ? (
-            pcConfiguration.rams.map((part, idx) => (
-              <ComponentView
-                key={idx}
-                pcPart={part}
-                handleSetToNull={handleSetToNull}
-                partKey={"rams"}
-                partType={pcParts[5]}
-              />
-            ))
+            <div className="flex bg-base-200">
+              <div>
+                {pcConfiguration.rams.map((part, idx) => (
+                  <ComponentView
+                    key={idx}
+                    pcPart={part}
+                    handleSetToNull={handleSetToNull}
+                    partKey={"rams"}
+                    partType={pcParts[5]}
+                  />
+                ))}
+              </div>
+              <button
+                onClick={() => navigate(`/parts/${pcParts[5].key}`)}
+                className="btn btn-secondary mt-5"
+              >
+                Dodaj
+              </button>
+            </div>
           ) : (
             <EmptyComponentView pcPart={pcParts[5]} />
           )}
         </div>
-        <div>
+        <div className="scale-90">
           <PartsTooltip name={pcParts[6].namePL} tip={pcParts[6].tip} />
           {pcConfiguration.storages !== undefined &&
           pcConfiguration.storages !== null &&
@@ -138,21 +149,31 @@ const ComponentsTable = ({ setPcConfiguration, pcConfiguration, pcParts }) => {
             Array.isArray(pcConfiguration.storages) &&
             pcConfiguration.storages.length === 0
           ) ? (
-            pcConfiguration.storages.map((part, idx) => (
-              <ComponentView
-                key={idx}
-                pcPart={part}
-                handleSetToNull={handleSetToNull}
-                partKey={"storages"}
-                partType={pcParts[6]}
-              />
-            ))
+            <div className="flex bg-base-200">
+              <div>
+                {pcConfiguration.storages.map((part, idx) => (
+                  <ComponentView
+                    key={idx}
+                    pcPart={part}
+                    handleSetToNull={handleSetToNull}
+                    partKey={"storages"}
+                    partType={pcParts[6]}
+                  />
+                ))}
+              </div>
+              <button
+                onClick={() => navigate(`/parts/${pcParts[6].key}`)}
+                className="btn btn-secondary mt-5"
+              >
+                Dodaj
+              </button>
+            </div>
           ) : (
             <EmptyComponentView pcPart={pcParts[6]} />
           )}
         </div>
 
-        <div>
+        <div className="scale-90">
           <PartsTooltip name={pcParts[7].namePL} tip={pcParts[7].tip} />
 
           {pcConfiguration.powerSupply !== undefined &&
@@ -169,7 +190,7 @@ const ComponentsTable = ({ setPcConfiguration, pcConfiguration, pcParts }) => {
           )}
         </div>
 
-        <div>
+        <div className="scale-90">
           <PartsTooltip name={pcParts[8].namePL} tip={pcParts[8].tip} />
           {pcConfiguration.case !== undefined &&
           pcConfiguration.case !== null ? (

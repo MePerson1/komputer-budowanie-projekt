@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const PartPrices = ({ prices }) => {
   if (!prices || prices.length === 0) {
     return null;

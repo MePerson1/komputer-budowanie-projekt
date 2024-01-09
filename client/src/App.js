@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { PcConfiguration, Toast } from "./utils/models";
 import axios from "axios";
 import { Footer } from "./components/shared/Footer";
-import { getUserInfo } from "./utils/apiRequests";
 function App() {
   let [pcConfiguration, setPcConfiguration] = useState(PcConfiguration);
   const [user, setUser] = useState(null);
@@ -22,6 +21,7 @@ function App() {
       getUserInfo(token);
     }
   }, []);
+
   async function getUserInfo(token) {
     const config = { headers: { Authorization: `Bearer ${token}` } };
     axios
@@ -44,6 +44,7 @@ function App() {
           console.log("Error occurred:", err);
           localStorage.removeItem("token");
           localStorage.removeItem("loggedUser");
+          window.location.reload();
         }
       });
   }
@@ -52,7 +53,7 @@ function App() {
       <header className="top-0">
         <NavBar loggedUser={user} />
       </header>
-      <main className="flex-grow">
+      <main className="flex-grow ">
         <AppRoutes
           pcConfiguration={pcConfiguration}
           setPcConfiguration={setPcConfiguration}
