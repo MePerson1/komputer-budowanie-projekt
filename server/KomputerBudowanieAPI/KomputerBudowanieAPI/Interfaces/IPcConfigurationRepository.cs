@@ -14,14 +14,15 @@ namespace KomputerBudowanieAPI.Interfaces
         Task<PagedList<PcConfiguration>> GetAllAsyncByUserIdPagination(string userId, PartsParams partsParams);
         Task<PcConfiguration?> GetByIdAsync(Guid id);
 
-        Task<PcConfiguration> Create(PcConfigurationDto newConfigurationDto);
+        Task<PcConfiguration> Create(PcConfigurationCreateModel newConfigurationDto);
 
-        Task<PcConfiguration> Update(Guid id, PcConfigurationDto entity);
+        Task<PcConfiguration> Update(Guid id, PcConfigurationCreateModel entity);
 
         Task Delete(PcConfiguration entity);
 
         Task SaveChanges();
 
         Task<PcConfiguration?> GetDataFromIds(PcConfigurationDto dto, PcConfiguration pcConfiguration);
+        Task<PcConfiguration?> GetDataFromIds(PcConfigurationCreateModel dto, PcConfiguration pcConfiguration);
     }
 }

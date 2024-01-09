@@ -1,7 +1,11 @@
-﻿namespace KomputerBudowanieAPI.Dto
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace KomputerBudowanieAPI.Dto
 {
-    public class PcConfigurationDto
+    public class PcConfigurationCreateModel
     {
+
+        [Required(ErrorMessage = "Nazwa zestawu jest wymagana!")]
         public string Name { get; set; }
         public string? Description { get; set; }
         public int? MotherboadId { get; set; }
@@ -13,6 +17,7 @@
         public int? CaseId { get; set; }
         public int? PowerSuplyId { get; set; }
 
+        [Required(ErrorMessage = "Użytkownik jest wymagana!")]
         public string UserId { get; set; }
 
         public bool isPrivate { get; set; } = true;

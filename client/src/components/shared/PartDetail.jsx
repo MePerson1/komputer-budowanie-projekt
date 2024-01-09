@@ -439,8 +439,8 @@ const PartDetail = () => {
             </div>
           </div>
 
-          <div>
-            <p className="font-bold text-4xl bg-base-300">Specyfikacje</p>
+          <div className="bg-base-300">
+            <p className="font-bold text-4xl  mb-5">Specyfikacje</p>
             <PartsSpecifications specifications={specifications} />
           </div>
         </div>
