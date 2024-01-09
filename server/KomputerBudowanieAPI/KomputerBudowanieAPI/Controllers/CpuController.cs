@@ -55,6 +55,7 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(cpus);
         }
 
+        [Authorize(IdentityData.ScraperOrAdminPolicyName)]
         [HttpGet("scraper")]
         public async Task<IActionResult> GetAllCpuScraper()
         {
