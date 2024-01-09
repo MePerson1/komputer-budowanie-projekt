@@ -10,17 +10,19 @@ import { Toast } from "../utils/models";
 import Topic from "../components/shared/Topic";
 import { Alert } from "../components/shared/Alert";
 import { NameInput } from "../components/Build/NameInput";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { getTokenConfig, getUserInfo } from "../utils/apiRequests";
 const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
+  const location = useLocation();
+  const editedPcConfiguration = location.state;
   const navigate = useNavigate();
   const [totalPrice, setTotalPrice] = useState(0.0);
   const [isSaved, setIsSaved] = useState(false);
   let [configurationInfo, setConfigurationInfo] = useState(Toast);
   const [description, setDescription] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
+  const [errorMessage, setError] = useState();
 
-  //TODO:Problem z dodawaniem jak nie ma rzeczy
   useEffect(() => {
     console.log(pcConfiguration);
     if (pcConfiguration !== PcConfiguration) {
@@ -32,11 +34,16 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
   }, [pcConfiguration]);
 
   useEffect(() => {
+    console.log(editedPcConfiguration);
     const localConfiugration = JSON.parse(
       localStorage.getItem("localConfiugration")
     );
     if (localConfiugration !== null) setPcConfiguration(localConfiugration);
   }, []);
+
+  useEffect(() => {
+    setError();
+  }, [pcConfiguration.name]);
 
   async function getInfo(pcConfiguration) {
     var pcConfigurationIds = mapPcPartsToIds(pcConfiguration);
@@ -98,6 +105,9 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
   }
 
   async function savePcConfiguration(pcConfiguration) {
+    if (pcConfiguration.name === "") {
+      setError("Nazwa jest wymagana!");
+    }
     if (pcConfiguration !== null && pcConfiguration.name !== "") {
       var pcConfigurationIds = mapPcPartsToIds(pcConfiguration);
       const token = JSON.parse(localStorage.getItem("token"));
@@ -145,6 +155,7 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
             <NameInput
               name={pcConfiguration.name}
               handleNameChange={handleNameChange}
+              errorMessage={errorMessage}
             />
             <ComponentsTable
               pcParts={pcParts}

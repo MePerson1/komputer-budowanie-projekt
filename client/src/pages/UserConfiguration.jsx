@@ -10,6 +10,7 @@ import { Select } from "../components/shared/Select";
 import { SearchBar } from "../components/shared/SearchBar";
 import { getTokenConfig, mainUrl } from "../utils/apiRequests";
 import { ErrorAlert } from "../components/shared/ErrorAlert";
+import { mapServcerModelToClient } from "../utils/functions/mapServerModelToClient";
 
 export const UserConfigurations = () => {
   const navigate = useNavigate();
@@ -100,6 +101,11 @@ export const UserConfigurations = () => {
     }
   };
 
+  const handleEdit = (pcConfiguration) => {
+    var editedPcConfiguration = mapServcerModelToClient(pcConfiguration);
+    console.log(editedPcConfiguration);
+    navigate("/build", { state: editedPcConfiguration });
+  };
   async function getUserConfigurations(
     token,
     loggedUser,
@@ -193,7 +199,10 @@ export const UserConfigurations = () => {
             {userConfigurations.map((pcConfiguration, index) => (
               <div key={index} className="p-2">
                 <div className="flex justify-end">
-                  <button className="btn btn-sm btn-warning hover:bg-opacity-50 hover:text-white">
+                  <button
+                    className="btn btn-sm btn-warning hover:bg-opacity-50 hover:text-white"
+                    onClick={() => handleEdit(pcConfiguration)}
+                  >
                     Edytuj
                   </button>
                   <button

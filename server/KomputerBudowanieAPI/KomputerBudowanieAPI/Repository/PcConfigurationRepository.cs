@@ -358,7 +358,7 @@ namespace KomputerBudowanieAPI.Repository
             {
                 foreach (var storage in pcConfiguration.PcConfigurationStorages)
                 {
-                    if (storage.Storage.Prices is not null)
+                    if (storage.Storage.Prices != null && storage.Storage.Prices.Any())
                         totalPrice += storage.Storage.Prices.Min(p => p.Price);
                 }
             }
@@ -367,7 +367,7 @@ namespace KomputerBudowanieAPI.Repository
             {
                 foreach (var ram in pcConfiguration.PcConfigurationRams)
                 {
-                    if (ram.Ram.Prices is not null)
+                    if (ram.Ram.Prices != null && ram.Ram.Prices.Any())
                         totalPrice += ram.Ram.Prices.Min(p => p.Price);
                 }
             }

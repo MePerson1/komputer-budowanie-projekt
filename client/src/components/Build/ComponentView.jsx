@@ -22,9 +22,9 @@ const ComponentView = ({ pcPart, handleSetToNull, partKey, partType }) => {
                 {pcPart.prices !== undefined &&
                   pcPart.prices.length !== 0 &&
                   pcPart.prices[0] !== undefined && (
-                    <p className="font-semibold">
+                    <div className="font-semibold">
                       Cena: <PartPrices prices={pcPart.prices} />
-                    </p>
+                    </div>
                   )}
                 {pcPart.prices[0] === undefined && <p>Cena: N/A</p>}
               </div>
