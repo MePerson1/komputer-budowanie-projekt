@@ -14,7 +14,9 @@ import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { getTokenConfig, getUserInfo } from "../utils/apiRequests";
 const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
   const location = useLocation();
-  const editedPcConfiguration = location.state;
+  const [editedPcConfiguration, setEditedPcConfiguration] = useState(
+    location.state
+  );
   const navigate = useNavigate();
   const [totalPrice, setTotalPrice] = useState(0.0);
   const [isSaved, setIsSaved] = useState(false);
@@ -22,9 +24,15 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
   const [description, setDescription] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
   const [errorMessage, setError] = useState();
+  const [isEdit, setIsEdit] = useState(false);
+  const handleCancelEdit = () => {
+    setIsEdit(false);
+    setEditedPcConfiguration(null);
+    localStorage.removeItem("localEditedConfiugration");
+    navigate("/");
+  };
 
   useEffect(() => {
-    console.log(pcConfiguration);
     if (pcConfiguration !== PcConfiguration) {
       localStorage.setItem(
         "localConfiugration",
@@ -34,7 +42,31 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
   }, [pcConfiguration]);
 
   useEffect(() => {
-    console.log(editedPcConfiguration);
+    if (editedPcConfiguration) {
+      localStorage.setItem(
+        "localEditedConfiugration",
+        JSON.stringify(editedPcConfiguration)
+      );
+      setIsEdit(true);
+    }
+  }, [editedPcConfiguration]);
+
+  useEffect(() => {
+    if (editedPcConfiguration) {
+      localStorage.setItem(
+        "localEditedConfiugration",
+        JSON.stringify(editedPcConfiguration)
+      );
+      setIsEdit(true);
+    }
+
+    const localEditedPcConfiguration = JSON.parse(
+      localStorage.getItem("localEditedConfiugration")
+    );
+
+    if (localEditedPcConfiguration !== null)
+      setEditedPcConfiguration(localEditedPcConfiguration);
+
     const localConfiugration = JSON.parse(
       localStorage.getItem("localConfiugration")
     );
@@ -51,16 +83,19 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
     await axios
       .post("http://localhost:5198/api/compatibility", pcConfigurationIds)
       .then((res) => {
-        console.log(res.data);
         setConfigurationInfo(res.data);
       })
       .catch((err) => console.log(err));
   }
 
   useEffect(() => {
-    countTotalPrice();
+    countTotalPrice(
+      editedPcConfiguration ? editedPcConfiguration : pcConfiguration
+    );
 
-    if (pcConfiguration !== PcConfiguration) {
+    if (editedPcConfiguration) {
+      getInfo(editedPcConfiguration);
+    } else if (pcConfiguration !== PcConfiguration) {
       getInfo(pcConfiguration);
     }
   }, [
@@ -76,14 +111,17 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
     pcConfiguration.storages,
     pcConfiguration.user,
     pcConfiguration.waterCooling,
+    editedPcConfiguration,
   ]);
 
   const handleNameChange = (event) => {
     const newName = event.target.value;
-    setPcConfiguration({ ...pcConfiguration, name: newName });
+    if (editedPcConfiguration) {
+      setEditedPcConfiguration({ ...editedPcConfiguration, name: newName });
+    } else setPcConfiguration({ ...pcConfiguration, name: newName });
   };
 
-  function countTotalPrice() {
+  function countTotalPrice(pcConfiguration) {
     let totalPrice = 0;
 
     Object.keys(pcConfiguration).forEach((key) => {
@@ -104,7 +142,7 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
     setTotalPrice(totalPrice);
   }
 
-  async function savePcConfiguration(pcConfiguration) {
+  async function savePcConfiguration(pcConfiguration, isEdit) {
     if (pcConfiguration.name === "") {
       setError("Nazwa jest wymagana!");
     }
@@ -120,22 +158,40 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
       console.log(pcConfigurationIds);
       if (pcConfigurationIds.userId && token) {
         const config = getTokenConfig(token);
-        await axios
-          .post(
-            "http://localhost:5198/api/configuration",
+        if (isEdit) {
+          await axios
+            .put(
+              `http://localhost:5198/api/configuration/${pcConfigurationIds.id}`,
+              pcConfigurationIds,
+              config
+            )
+            .then((res) => {
+              var data = res.data;
+              localStorage.removeItem("localEditedConfiugration");
+              setEditedPcConfiguration();
+              console.log("testEdit");
+              setIsSaved(true);
+              navigate(`/configurations/${data.id}`);
+            })
+            .catch((err) => console.log(err));
+        } else {
+          await axios
+            .post(
+              "http://localhost:5198/api/configuration",
 
-            pcConfigurationIds,
-            config
-          )
-          .then((res) => {
-            var data = res.data;
-            localStorage.removeItem("localConfiugration");
-            setPcConfiguration(PcConfiguration);
-            console.log("test");
-            setIsSaved(true);
-            navigate(`/configurations/${data.id}`);
-          })
-          .catch((err) => console.log(err));
+              pcConfigurationIds,
+              config
+            )
+            .then((res) => {
+              var data = res.data;
+              localStorage.removeItem("localConfiugration");
+              setPcConfiguration(PcConfiguration);
+              console.log("test");
+              setIsSaved(true);
+              navigate(`/configurations/${data.id}`);
+            })
+            .catch((err) => console.log(err));
+        }
       }
     }
   }
@@ -143,7 +199,11 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
   return (
     <>
       <div>
-        <Topic title="Budowanie" />
+        {editedPcConfiguration ? (
+          <Topic title="Edytowanie zestawu" />
+        ) : (
+          <Topic title="Budowanie" />
+        )}
         <div>
           {isSaved && (
             <Alert alertInfo={"Twoja konfiguracja została zapisana!"} />
@@ -153,14 +213,25 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
         <div className="flex flex-col md:flex-row justify-center">
           <div>
             <NameInput
-              name={pcConfiguration.name}
+              name={
+                editedPcConfiguration
+                  ? editedPcConfiguration.name
+                  : pcConfiguration.name
+              }
               handleNameChange={handleNameChange}
               errorMessage={errorMessage}
             />
             <ComponentsTable
               pcParts={pcParts}
-              pcConfiguration={pcConfiguration}
-              setPcConfiguration={setPcConfiguration}
+              pcConfiguration={
+                editedPcConfiguration ? editedPcConfiguration : pcConfiguration
+              }
+              setPcConfiguration={
+                editedPcConfiguration
+                  ? setEditedPcConfiguration
+                  : setPcConfiguration
+              }
+              isEdit={isEdit}
             />
           </div>
           <div id="infos" className="flex flex-col mt-4 md:mt-0">
@@ -168,12 +239,20 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
               configurationInfo={configurationInfo}
               totalPrice={totalPrice}
               savePcConfiguration={savePcConfiguration}
-              pcConfiguration={pcConfiguration}
+              pcConfiguration={
+                editedPcConfiguration ? editedPcConfiguration : pcConfiguration
+              }
               description={description}
               setDescription={setDescription}
-              setPcConfiguration={setPcConfiguration}
+              setPcConfiguration={
+                editedPcConfiguration
+                  ? setEditedPcConfiguration
+                  : setPcConfiguration
+              }
               setIsPrivate={setIsPrivate}
               isPrivate={isPrivate}
+              isEdit={isEdit}
+              handleCancelEdit={handleCancelEdit}
             />
             <ConfigurationInfo configurationInfo={configurationInfo} />
           </div>

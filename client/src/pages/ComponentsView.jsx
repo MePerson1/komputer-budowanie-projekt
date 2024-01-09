@@ -1,4 +1,4 @@
-import PartsTable from "../components/shared/PartsTable";
+import PartsTable from "../components/PartsTable/PartsTable";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ReturnButton from "../components/shared/ReturnButton";
@@ -23,21 +23,39 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   const [sortBy, setSortBy] = useState("");
   const [loading, setLoading] = useState(true);
 
+  const [editedPcConfiguration, setEditedPcConfiguration] = useState();
   useEffect(() => {
     const localConfiugration = JSON.parse(
       localStorage.getItem("localConfiugration")
     );
     if (localConfiugration != null) setPcConfiguration(localConfiugration);
+
+    const localEditedPcConfiguration = JSON.parse(
+      localStorage.getItem("localEditedConfiugration")
+    );
+
+    if (localEditedPcConfiguration !== null)
+      setEditedPcConfiguration(localEditedPcConfiguration);
   }, []);
 
   useEffect(() => {
     if (filter) {
-      getFilteredParts(
-        partType.key,
-        paginationInfo.CurrentPage,
-        searchTerm,
-        sortBy
-      );
+      if (editedPcConfiguration) {
+        getFilteredParts(
+          partType.key,
+          paginationInfo.CurrentPage,
+          searchTerm,
+          sortBy,
+          editedPcConfiguration
+        );
+      } else
+        getFilteredParts(
+          partType.key,
+          paginationInfo.CurrentPage,
+          searchTerm,
+          sortBy,
+          pcConfiguration
+        );
     } else {
       getParts(partType.key);
     }
@@ -58,12 +76,22 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
 
   const handleSearch = async () => {
     if (filter) {
-      await getFilteredParts(
-        partType.key,
-        paginationInfo.CurrentPage,
-        searchTerm,
-        sortBy
-      );
+      if (editedPcConfiguration) {
+        await getFilteredParts(
+          partType.key,
+          paginationInfo.CurrentPage,
+          searchTerm,
+          sortBy,
+          editedPcConfiguration
+        );
+      } else
+        await getFilteredParts(
+          partType.key,
+          paginationInfo.CurrentPage,
+          searchTerm,
+          sortBy,
+          pcConfiguration
+        );
     } else {
       await getParts(
         partType.key,
@@ -76,12 +104,22 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   const handleSort = async (sortValue) => {
     setSortBy(sortValue);
     if (filter) {
-      await getFilteredParts(
-        partType.key,
-        paginationInfo.CurrentPage,
-        searchTerm,
-        sortValue
-      );
+      if (editedPcConfiguration) {
+        await getFilteredParts(
+          partType.key,
+          paginationInfo.CurrentPage,
+          searchTerm,
+          sortBy,
+          editedPcConfiguration
+        );
+      } else
+        await getFilteredParts(
+          partType.key,
+          paginationInfo.CurrentPage,
+          searchTerm,
+          sortBy,
+          pcConfiguration
+        );
     } else {
       await getParts(
         partType.key,
@@ -121,7 +159,13 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
       });
   }
 
-  async function getFilteredParts(partKey, pageNumber, searchTerm, sortBy) {
+  async function getFilteredParts(
+    partKey,
+    pageNumber,
+    searchTerm,
+    sortBy,
+    pcConfiguration
+  ) {
     setLoading(true);
 
     const partsParams = {
@@ -194,6 +238,7 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
             partType={partType.key}
             setPcConfiguration={setPcConfiguration}
             pcConfiguration={pcConfiguration}
+            editedPcConfiguration={editedPcConfiguration}
           />
           <Pagination
             paginationInfo={paginationInfo}
