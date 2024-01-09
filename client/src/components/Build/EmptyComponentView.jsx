@@ -19,9 +19,9 @@ const EmptyComponentView = ({ pcPart }) => {
               />
             </figure>
 
-            <div className="items-start ">
-              <div className="resize hidden lg:flex">
-                <div className="m-5">{pcPart.info}</div>
+            <div className="items-start">
+              <div className="resize lg:flex">
+                <div className="m-5 text-sm lg:text-">{pcPart.info}</div>
               </div>
               <div></div>
             </div>

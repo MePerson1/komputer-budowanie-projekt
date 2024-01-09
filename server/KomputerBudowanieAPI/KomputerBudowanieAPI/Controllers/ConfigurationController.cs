@@ -114,7 +114,7 @@ namespace KomputerBudowanieAPI.Controllers
         // POST api/<ConfigurationController>
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] PcConfigurationDto newConfigurationDetails)
+        public async Task<IActionResult> Post([FromBody] PcConfigurationCreateModel newConfigurationDetails)
         {
             if (newConfigurationDetails == null)
             {
@@ -135,7 +135,7 @@ namespace KomputerBudowanieAPI.Controllers
         // PUT api/<ConfigurationController>/5
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(Guid id, [FromBody] PcConfigurationDto editedConfigurationDto)
+        public async Task<IActionResult> Put(Guid id, [FromBody] PcConfigurationCreateModel editedConfigurationDto)
         {
             try
             {

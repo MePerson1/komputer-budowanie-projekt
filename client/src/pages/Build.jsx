@@ -80,11 +80,16 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
     let totalPrice = 0;
 
     Object.keys(pcConfiguration).forEach((key) => {
-      if (pcConfiguration[key] && pcConfiguration[key].prices !== undefined) {
+      if (
+        pcConfiguration[key] &&
+        pcConfiguration[key].prices &&
+        pcConfiguration[key].prices[0] &&
+        pcConfiguration[key].prices[0].price !== undefined
+      ) {
         totalPrice += pcConfiguration[key].prices[0].price;
       } else if (key === "rams" || key === "storages") {
-        pcConfiguration[key].map(
-          (part) => (totalPrice += part.prices[0].price)
+        pcConfiguration[key].forEach(
+          (part) => part.prices[0] && (totalPrice += part.prices[0].price)
         );
       }
     });

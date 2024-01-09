@@ -149,13 +149,14 @@ namespace KomputerBudowanieAPI.Repository
             return await PagedList<PcConfiguration>.ToPagedList(query, partsParams.PageNumber, partsParams.PageSize);
         }
 
-        public async Task<PcConfiguration> Create(PcConfigurationDto newConfigurationDto)
+        public async Task<PcConfiguration> Create(PcConfigurationCreateModel newConfigurationDto)
         {
             try
             {
                 PcConfiguration pcConfiguration = new PcConfiguration();
 
                 pcConfiguration = await GetDataFromIds(newConfigurationDto, pcConfiguration);
+                pcConfiguration.TotalPrice = await CountTotalPrice(pcConfiguration);
                 await _context.AddAsync(pcConfiguration);
 
                 await SaveChanges();
@@ -183,7 +184,7 @@ namespace KomputerBudowanieAPI.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<PcConfiguration> Update(Guid id, PcConfigurationDto newConfigurationDto)
+        public async Task<PcConfiguration> Update(Guid id, PcConfigurationCreateModel newConfigurationDto)
         {
 
             var configuration = await GetByIdAsync(id);
@@ -198,6 +199,7 @@ namespace KomputerBudowanieAPI.Repository
                 PcConfiguration pcConfiguration = new PcConfiguration();
 
                 pcConfiguration = await GetDataFromIds(newConfigurationDto, configuration);
+                pcConfiguration.TotalPrice = await CountTotalPrice(pcConfiguration);
 
                 await SaveChanges();
                 return configuration;
@@ -267,7 +269,61 @@ namespace KomputerBudowanieAPI.Repository
                 await Console.Out.WriteLineAsync(ex.Message);
             }
 
-            pcConfiguration.TotalPrice = await CountTotalPrice(pcConfiguration);
+
+            return pcConfiguration;
+        }
+        public async Task<PcConfiguration?> GetDataFromIds(PcConfigurationCreateModel dto, PcConfiguration pcConfiguration)
+        {
+            pcConfiguration.Name = dto.Name;
+            pcConfiguration.Description = dto.Description;
+            pcConfiguration.isPrivate = dto.isPrivate;
+
+            pcConfiguration.Case = await _context.Cases.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.CpuId);
+            pcConfiguration.Cpu = await _context.Cpus.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.CpuId);
+            pcConfiguration.CpuCooling = await _context.CpuCoolings.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.CpuCoolingId);
+            pcConfiguration.Motherboard = await _context.Motherboards.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.MotherboadId);
+            pcConfiguration.GraphicCard = await _context.GraphicCards.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.GraphicCardId);
+            pcConfiguration.PowerSupply = await _context.PowerSupplies.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.PowerSuplyId);
+            pcConfiguration.WaterCooling = await _context.WaterCoolings.Include(c => c.Prices).FirstOrDefaultAsync(x => x.Id == dto.WaterCoolingId);
+            pcConfiguration.User = await _context.Users.FirstOrDefaultAsync(x => x.Id == dto.UserId);
+
+            var storages = await _context.Storages.Include(s => s.Prices)
+                .Where(x => dto.StorageIds != null && dto.StorageIds.Contains(x.Id))
+                .ToListAsync();
+
+            var rams = await _context.Rams.Include(s => s.Prices)
+                .Where(x => dto.RamsIds != null && dto.RamsIds.Contains(x.Id))
+                .ToListAsync();
+
+            try
+            {
+                pcConfiguration.PcConfigurationRams = rams.Select(ram =>
+                {
+                    var quantity = dto.RamsIds.Where(id => id == ram.Id).Count();
+                    return new PcConfigurationRam
+                    {
+                        PcConfiguration = pcConfiguration,
+                        Ram = ram,
+                        Quantity = quantity
+                    };
+                }).ToList();
+
+                pcConfiguration.PcConfigurationStorages = storages.Select(storage =>
+                {
+                    var quantity = dto.StorageIds.Where(id => id == storage.Id).Count();
+                    return new PcConfigurationStorage
+                    {
+                        PcConfiguration = pcConfiguration,
+                        Storage = storage,
+                        Quantity = quantity
+                    };
+                }).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                await Console.Out.WriteLineAsync(ex.Message);
+            }
 
             return pcConfiguration;
         }

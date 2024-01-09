@@ -58,7 +58,8 @@ const PcConfigurationDetails = () => {
                         Array.isArray(pcConfigurationById[key]) &&
                         pcConfigurationById[key].length === 0
                       ) &&
-                      (key === "pcConfigurationRam" || key === "storages" ? (
+                      (key === "pcConfigurationRam" ||
+                      key === "pcConfigurationStorage" ? (
                         pcConfigurationById[key].map((part, idx) => (
                           <>
                             <h2 className=" text-sm lg:text-2xl font-bold hover:text-info">

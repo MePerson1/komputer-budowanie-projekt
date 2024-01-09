@@ -11,28 +11,38 @@ const ComponentView = ({ pcPart, handleSetToNull, partKey, partType }) => {
   return (
     <>
       {pcPart && (
-        <div className="card card-bordered card-side bg-base-200 shadow-xl m-5 flex justify-between items-center">
-          <figure className="m-10">Zdjecie</figure>
-          <div className="card-body">
-            <h2 className="card-title">{pcPart.name}</h2>
+        <div className="bg-base-200 shadow-xl p-5 flex justify-between items-center rounded-xl">
+          <div className="">
+            <h2 className="text-base sm:text-lg lg:text-xl font-bold">
+              {pcPart.name}
+            </h2>
             <div className="flex">
               <div className="m-2">
                 <p>Producent: {pcPart.producer}</p>
-                {pcPart.prices !== undefined && (
-                  <p className="font-semibold">
-                    Cena: <PartPrices prices={pcPart.prices} />
-                  </p>
-                )}
-                {pcPart.prices === undefined && <p>Cena: N/A</p>}
+                {pcPart.prices !== undefined &&
+                  pcPart.prices.length !== 0 &&
+                  pcPart.prices[0] !== undefined && (
+                    <p className="font-semibold">
+                      Cena: <PartPrices prices={pcPart.prices} />
+                    </p>
+                  )}
+                {pcPart.prices[0] === undefined && <p>Cena: N/A</p>}
               </div>
             </div>
           </div>
-          <div className="mr-7 flex flex-col">
-            <button onClick={handleChangePart} className="m-2 btn btn-outline">
-              Zmień
-            </button>
+          <div className="mr-7 flex flex-col ">
+            {partType.key !== "ram" && partType.key !== "storage" && (
+              <button
+                onClick={handleChangePart}
+                className="m-2 btn btn-outline"
+              >
+                Zmień
+              </button>
+            )}
+            <div className="scale-90">
+              <DetailButton id={pcPart.id} partKey={partType.key} />
+            </div>
 
-            <DetailButton id={pcPart.id} partKey={partType.key} />
             <button
               onClick={() => handleSetToNull(partKey, pcPart.id)}
               className="m-2 btn btn-sm btn-outline btn-error "
