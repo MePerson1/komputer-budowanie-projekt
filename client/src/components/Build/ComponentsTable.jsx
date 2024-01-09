@@ -24,7 +24,7 @@ const ComponentsTable = ({ setPcConfiguration, pcConfiguration, pcParts }) => {
       setPcConfiguration({ ...pcConfiguration, [key]: null });
     }
   };
-  //TODO: zmienic troche dodatkowe informacje itd
+
   return (
     <>
       <div className="grid grid-cols-1">

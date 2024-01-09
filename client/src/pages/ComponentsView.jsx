@@ -4,10 +4,9 @@ import axios from "axios";
 import ReturnButton from "../components/shared/ReturnButton";
 import mapPcPartsToIds from "../utils/functions/mapPcPartsToIds";
 import Topic from "../components/shared/Topic";
-import Breadcrumbs from "../components/shared/Breadcrumbs";
+
 import { Pagination } from "../components/PartsTable/Pagination";
 import { Select } from "../components/shared/Select";
-import pcParts from "../utils/constants/pcParts";
 import { paginationParams } from "../utils/constants/paginationParams";
 import { SearchBar } from "../components/shared/SearchBar";
 const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
@@ -25,7 +24,6 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log(pcConfiguration);
     const localConfiugration = JSON.parse(
       localStorage.getItem("localConfiugration")
     );
@@ -48,6 +46,7 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   useEffect(() => {
     setLoading(false);
   }, [parts]);
+
   const handlePageChange = async (pageNumber) => {
     setPaginationInfo({ ...paginationInfo, CurrentPage: pageNumber });
     if (filter) {
@@ -202,7 +201,7 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
           />
         </>
       )}
-      {parts.length == 0 && <div>Pusto </div>}
+      {parts.length === 0 && !loading && <div>Pusto </div>}
     </div>
   );
 };

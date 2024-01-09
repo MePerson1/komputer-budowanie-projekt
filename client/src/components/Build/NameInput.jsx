@@ -1,6 +1,6 @@
 export const NameInput = ({ name, handleNameChange }) => {
   return (
-    <div className="flex content-center">
+    <div className="flex content-center scale-75">
       <p className="m-5 text-center text-2xl">Ustaw nazwę:</p>
       <input
         type="text"
