@@ -135,6 +135,7 @@ export const UserConfigurations = () => {
             localStorage.removeItem("loggedUser");
           } else if (err.response && err.response.status === 404) {
             setIsEmpty(true);
+            setLoading(false);
           } else {
             console.log(err);
           }
@@ -231,7 +232,7 @@ export const UserConfigurations = () => {
             ))}
           </div>
         )}
-        {isEmpty && (
+        {isEmpty && !loading && (
           <div className="flex justify-center text-2xl">Pusto {" :("}</div>
         )}
         {!isEmpty && (
