@@ -54,6 +54,7 @@ namespace KomputerBudowanieAPI.Controllers
             return Ok(graphicCards);
         }
 
+        [Authorize(IdentityData.ScraperOrAdminPolicyName)]
         [HttpGet("scraper")]
         public async Task<IActionResult> GetAllGraphicCardsScraper()
         {

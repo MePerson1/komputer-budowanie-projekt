@@ -1,4 +1,6 @@
-﻿using KomputerBudowanieAPI.Interfaces;
+﻿using KomputerBudowanieAPI.Identity;
+using KomputerBudowanieAPI.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KomputerBudowanieAPI.Controllers
@@ -14,6 +16,7 @@ namespace KomputerBudowanieAPI.Controllers
             _shopPriceRepository = shopPriceRepository;
         }
 
+        [Authorize(IdentityData.ScraperOrAdminPolicyName)]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteShopPrice(int id)
         {
