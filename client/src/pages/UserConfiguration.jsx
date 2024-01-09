@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { getUserInfo } from "../utils/apiRequests";
 
 import Topic from "../components/shared/Topic";
 import PcConfigurationCard from "../components/PcConfigurations/PcConfigurationCard";
@@ -9,6 +8,8 @@ import { paginationParams } from "../utils/constants/paginationParams";
 import { Pagination } from "../components/PartsTable/Pagination";
 import { Select } from "../components/shared/Select";
 import { SearchBar } from "../components/shared/SearchBar";
+import { getTokenConfig, mainUrl } from "../utils/apiRequests";
+import { ErrorAlert } from "../components/shared/ErrorAlert";
 
 export const UserConfigurations = () => {
   const navigate = useNavigate();
@@ -26,6 +27,9 @@ export const UserConfigurations = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("");
   const [loading, setLoading] = useState(true);
+
+  const [errorMessage, setErrorMessage] = useState();
+  const [success, setSuccess] = useState("");
 
   const handlePageChange = async (pageNumber) => {
     var token = JSON.parse(localStorage.getItem("token"));
@@ -64,6 +68,7 @@ export const UserConfigurations = () => {
   };
 
   useEffect(() => {
+    setLoading(true);
     var token = JSON.parse(localStorage.getItem("token"));
     var loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
     if (
@@ -82,9 +87,19 @@ export const UserConfigurations = () => {
       );
     }
   }, []);
+
   useEffect(() => {
     setLoading(false);
   }, [userConfigurations]);
+
+  const handleDelete = (pcConfigurationId) => {
+    var token = JSON.parse(localStorage.getItem("token"));
+    var loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+    if (pcConfigurationId && token && loggedUser) {
+      deleteUserConfiguration(token, loggedUser, pcConfigurationId);
+    }
+  };
+
   async function getUserConfigurations(
     token,
     loggedUser,
@@ -127,6 +142,27 @@ export const UserConfigurations = () => {
     }
   }
 
+  async function deleteUserConfiguration(token, loggedUser, pcConfigurationId) {
+    var config = getTokenConfig(token);
+    await axios
+      .delete(`${mainUrl}/configuration/${pcConfigurationId}`, config)
+      .then((res) => {
+        setSuccess("Pomyślnie usunięto konfiguracje!");
+        getUserConfigurations(token, loggedUser);
+      })
+      .catch((err) => {
+        if (err.response && err.response.status === 401) {
+          console.log("Unauthorized access!");
+          setErrorMessage(err.response.data);
+          localStorage.removeItem("token");
+          localStorage.removeItem("loggedUser");
+          window.location.reload();
+        } else {
+          setErrorMessage("Coś poszło nie tak :(");
+        }
+      });
+  }
+
   return (
     <>
       <Topic title="Konfiguracje" />
@@ -145,10 +181,51 @@ export const UserConfigurations = () => {
             <p>Ładowanie</p>
           </div>
         )}
+        {errorMessage && (
+          <ErrorAlert
+            errorMessage={errorMessage}
+            extraMessage="Coś poszło nie tak :("
+          />
+        )}
         {userConfigurations.length !== 0 && !isEmpty && (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
             {userConfigurations.map((pcConfiguration, index) => (
               <div key={index} className="p-2">
+                <div className="flex justify-end">
+                  <button className="btn btn-sm btn-warning hover:bg-opacity-50 hover:text-white">
+                    Edytuj
+                  </button>
+                  <button
+                    className="btn btn-sm btn-error hover:bg-opacity-50"
+                    onClick={() =>
+                      document.getElementById("my_modal_1").showModal()
+                    }
+                  >
+                    Usuń
+                  </button>
+                  <dialog id="my_modal_1" className="modal">
+                    <div className="modal-box">
+                      <h3 className="font-bold text-lg">Uwaga!</h3>
+                      <p className="py-4">
+                        Czy na pewno chcesz usunąć konfigurację?
+                      </p>
+                      <p className="text-error">
+                        Zmian nie będzie można cofnąć!
+                      </p>
+                      <div className="modal-action flex justify-between">
+                        <button
+                          className="btn btn-error btn-outline"
+                          onClick={() => handleDelete(pcConfiguration.id)}
+                        >
+                          Usuń
+                        </button>
+                        <form method="dialog flex">
+                          <button className="btn btn-outline">Anuluj</button>
+                        </form>
+                      </div>
+                    </div>
+                  </dialog>
+                </div>
                 <PcConfigurationCard pcConfiguration={pcConfiguration} />
               </div>
             ))}
@@ -157,10 +234,12 @@ export const UserConfigurations = () => {
         {isEmpty && (
           <div className="flex justify-center text-2xl">Pusto {" :("}</div>
         )}
-        <Pagination
-          paginationInfo={paginationInfo}
-          handlePageChange={handlePageChange}
-        />
+        {!isEmpty && (
+          <Pagination
+            paginationInfo={paginationInfo}
+            handlePageChange={handlePageChange}
+          />
+        )}
       </div>
     </>
   );

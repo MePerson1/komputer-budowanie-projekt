@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = "http://localhost:5198/api";
+export const mainUrl = "http://localhost:5198/api";
 
 export function getTokenConfig(token) {
   const config = { headers: { Authorization: `Bearer ${token}` } };
