@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { PcConfiguration, Toast } from "./utils/models";
 import axios from "axios";
 import { Footer } from "./components/shared/Footer";
-import { jwtDecode } from "jwt-decode";
 import { getUserInfo } from "./utils/apiRequests";
 function App() {
   let [pcConfiguration, setPcConfiguration] = useState(PcConfiguration);
