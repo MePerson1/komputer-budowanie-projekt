@@ -39,11 +39,13 @@ function App() {
           console.log("Unauthorized access!");
           localStorage.removeItem("token");
           localStorage.removeItem("loggedUser");
+          localStorage.removeItem("localEditedConfiugration");
           window.location.reload();
         } else {
           console.log("Error occurred:", err);
           localStorage.removeItem("token");
           localStorage.removeItem("loggedUser");
+          localStorage.removeItem("localEditedConfiugration");
           window.location.reload();
         }
       });

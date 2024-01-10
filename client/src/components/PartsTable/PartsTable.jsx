@@ -1,14 +1,15 @@
-import ComponentRow from "../PartsTable/ComponentRow";
+import ComponentRow from "./ComponentRow";
 
 const PartsTable = ({
   parts,
   setPcConfiguration,
   partType,
   pcConfiguration,
+  editedPcConfiguration,
 }) => {
   return (
     <div>
-      <table className="table">
+      <table className="table table-xs">
         <thead>
           <tr>
             <th></th>
@@ -29,6 +30,7 @@ const PartsTable = ({
                 index={index}
                 setPcConfiguration={setPcConfiguration}
                 pcConfiguration={pcConfiguration}
+                editedPcConfiguration={editedPcConfiguration}
               />
             ))}
         </tbody>

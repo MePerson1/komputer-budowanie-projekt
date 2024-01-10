@@ -1,5 +1,3 @@
-import {} from "./index";
-
 const PcConfiguration = {
   case: null,
   cpu: null,

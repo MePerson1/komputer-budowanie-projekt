@@ -10,7 +10,7 @@ const PartPrices = ({ prices }) => {
 
   return (
     <div class="dropdown dropdown-right">
-      <div tabindex="0" role="button" class="btn m-1">
+      <div tabIndex="0" role="button" class="btn m-1">
         <div className="">{minPrice} zł</div>
         <img
           width="20"
@@ -21,12 +21,12 @@ const PartPrices = ({ prices }) => {
         />
       </div>
       <ul
-        tabindex="0"
-        class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-80"
+        tabIndex="0"
+        class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-80 border border-info"
       >
         {prices.map((price) => (
           <li key={price.id}>
-            <p>
+            <div>
               <a href={price.link}>
                 {price.price === minPrice ? (
                   <div className="badge badge-secondary badge-outline">
@@ -37,7 +37,7 @@ const PartPrices = ({ prices }) => {
                 )}
                 {` : ${price.shopName} `}
               </a>
-            </p>
+            </div>
           </li>
         ))}
       </ul>

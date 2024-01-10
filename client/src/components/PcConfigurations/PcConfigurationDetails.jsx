@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import PcConfigurationPart from "./PcConfigurationPart";
-import { componentKeys } from "../../utils/constants/componentKeys";
+import { useNavigate } from "react-router-dom";
 import Topic from "../shared/Topic";
+import { PartsTooltip } from "../shared/PartsTooltip";
+import ReturnButton from "../shared/ReturnButton";
 
 const PcConfigurationDetails = () => {
   const { id } = useParams();
@@ -27,7 +29,6 @@ const PcConfigurationDetails = () => {
     }
   }
 
-  // fix ram and storages
   return (
     <>
       {pcConfigurationById !== undefined && pcConfigurationById !== null && (
@@ -36,63 +37,132 @@ const PcConfigurationDetails = () => {
           autor={pcConfigurationById.user.userName}
         />
       )}
+      <ReturnButton />
+      <div className="flex flex-col justify-center items-center">
+        <div className="m-5 flex flex-col lg: w-1/2 ">
+          {pcConfigurationById !== undefined && pcConfigurationById !== null ? (
+            <>
+              {pcConfigurationById.totalPrice && (
+                <div className="flex flex-col items-center">
+                  <h3 className="text-xl font-bold text-info">Łączna kwota</h3>
+                  <p className="text-xl p-2">
+                    {pcConfigurationById.totalPrice} zł
+                  </p>
+                </div>
+              )}
+              {pcConfigurationById.description && (
+                <div className="flex flex-col ">
+                  <p className="text-xl font-bold text-info">Opis</p>
+                  <p className="text-lg border border-double border-info p-5">
+                    {pcConfigurationById.description}
+                  </p>
+                </div>
+              )}
 
-      <div className="m-5">
-        {pcConfigurationById !== undefined && pcConfigurationById !== null ? (
-          <>
-            {pcConfigurationById.description && (
-              <div className="flex flex-col ">
-                <p className="text-xl font-bold text-info">Opis</p>
-                <p className="text-lg border border-double border-info p-5">
-                  {pcConfigurationById.description}
-                </p>
-              </div>
-            )}
-            <div className="mt-5">
-              <div className="grid grid-cols-1 gap-5">
-                {componentKeys.map((key, index) => (
-                  <div key={index} id={key}>
-                    {pcConfigurationById[key] !== undefined &&
-                      pcConfigurationById[key] !== null &&
-                      !(
-                        Array.isArray(pcConfigurationById[key]) &&
-                        pcConfigurationById[key].length === 0
-                      ) &&
-                      (key === "pcConfigurationRam" ||
-                      key === "pcConfigurationStorage" ? (
-                        pcConfigurationById[key].map((part, idx) => (
-                          <>
-                            <h2 className=" text-sm lg:text-2xl font-bold hover:text-info">
-                              {pcParts[index].namePL}
-                            </h2>
+              <div className="mt-5">
+                <div className="grid grid-cols-1 gap-5">
+                  {pcConfigurationById.cpu !== undefined &&
+                    pcConfigurationById.cpu !== null && (
+                      <div>
+                        <PartsTooltip name={pcParts[0].namePL} />
+                        <PcConfigurationPart
+                          pcPart={pcConfigurationById.cpu}
+                          partType={pcParts[0].key}
+                        />
+                      </div>
+                    )}
+                  {pcConfigurationById.cpuCooling !== undefined &&
+                    pcConfigurationById.cpuCooling !== null && (
+                      <div>
+                        <PartsTooltip name={pcParts[1].namePL} />
+                        <PcConfigurationPart
+                          pcPart={pcConfigurationById.cpuCooling}
+                        />
+                      </div>
+                    )}
+                  {pcConfigurationById.waterCooling !== undefined &&
+                    pcConfigurationById.waterCooling !== null && (
+                      <div>
+                        <PartsTooltip name={pcParts[2].namePL} />
+                        <PcConfigurationPart
+                          pcPart={pcConfigurationById.waterCooling}
+                        />
+                      </div>
+                    )}
+                  {pcConfigurationById.motherboard !== undefined &&
+                    pcConfigurationById.motherboard !== null && (
+                      <div>
+                        <PartsTooltip name={pcParts[3].namePL} />
+                        <PcConfigurationPart
+                          pcPart={pcConfigurationById.motherboard}
+                        />
+                      </div>
+                    )}
+                  {pcConfigurationById.graphicCard !== undefined &&
+                    pcConfigurationById.graphicCard !== null && (
+                      <div>
+                        <PartsTooltip name={pcParts[4].namePL} />
+                        <PcConfigurationPart
+                          pcPart={pcConfigurationById.graphicCard}
+                        />
+                      </div>
+                    )}
+                  {pcConfigurationById.pcConfigurationRams !== undefined &&
+                    pcConfigurationById.pcConfigurationRams !== null &&
+                    pcConfigurationById.pcConfigurationRams.length !== 0 && (
+                      <div>
+                        <PartsTooltip name={pcParts[5].namePL} />
+                        {pcConfigurationById.pcConfigurationRams.map(
+                          (part, idx) => (
                             <PcConfigurationPart
-                              key={idx}
-                              pcPart={part}
-                              partKey={key}
-                              partType={pcParts[index]}
+                              pcPart={part.ram}
+                              quantity={part.quantity}
                             />
-                          </>
-                        ))
-                      ) : (
-                        <>
-                          <h2 className=" text-sm lg:text-2xl font-bold">
-                            {pcParts[index].namePL}
-                          </h2>
-                          <PcConfigurationPart
-                            pcPart={pcConfigurationById[key]}
-                            partKey={key}
-                            partType={pcParts[index]}
-                          />
-                        </>
-                      ))}
-                  </div>
-                ))}
+                          )
+                        )}
+                      </div>
+                    )}
+                  {pcConfigurationById.pcConfigurationStorages !== undefined &&
+                    pcConfigurationById.pcConfigurationStorages !== null &&
+                    pcConfigurationById.pcConfigurationStorages.length !==
+                      0 && (
+                      <div>
+                        <PartsTooltip name={pcParts[6].namePL} />
+                        {pcConfigurationById.pcConfigurationStorages.map(
+                          (part, idx) => (
+                            <PcConfigurationPart
+                              pcPart={part.storage}
+                              quantity={part.quantity}
+                            />
+                          )
+                        )}
+                      </div>
+                    )}
+                  {pcConfigurationById.powerSupply !== undefined &&
+                    pcConfigurationById.powerSupply !== null && (
+                      <div>
+                        <PartsTooltip name={pcParts[7].namePL} />
+                        <PcConfigurationPart
+                          pcPart={pcConfigurationById.powerSupply}
+                        />
+                      </div>
+                    )}
+                  {pcConfigurationById.case !== undefined &&
+                    pcConfigurationById.case !== null && (
+                      <div>
+                        <PartsTooltip name={pcParts[8].namePL} />
+                        <PcConfigurationPart
+                          pcPart={pcConfigurationById.case}
+                        />
+                      </div>
+                    )}
+                </div>
               </div>
-            </div>
-          </>
-        ) : (
-          <h1>xd</h1>
-        )}
+            </>
+          ) : (
+            <h1>Ładowanie</h1>
+          )}
+        </div>
       </div>
     </>
   );

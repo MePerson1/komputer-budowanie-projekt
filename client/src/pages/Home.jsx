@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const Home = () => {
   return (
     <>
-      <h1 className="text-4xl">Witaj wbudowalni!</h1>
+      <h1 className="text-4xl">Witaj w budowalni!</h1>
       <div>
         <p>Rozpocznij swoją przygodę z budowanie komputerów.</p>
         <p>Stwórz swój własny zestaw komputerowy przy pomocy naszej strony!</p>

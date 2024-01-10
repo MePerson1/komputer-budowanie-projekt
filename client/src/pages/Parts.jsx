@@ -1,17 +1,16 @@
-import { Route, Routes } from "react-router-dom";
 import pcParts from "../utils/constants/pcParts";
 import ChooseCategory from "../components/Parts/ChooseCategory";
 import Topic from "../components/shared/Topic";
-import Breadcrumbs from "../components/shared/Breadcrumbs";
-import ChooseCategoryHover from "../components/Parts/ChooseCategoryHover";
 const Parts = () => {
   return (
     <>
       <Topic title="Wybór typu części" />
 
-      <div className="flex flex-wrap justify-center ">
+      <div className="mt-5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 sm:gap-10">
         {pcParts.map((pcPart) => (
-          <ChooseCategory pcPart={pcPart} />
+          <>
+            <ChooseCategory pcPart={pcPart} />
+          </>
         ))}
       </div>
     </>

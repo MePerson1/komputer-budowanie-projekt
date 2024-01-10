@@ -10,6 +10,7 @@ import { Select } from "../components/shared/Select";
 import { SearchBar } from "../components/shared/SearchBar";
 import { getTokenConfig, mainUrl } from "../utils/apiRequests";
 import { ErrorAlert } from "../components/shared/ErrorAlert";
+import { mapServcerModelToClient } from "../utils/functions/mapServerModelToClient";
 
 export const UserConfigurations = () => {
   const navigate = useNavigate();
@@ -98,8 +99,14 @@ export const UserConfigurations = () => {
     if (pcConfigurationId && token && loggedUser) {
       deleteUserConfiguration(token, loggedUser, pcConfigurationId);
     }
+    setTimeout(() => window.location.reload(false), 1000);
   };
 
+  const handleEdit = (pcConfiguration) => {
+    var editedPcConfiguration = mapServcerModelToClient(pcConfiguration);
+    console.log(editedPcConfiguration);
+    navigate("/build", { state: editedPcConfiguration });
+  };
   async function getUserConfigurations(
     token,
     loggedUser,
@@ -133,6 +140,7 @@ export const UserConfigurations = () => {
             console.log("Unauthorized access. Deleting token...");
             localStorage.removeItem("token");
             localStorage.removeItem("loggedUser");
+            localStorage.removeItem("localEditedConfiugration");
           } else if (err.response && err.response.status === 404) {
             setIsEmpty(true);
             setLoading(false);
@@ -193,7 +201,10 @@ export const UserConfigurations = () => {
             {userConfigurations.map((pcConfiguration, index) => (
               <div key={index} className="p-2">
                 <div className="flex justify-end">
-                  <button className="btn btn-sm btn-warning hover:bg-opacity-50 hover:text-white">
+                  <button
+                    className="btn btn-sm btn-warning hover:bg-opacity-50 hover:text-white"
+                    onClick={() => handleEdit(pcConfiguration)}
+                  >
                     Edytuj
                   </button>
                   <button

@@ -3,6 +3,7 @@ const mapPcPartsToIds = (pcConfiguration) => {
   if (pcConfiguration != null) {
     var pcConfigurationIds;
     pcConfigurationIds = {
+      id: pcConfiguration.id ? pcConfiguration.id : "",
       name: pcConfiguration.name ? pcConfiguration.name : "",
       description: pcConfiguration.description,
       motherboadId: pcConfiguration.motherboard
