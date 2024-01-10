@@ -22,7 +22,7 @@ const PartPrices = ({ prices }) => {
       </div>
       <ul
         tabIndex="0"
-        class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-80"
+        class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-80 border border-info"
       >
         {prices.map((price) => (
           <li key={price.id}>

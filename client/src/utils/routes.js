@@ -5,7 +5,7 @@ import {
   Build,
   NotFound,
   Parts,
-  ComponentsView,
+  PcPartsView,
   Configurations,
 } from "../pages";
 import PartDetail from "../components/shared/PartDetail";
@@ -44,19 +44,12 @@ const AppRoutes = ({
       exect
       element={<PcConfigurationDetails />}
     />
-
     <Route path="konto" exect element={<AccountConfiguration />} />
     <Route
       path="twoje-konfiguracje"
       exect
       element={<UserConfigurations loggedUser={loggedUser} />}
     />
-    <Route
-      path="configurations/:id"
-      exect
-      element={<UserConfigurations loggedUser={loggedUser} />}
-    />
-
     <Route path="logowanie" exect element={<Login />} />
     <Route path="rejestracja" exect element={<Register />} />
     {pcParts.map((part) => (
@@ -64,7 +57,7 @@ const AppRoutes = ({
         key={part.key}
         path={`/parts/${part.key}`}
         element={
-          <ComponentsView
+          <PcPartsView
             partType={part}
             pcConfiguration={pcConfiguration}
             setPcConfiguration={setPcConfiguration}

@@ -6,6 +6,7 @@ import PcConfigurationPart from "./PcConfigurationPart";
 import { useNavigate } from "react-router-dom";
 import Topic from "../shared/Topic";
 import { PartsTooltip } from "../shared/PartsTooltip";
+import ReturnButton from "../shared/ReturnButton";
 
 const PcConfigurationDetails = () => {
   const { id } = useParams();
@@ -28,7 +29,6 @@ const PcConfigurationDetails = () => {
     }
   }
 
-  // fix ram and storages
   return (
     <>
       {pcConfigurationById !== undefined && pcConfigurationById !== null && (
@@ -37,10 +37,19 @@ const PcConfigurationDetails = () => {
           autor={pcConfigurationById.user.userName}
         />
       )}
+      <ReturnButton />
       <div className="flex flex-col justify-center items-center">
         <div className="m-5 flex flex-col lg: w-1/2 ">
           {pcConfigurationById !== undefined && pcConfigurationById !== null ? (
             <>
+              {pcConfigurationById.totalPrice && (
+                <div className="flex flex-col items-center">
+                  <h3 className="text-xl font-bold text-info">Łączna kwota</h3>
+                  <p className="text-xl p-2">
+                    {pcConfigurationById.totalPrice} zł
+                  </p>
+                </div>
+              )}
               {pcConfigurationById.description && (
                 <div className="flex flex-col ">
                   <p className="text-xl font-bold text-info">Opis</p>
@@ -49,6 +58,7 @@ const PcConfigurationDetails = () => {
                   </p>
                 </div>
               )}
+
               <div className="mt-5">
                 <div className="grid grid-cols-1 gap-5">
                   {pcConfigurationById.cpu !== undefined &&
@@ -85,6 +95,15 @@ const PcConfigurationDetails = () => {
                         <PartsTooltip name={pcParts[3].namePL} />
                         <PcConfigurationPart
                           pcPart={pcConfigurationById.motherboard}
+                        />
+                      </div>
+                    )}
+                  {pcConfigurationById.graphicCard !== undefined &&
+                    pcConfigurationById.graphicCard !== null && (
+                      <div>
+                        <PartsTooltip name={pcParts[4].namePL} />
+                        <PcConfigurationPart
+                          pcPart={pcConfigurationById.graphicCard}
                         />
                       </div>
                     )}

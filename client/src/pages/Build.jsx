@@ -30,6 +30,7 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
     setEditedPcConfiguration(null);
     localStorage.removeItem("localEditedConfiugration");
     navigate("/");
+    window.location.reload();
   };
 
   useEffect(() => {

@@ -12,10 +12,7 @@ export async function getUserInfo(token) {
     const config = await getTokenConfig(token);
 
     try {
-      const response = await axios.get(
-        "http://localhost:5198/api/user/userInfo",
-        config
-      );
+      const response = await axios.get(`${mainUrl}/user/userInfo`, config);
       localStorage.setItem("loggedUser", JSON.stringify(response.data));
       return response.data;
     } catch (err) {

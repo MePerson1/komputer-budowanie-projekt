@@ -8,6 +8,9 @@ export const DetailButton = ({ id, partKey }) => {
       case "/build":
         navigate(`/parts/${partKey}/${id}`);
         break;
+      case "/twoje-konfiguracje":
+        navigate(`/configurations/${id}`);
+        break;
       default:
         navigate(`${window.location.pathname}/${id}`);
         break;

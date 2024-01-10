@@ -9,7 +9,7 @@ import { Pagination } from "../components/PartsTable/Pagination";
 import { Select } from "../components/shared/Select";
 import { paginationParams } from "../utils/constants/paginationParams";
 import { SearchBar } from "../components/shared/SearchBar";
-const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
+const PcPartsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   const sortOptions = [
     { value: "name", name: "Alfabetycznie" },
     { value: "price", name: "Cena rosnąco" },
@@ -48,7 +48,8 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
           sortBy,
           editedPcConfiguration
         );
-      } else
+      } else {
+        console.log(pcConfiguration + "test");
         getFilteredParts(
           partType.key,
           paginationInfo.CurrentPage,
@@ -56,6 +57,7 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
           sortBy,
           pcConfiguration
         );
+      }
     } else {
       getParts(partType.key);
     }
@@ -68,7 +70,22 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
   const handlePageChange = async (pageNumber) => {
     setPaginationInfo({ ...paginationInfo, CurrentPage: pageNumber });
     if (filter) {
-      await getFilteredParts(partType.key, pageNumber, searchTerm, sortBy);
+      if (editedPcConfiguration) {
+        await getFilteredParts(
+          partType.key,
+          pageNumber,
+          searchTerm,
+          sortBy,
+          editedPcConfiguration
+        );
+      } else
+        await getFilteredParts(
+          partType.key,
+          pageNumber,
+          searchTerm,
+          sortBy,
+          pcConfiguration
+        );
     } else {
       await getParts(partType.key, pageNumber, searchTerm, sortBy);
     }
@@ -109,7 +126,7 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
           partType.key,
           paginationInfo.CurrentPage,
           searchTerm,
-          sortBy,
+          sortValue,
           editedPcConfiguration
         );
       } else
@@ -117,7 +134,7 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
           partType.key,
           paginationInfo.CurrentPage,
           searchTerm,
-          sortBy,
+          sortValue,
           pcConfiguration
         );
     } else {
@@ -174,7 +191,6 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
       PageNumber: pageNumber ? pageNumber : 1,
       PageSize: 10,
     };
-
     var pcConfigurationIds = mapPcPartsToIds(pcConfiguration);
     await axios
       .post(
@@ -204,20 +220,21 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
       <Topic title={partType.namePL} />
 
       <ReturnButton />
-      <div className="flex ml-1 mr-2">
-        <div className=" form-control ">
-          <label className="pl-2 label bg-gray-900 rounded-lg border border-secondary">
-            <span className="label-text">Tylko pasujące częsci</span>
-            <input
-              type="checkbox"
-              defaultChecked={filter}
-              onChange={() => setFilter((state) => !state)}
-              className="checkbox m-5"
-            />
-          </label>
+
+      <div className="flex sm:flex-row flex-col justify-between mb-4 w-full items-start sm:items-end">
+        <div className="flex ml-1 mr-2">
+          <div className=" form-control ">
+            <label className="pl-2 label bg-gray-900 rounded-lg border border-secondary">
+              <span className="label-text">Tylko pasujące częsci</span>
+              <input
+                type="checkbox"
+                defaultChecked={filter}
+                onChange={() => setFilter((state) => !state)}
+                className="checkbox m-2"
+              />
+            </label>
+          </div>
         </div>
-      </div>
-      <div className="flex flex-row justify-between mb-4 w-full items-start">
         <Select items={sortOptions} handleOnChange={handleSort} />
         <SearchBar
           value={searchTerm}
@@ -232,7 +249,7 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
         </div>
       )}
       {parts && parts.length !== 0 && (
-        <>
+        <div className="flex flex-col ">
           <PartsTable
             parts={parts}
             partType={partType.key}
@@ -244,11 +261,11 @@ const ComponentsView = ({ partType, pcConfiguration, setPcConfiguration }) => {
             paginationInfo={paginationInfo}
             handlePageChange={handlePageChange}
           />
-        </>
+        </div>
       )}
       {parts.length === 0 && !loading && <div>Pusto </div>}
     </div>
   );
 };
 
-export default ComponentsView;
+export default PcPartsView;

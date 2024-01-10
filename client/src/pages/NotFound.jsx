@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 const NotFound = () => {
   return (
-    <div class="flex flex-col justify-center place-content-center place-items-center">
+    <div class="flex flex-col justify-center items-center mt-20">
       <div>
         <h1 className="text-7xl">Nie znaleziono strony 😞</h1>
       </div>

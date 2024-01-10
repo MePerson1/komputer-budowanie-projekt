@@ -9,7 +9,7 @@ const PartsTable = ({
 }) => {
   return (
     <div>
-      <table className="table">
+      <table className="table table-xs">
         <thead>
           <tr>
             <th></th>
