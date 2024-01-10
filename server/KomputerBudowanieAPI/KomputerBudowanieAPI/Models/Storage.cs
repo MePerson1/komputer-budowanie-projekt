@@ -13,12 +13,12 @@ namespace KomputerBudowanieAPI.Models
         public string Producer { get; set; }
         public string ProducerCode { get; set; }
         public string? Description { get; set; }
-        public string Type { get; set; } //ssd czy hdd
-        public string Model { get; set; } // linia przy hdd wydaje mi się no a model dla ssd
+        public string Type { get; set; }
+        public string Model { get; set; }
         public string FormFactor { get; set; }
         public string Capacity { get; set; }
         public string Interface { get; set; }
-        public float? ThiccnessMM { get; set; } // grubosc
+        public float? ThiccnessMM { get; set; }
         public string? CacheMemory { get; set; }
 
         //hdd only
@@ -28,7 +28,7 @@ namespace KomputerBudowanieAPI.Models
 
         //ssd only
         public bool? Radiator { get; set; } = null;
-        public string? MemoryChipType { get; set; } = null; // rodzaj kości pamięci
+        public string? MemoryChipType { get; set; } = null;
         public float? ReadSpeedMBs { get; set; } = null;
         public float? WriteSpeedMBs { get; set; } = null;
         public int? ReadRandomIOPS { get; set; } = null;
