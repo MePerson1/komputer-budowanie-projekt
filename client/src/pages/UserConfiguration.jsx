@@ -99,6 +99,7 @@ export const UserConfigurations = () => {
     if (pcConfigurationId && token && loggedUser) {
       deleteUserConfiguration(token, loggedUser, pcConfigurationId);
     }
+    setTimeout(() => window.location.reload(false), 1000);
   };
 
   const handleEdit = (pcConfiguration) => {
@@ -139,6 +140,7 @@ export const UserConfigurations = () => {
             console.log("Unauthorized access. Deleting token...");
             localStorage.removeItem("token");
             localStorage.removeItem("loggedUser");
+            localStorage.removeItem("localEditedConfiugration");
           } else if (err.response && err.response.status === 404) {
             setIsEmpty(true);
             setLoading(false);

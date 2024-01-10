@@ -81,6 +81,7 @@ export const AccountConfiguration = () => {
           setEmailChangeSuccseded(response.data);
           localStorage.removeItem("token");
           localStorage.removeItem("loggedUser");
+          localStorage.removeItem("localEditedConfiugration");
           setTimeout(function () {
             window.location.reload();
           }, 5000);
@@ -90,6 +91,7 @@ export const AccountConfiguration = () => {
             console.log("Unauthorized access!");
             localStorage.removeItem("token");
             localStorage.removeItem("loggedUser");
+            localStorage.removeItem("localEditedConfiugration");
             window.location.reload();
           } else {
             console.log("Error occurred:", err);
@@ -126,6 +128,7 @@ export const AccountConfiguration = () => {
           setPasswordChangeSuccseded(response.data);
           localStorage.removeItem("token");
           localStorage.removeItem("loggedUser");
+          localStorage.removeItem("localEditedConfiugration");
           setTimeout(function () {
             window.location.reload();
           }, 5000);
@@ -135,6 +138,7 @@ export const AccountConfiguration = () => {
             console.log("Unauthorized access!");
             localStorage.removeItem("token");
             localStorage.removeItem("loggedUser");
+            localStorage.removeItem("localEditedConfiugration");
             window.location.reload();
           } else {
             console.log("Error occurred:", err);

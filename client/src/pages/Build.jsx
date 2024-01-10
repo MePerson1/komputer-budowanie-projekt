@@ -10,7 +10,7 @@ import { Toast } from "../utils/models";
 import Topic from "../components/shared/Topic";
 import { Alert } from "../components/shared/Alert";
 import { NameInput } from "../components/Build/NameInput";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getTokenConfig, getUserInfo } from "../utils/apiRequests";
 const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
   const location = useLocation();
@@ -173,7 +173,14 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
               setIsSaved(true);
               navigate(`/configurations/${data.id}`);
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+              if (err.response && err.response.status === 401) {
+                console.log("Unauthorized access. Deleting token...");
+                localStorage.removeItem("token");
+                localStorage.removeItem("loggedUser");
+                localStorage.removeItem("localEditedConfiugration");
+              } else console.log(err);
+            });
         } else {
           await axios
             .post(
@@ -190,7 +197,14 @@ const Build = ({ pcConfiguration, setPcConfiguration, loggedUser }) => {
               setIsSaved(true);
               navigate(`/configurations/${data.id}`);
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+              if (err.response && err.response.status === 401) {
+                console.log("Unauthorized access. Deleting token...");
+                localStorage.removeItem("token");
+                localStorage.removeItem("loggedUser");
+                localStorage.removeItem("localEditedConfiugration");
+              } else console.log(err);
+            });
         }
       }
     }
