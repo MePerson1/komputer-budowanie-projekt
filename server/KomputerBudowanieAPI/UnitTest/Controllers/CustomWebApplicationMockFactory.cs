@@ -19,12 +19,16 @@ namespace Tests.Controllers
 {
     public class CustomWebApplicationMockFactory : WebApplicationFactory<Program>
     {
+        public Mock<IPcPartsRepository<Case>> CaseRepositoryMock { get; }
         public Mock<IPcPartsRepository<Cpu>> CpuRepositoryMock { get; }
+        public Mock<IPcPartsRepository<CpuCooling>> CpuCoolingRepositoryMock { get; }
         public Mock<IPcConfigurationRepository> PcConfigurationRepositoryMock { get; }
 
         public CustomWebApplicationMockFactory()
         {
+            CaseRepositoryMock = new Mock<IPcPartsRepository<Case>>();
             CpuRepositoryMock = new Mock<IPcPartsRepository<Cpu>>();
+            CpuCoolingRepositoryMock = new Mock<IPcPartsRepository<CpuCooling>>();
             PcConfigurationRepositoryMock = new Mock<IPcConfigurationRepository>();
         }
 
@@ -34,7 +38,10 @@ namespace Tests.Controllers
 
             builder.ConfigureServices(services =>
             {
+                services.AddSingleton(CaseRepositoryMock.Object);
                 services.AddSingleton(CpuRepositoryMock.Object);
+                services.AddSingleton(CpuCoolingRepositoryMock.Object);
+                services.AddSingleton(PcConfigurationRepositoryMock.Object);
             });
         }
     }
