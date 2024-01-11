@@ -55,7 +55,7 @@ function App() {
       <header className="top-0">
         <NavBar loggedUser={user} />
       </header>
-      <main className="flex-grow ">
+      <main className="flex-1">
         <AppRoutes
           pcConfiguration={pcConfiguration}
           setPcConfiguration={setPcConfiguration}

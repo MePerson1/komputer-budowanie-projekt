@@ -132,7 +132,7 @@ const ComponentsTable = ({ setPcConfiguration, pcConfiguration, pcParts }) => {
               </div>
               <button
                 onClick={() => navigate(`/parts/${pcParts[5].key}`)}
-                className="btn btn-secondary mt-5"
+                className="btn btn-secondary mt-5 "
               >
                 Dodaj
               </button>
@@ -149,7 +149,7 @@ const ComponentsTable = ({ setPcConfiguration, pcConfiguration, pcParts }) => {
             Array.isArray(pcConfiguration.storages) &&
             pcConfiguration.storages.length === 0
           ) ? (
-            <div className="flex bg-base-200">
+            <div className="flex bg-base-200 justify-between">
               <div>
                 {pcConfiguration.storages.map((part, idx) => (
                   <ComponentView
