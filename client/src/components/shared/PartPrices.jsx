@@ -30,10 +30,12 @@ const PartPrices = ({ prices }) => {
               <a href={price.link}>
                 {price.price === minPrice ? (
                   <div className="badge badge-secondary badge-outline">
-                    {price.price} zł Najniższa cena
+                    {price.price.toFixed(2)} zł Najniższa cena
                   </div>
                 ) : (
-                  <div className="badge badge-outline">{price.price} zł</div>
+                  <div className="badge badge-outline">
+                    {price.price.toFixed(2)} zł
+                  </div>
                 )}
                 {` : ${price.shopName} `}
               </a>

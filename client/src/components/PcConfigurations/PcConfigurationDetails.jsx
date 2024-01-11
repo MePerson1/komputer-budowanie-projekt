@@ -46,7 +46,7 @@ const PcConfigurationDetails = () => {
                 <div className="flex flex-col items-center">
                   <h3 className="text-xl font-bold text-info">Łączna kwota</h3>
                   <p className="text-xl p-2">
-                    {pcConfigurationById.totalPrice} zł
+                    {pcConfigurationById.totalPrice.toFixed(2)} zł
                   </p>
                 </div>
               )}
