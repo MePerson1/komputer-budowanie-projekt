@@ -77,6 +77,7 @@ const PcConfigurationDetails = () => {
                         <PartsTooltip name={pcParts[1].namePL} />
                         <PcConfigurationPart
                           pcPart={pcConfigurationById.cpuCooling}
+                          partType={pcParts[1].key}
                         />
                       </div>
                     )}
@@ -86,6 +87,7 @@ const PcConfigurationDetails = () => {
                         <PartsTooltip name={pcParts[2].namePL} />
                         <PcConfigurationPart
                           pcPart={pcConfigurationById.waterCooling}
+                          partType={pcParts[2].key}
                         />
                       </div>
                     )}
@@ -95,6 +97,7 @@ const PcConfigurationDetails = () => {
                         <PartsTooltip name={pcParts[3].namePL} />
                         <PcConfigurationPart
                           pcPart={pcConfigurationById.motherboard}
+                          partType={pcParts[3].key}
                         />
                       </div>
                     )}
@@ -104,6 +107,7 @@ const PcConfigurationDetails = () => {
                         <PartsTooltip name={pcParts[4].namePL} />
                         <PcConfigurationPart
                           pcPart={pcConfigurationById.graphicCard}
+                          partType={pcParts[4].key}
                         />
                       </div>
                     )}
@@ -117,6 +121,7 @@ const PcConfigurationDetails = () => {
                             <PcConfigurationPart
                               pcPart={part.ram}
                               quantity={part.quantity}
+                              partType={pcParts[5].key}
                             />
                           )
                         )}
@@ -133,6 +138,7 @@ const PcConfigurationDetails = () => {
                             <PcConfigurationPart
                               pcPart={part.storage}
                               quantity={part.quantity}
+                              partType={pcParts[6].key}
                             />
                           )
                         )}
@@ -144,6 +150,7 @@ const PcConfigurationDetails = () => {
                         <PartsTooltip name={pcParts[7].namePL} />
                         <PcConfigurationPart
                           pcPart={pcConfigurationById.powerSupply}
+                          partType={pcParts[7].key}
                         />
                       </div>
                     )}
@@ -153,6 +160,7 @@ const PcConfigurationDetails = () => {
                         <PartsTooltip name={pcParts[8].namePL} />
                         <PcConfigurationPart
                           pcPart={pcConfigurationById.case}
+                          partType={pcParts[8].key}
                         />
                       </div>
                     )}
