@@ -12,7 +12,7 @@ import {
 } from "../utils/validators";
 import { ErrorAlert } from "../components/shared/ErrorAlert";
 
-export const AccountConfiguration = () => {
+const AccountView = () => {
   const navigate = useNavigate();
   const [loggedUser, setLoggedUser] = useState(null);
 
@@ -293,3 +293,5 @@ export const AccountConfiguration = () => {
     </>
   );
 };
+
+export default AccountView;

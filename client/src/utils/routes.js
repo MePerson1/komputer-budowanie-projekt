@@ -7,14 +7,14 @@ import {
   Parts,
   PcPartsView,
   Configurations,
+  UserConfigurations,
+  AccountView,
 } from "../pages";
 import PartDetail from "../components/shared/PartDetail";
 import pcParts from "./constants/pcParts";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import PcConfigurationDetails from "../components/PcConfigurations/PcConfigurationDetails";
-import { UserConfigurations } from "../pages/UserConfiguration";
-import { AccountConfiguration } from "../pages/AccountConfiguration";
 
 const AppRoutes = ({
   pcConfiguration,
@@ -44,7 +44,7 @@ const AppRoutes = ({
       exect
       element={<PcConfigurationDetails />}
     />
-    <Route path="konto" exect element={<AccountConfiguration />} />
+    <Route path="konto" exect element={<AccountView />} />
     <Route
       path="twoje-konfiguracje"
       exect

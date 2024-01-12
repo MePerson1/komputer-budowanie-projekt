@@ -12,7 +12,7 @@ import { getTokenConfig, mainUrl } from "../utils/apiRequests";
 import { ErrorAlert } from "../components/shared/ErrorAlert";
 import { mapServcerModelToClient } from "../utils/functions/mapServerModelToClient";
 
-export const UserConfigurations = () => {
+const UserConfigurations = () => {
   const navigate = useNavigate();
   const [userConfigurations, setUserConfigurations] = useState([]);
   const [isEmpty, setIsEmpty] = useState(false);
@@ -256,3 +256,5 @@ export const UserConfigurations = () => {
     </>
   );
 };
+
+export default UserConfigurations;
