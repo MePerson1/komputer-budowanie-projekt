@@ -1,3 +1,4 @@
+using KomputerBudowanieAPI;
 using KomputerBudowanieAPI.Database;
 using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
@@ -17,7 +18,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-
+        builder.Services.AddTransient<Seed>();
         //database
         builder.Services.AddDbContext<KomBuildDbContext>(opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("KomBuildDBContext")));
 
@@ -137,6 +138,20 @@ public class Program
 
 
         var app = builder.Build();
+
+        if (args.Length == 1 && args[0].ToLower() == "seeddata")
+            SeedData(app);
+
+        async Task SeedData(IHost app)
+        {
+            var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+
+            using (var scope = scopedFactory.CreateScope())
+            {
+                var service = scope.ServiceProvider.GetService<Seed>();
+                await service.SeedDataContext();
+            }
+        }
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
