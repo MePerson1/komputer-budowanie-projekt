@@ -16,7 +16,8 @@ namespace KomputerBudowanieAPI
 
         public async Task SeedDataContext()
         {
-            if (!_dbContext.Users.Any())
+            var isScraperExists = _dbContext.Users.FirstOrDefault(u => u.Email == "scraper@gmail.com");
+            if (isScraperExists is null)
             {
                 var scraper = new ApplicationUser
                 {
@@ -24,7 +25,7 @@ namespace KomputerBudowanieAPI
                     Email = "scraper@gmail.com"
                 };
 
-                var result = await _user.CreateAsync(scraper, "Scraper123!");
+                var result = await _user.CreateAsync(scraper, "(Scr4puScr4pu)");
 
                 if (result.Succeeded)
                 {
