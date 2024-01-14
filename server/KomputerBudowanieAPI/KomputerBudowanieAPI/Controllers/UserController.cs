@@ -1,7 +1,6 @@
 ﻿using KomputerBudowanieAPI.Dto;
 using KomputerBudowanieAPI.Interfaces;
 using KomputerBudowanieAPI.Models;
-using KomputerBudowanieAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -76,7 +75,6 @@ namespace KomputerBudowanieAPI.Controllers
             }
 
             var user = await _user.FindByEmailAsync(dto.Email);
-            await _user.AddToRoleAsync(user, "Scraper");
 
             //var user = await _user.FindByEmailAsync(dto.Email);
 

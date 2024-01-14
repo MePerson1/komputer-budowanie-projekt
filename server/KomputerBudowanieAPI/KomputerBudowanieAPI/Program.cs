@@ -139,7 +139,7 @@ public class Program
 
         var app = builder.Build();
 
-
+        //adding the scrapper user
         Task.Run(() => SeedData(app)).Wait();
 
         async Task SeedData(IHost app)
