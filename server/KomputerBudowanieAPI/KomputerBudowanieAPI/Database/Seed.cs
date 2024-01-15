@@ -1,8 +1,8 @@
-﻿using KomputerBudowanieAPI.Database;
+﻿using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Models;
 using Microsoft.AspNetCore.Identity;
 
-namespace KomputerBudowanieAPI
+namespace KomputerBudowanieAPI.Database
 {
     public class Seed
     {
@@ -29,7 +29,7 @@ namespace KomputerBudowanieAPI
 
                 if (result.Succeeded)
                 {
-                    await _user.AddToRoleAsync(scraper, "Scraper");
+                    await _user.AddToRoleAsync(scraper, IdentityData.ScraperUserClaimName);
                 }
             }
         }

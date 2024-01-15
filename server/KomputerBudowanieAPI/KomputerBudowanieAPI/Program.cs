@@ -1,4 +1,3 @@
-using KomputerBudowanieAPI;
 using KomputerBudowanieAPI.Database;
 using KomputerBudowanieAPI.Identity;
 using KomputerBudowanieAPI.Interfaces;
