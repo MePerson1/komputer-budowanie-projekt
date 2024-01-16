@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Identity;
 
 namespace KomputerBudowanieAPI.Database
 {
-    public class Seed
+    public class SeedDatabase
     {
         private readonly KomBuildDbContext _dbContext;
         private readonly UserManager<ApplicationUser> _user;
-        public Seed(KomBuildDbContext dbContext, UserManager<ApplicationUser> user)
+        public SeedDatabase(KomBuildDbContext dbContext, UserManager<ApplicationUser> user)
         {
             _dbContext = dbContext;
             _user = user;
