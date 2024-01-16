@@ -1,14 +1,14 @@
 **Środowisko testowe**
 
 - Scraper:
-  - PyCharm Community Edition 2022.1.2
-  - Python 3.11
+	- PyCharm Community Edition 2022.1.2
+	- Python 3.11
 - Serwer (API) 
-  - Visual Studio 2022
-  - .NET 6.0
+	- Visual Studio 2022
+	- .NET 6.0
 - Aplikacja kliencka 
-  - Visual Studio Code
-  - React 18.2.0
+	- Visual Studio Code
+	- React 18.2.0
 - Baza danych
 	- PostgreSQL
 - System operacyjny - Windows 10
@@ -42,3 +42,6 @@ Skrypt uruchomi najpierw serwer poprzez komendę “dotnet run” w folderze z p
 
 Aby skorzystać z funkcjonalności scrapera, należy wejść w folder scraper/executables i uruchomić znajdujące się tam pliki z rozszerzeniem “.exe”. Nie należy oddzielać plików wykonywalnych od ich pliku konfiguracyjnego config.ini.
 
+Aby poprawnie wykonało się jakiekolwiek działanie powiązane z bazą danych, serwer musi działać podczas pracy scrapera.
+
+Użytkownik odpowiedzialny za scrapera generowany jest automatycznie przy budowie projektu.
