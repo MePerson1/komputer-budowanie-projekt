@@ -38,6 +38,7 @@ Po zainstalowaniu obu tych zależności, wystarczy uruchomić skrypt “run proj
 
 Skrypt uruchomi najpierw serwer poprzez komendę “dotnet run” w folderze z projektem serwera, po czym przejdzie w folder client i zainstaluje zależności strony klienta (korzystając z komendy “npm install”) i ją uruchomi poleceniem “npm run start”.
 
+Web API można uruchomić też przy pomocy Visual Studio 2022
 **Scraper**
 
 Aby skorzystać z funkcjonalności scrapera, należy wejść w folder scraper/executables i uruchomić znajdujące się tam pliki z rozszerzeniem “.exe”. Nie należy oddzielać plików wykonywalnych od ich pliku konfiguracyjnego config.ini.
