@@ -17,7 +17,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-        builder.Services.AddTransient<Seed>();
+        builder.Services.AddTransient<SeedDatabase>();
         //database
         builder.Services.AddDbContext<KomBuildDbContext>(opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("KomBuildDBContext")));
 
@@ -147,7 +147,7 @@ public class Program
 
             using (var scope = scopedFactory.CreateScope())
             {
-                var service = scope.ServiceProvider.GetService<Seed>();
+                var service = scope.ServiceProvider.GetService<SeedDatabase>();
                 await service.SeedDataContext();
             }
         }

@@ -74,11 +74,6 @@ namespace KomputerBudowanieAPI.Controllers
                 return BadRequest(result.Errors);
             }
 
-            var user = await _user.FindByEmailAsync(dto.Email);
-
-            //var user = await _user.FindByEmailAsync(dto.Email);
-
-            //var token = await GenerateTokenForUserWithClaims(newUser);
             var token = _jwtTokenHandler.GenerateTokenForUserWithClaims(newUser, await _user.GetRolesAsync(newUser));
 
             return Ok(
