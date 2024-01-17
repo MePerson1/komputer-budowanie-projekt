@@ -41,17 +41,6 @@ public class Program
 
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-        //builder.Services.AddScoped<ICaseRepository, CaseRepository>();
-        //builder.Services.AddScoped<ICpuCoolingRepository, CpuCoolingRepository>();
-        //builder.Services.AddScoped<ICpuRepository, CpuRepository>();
-        //builder.Services.AddScoped<IFanRepository, FanRepository>();
-        //builder.Services.AddScoped<IGraphicCardRepository, GraphicCardRepository>();
-        //builder.Services.AddScoped<IMemoryRepository, MemoryRepository>();
-        //builder.Services.AddScoped<IMotherboardRepository, MotherboardRepository>();
-        //builder.Services.AddScoped<IPowerSupplyRepository, PowerSupplyRepository>();
-        //builder.Services.AddScoped<IRamRepository, RamRepository>();
-        //builder.Services.AddScoped<IUserRepository, UserRepository>();
-
         builder.Services.AddScoped<IShopPriceRepository, ShopPriceRepository>();
         builder.Services.AddScoped(typeof(IPcPartsRepository<>), typeof(PcPartsRepository<>));
         builder.Services.AddScoped<IPcConfigurationRepository, PcConfigurationRepository>();
